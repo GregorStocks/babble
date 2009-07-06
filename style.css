@@ -1,0 +1,28 @@
+.wordbox {
+	padding: 1px 2px 1px 2px;
+	border: 1px solid #AAD;
+	background: #CCF;
+	text-align: center;
+	cursor: move;
+}
+.wordcontainer {
+	padding: .3em .15em .3em .15em;
+	clear: both;
+	width: 60em;
+	border: 1px solid #000;
+	margin-left: auto;
+	margin-right: auto;
+}
+.wordsbox {
+	height: 20.6em;
+	background: #c0c;
+}
+.dropbox {
+	border-top: 0;
+	height: 1.3em;
+	background: #bbb;
+}
+.sentence {
+	mragin: 0;
+	text-align: center;
+}
