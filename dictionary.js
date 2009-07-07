@@ -1,53 +1,86 @@
-var wordlist = ["butts",  "bums", "buttes", "uranus", "italy", "frankly i am offended by the preceding terms", "butt", "-y", "-s", "hurf", ",", "!", ".", "this is a very long word! why its not even a word at all!", "test", "bums", "test test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "this one is pretty long too, in fact it might even be longer than the others!!!!!", "wheee!", "I", "is"];
+var wordlist = [
+'I', 'you', 'he', 'she', 'they', 'it', 'we',
+'is', 'are', 'eat', 'kill', 'cuss',
+'butt', 'human', 'pair',
+'groggy', 'ugly', 'dumb', 'fat', 'phat',
+'-s', '-y', '-ly', '-ize', 'ify', '-ed',
+'pro-', 'anti-',
+'nine', 'four', 'six', 'eighty',
+'ain\'t',
+'myself', 'yourself', 'herself',
+'my', 'your', 'her', 'his',
+'other',
+'who',
+'through', 'on', 'top', 'of', 'with', 'for', 'to', 'from', 'until', 'the', 'even', 'so', 'well',
+'still', 'yet', 'also', 'and', 'too', 'but', 'while',
+'a', 'a', 'the', 'any', 'many',
+'!', '!', '.', '.', '?',
+',', ';', ':'
+];
 
-var SUFFIX = "suffix";
-var PREFIX = "prefix";
-var ENDING_PUNCTUATION = "ending punctuation"; // ! . ? etc
-var NONENDING_PUNCTUATION = "nonending punctuation"; // , ; : etc
+var SUFFIX = 'suffix';
+var PREFIX = 'prefix';
+var ENDING_PUNCTUATION = 'ending punctuation'; // ! . ? etc
+var NONENDING_PUNCTUATION = 'nonending punctuation'; // , ; : etc
 
 var dictionary = {
 	// any words not specified in the dictionary are assumed to be ordinary, well-behaved English
 	// words without any special cases or anything.
 	// unfortunately, JSON is so smart that it lets you have unquoted strings as keys, so we can't
-	// use constants as keys. hopefully nobody ever mistypes "type".
-	"-s": {
-		type: SUFFIX 
-	},
-	"-y": {
-		type: SUFFIX
-	},
-	"-ly": {
-		type: SUFFIX
-	},
-	"ultra-": {
+	// use constants as keys. hopefully nobody ever mistypes 'type'.
+	'pro-': {
 		type: PREFIX
 	},
-	"butt": {
-		"-s": "buttz",
-		"-ly": "buttily"
+	'anti-': {
+		type: PREFIX
 	},
-	"test": {
-		"-ed" : "testized"
+	'ultra-': {
+		type: PREFIX
 	},
-	"I": {
-		"is": "I'm"
+	'-ize': {
+		type: SUFFIX
 	},
-	"!": {
+	'-ify': {
+		type: SUFFIX
+	},
+	'-s': {
+		type: SUFFIX 
+	},
+	'-y': {
+		type: SUFFIX
+	},
+	'-ly': {
+		type: SUFFIX
+	},
+	'-ed': {
+		type: SUFFIX
+	},
+	'butt': {
+		'-s': 'buttz',
+		'-ly': 'buttily'
+	},
+	'test': {
+		'-ed' : 'testized'
+	},
+	'I': {
+		'is': 'I\'m'
+	},
+	'!': {
 		type: ENDING_PUNCTUATION
 	},
-	".": {
+	'.': {
 		type: ENDING_PUNCTUATION
 	},
-	"?": {
+	'?': {
 		type: ENDING_PUNCTUATION
 	},
-	",": {
+	',': {
 		type: NONENDING_PUNCTUATION
 	},
-	";": {
+	';': {
 		type: NONENDING_PUNCTUATION
 	},
-	":": {
+	':': {
 		type: NONENDING_PUNCTUATION
 	}
 };

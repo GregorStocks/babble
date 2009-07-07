@@ -19,7 +19,7 @@ function capitalize(word) {
 function add_to_sentence(sentence, phrase, sentence_start, prefixes) {
 	// apply all prefixes
 	while(prefixes.length) {
-		curphrase = add_prefix(curphrase, prefixes.pop());
+		phrase = add_prefix(phrase, prefixes.pop());
 	}
 	if(sentence_start) {
 		phrase = capitalize(phrase);
@@ -57,7 +57,10 @@ function updateSentence() {
 			 curphrase += word;
 			 capitalize_next = true;
 		} else {
-			sentence = add_to_sentence(sentence, curphrase, sentence_start, prefixstack);
+			// if there's a phrase ready to add to the sentence, add it (empties prefix stack)
+			if(curphrase) {
+				sentence = add_to_sentence(sentence, curphrase, sentence_start, prefixstack);
+			}
 
 			// start new phrase
 			if(dict_entry && dict_entry["type"] == PREFIX) {
