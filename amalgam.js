@@ -1,10 +1,80 @@
-var words = ["butts",  "bums", "buttes", "frankly i am insulted by the preceding terms", "butt", "-y", "-s", "hurf", ",", "!", ".", "this is a very long word! why its not even a word at all!", "test", "bums", "test test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "this one is pretty long too, in fact it might even be longer than the others!!!!!"];
+function add_suffix(phrase, suffix) {
+	var suff = suffix.replace(/^-(.*)$/, "$1");
+	return phrase + suff;
+}
+
+function add_prefix(phrase, prefix) {
+	var pref = prefix.replace(/^(.*)-$/, "$1");
+	return pref + phrase;
+}
+
+function log(text) {
+	$('#log').append('<p>' + text + '</p>');
+}
+
+function capitalize(word) {
+	return word.substring(0, 1).toUpperCase() + word.substring(1, word.length);
+}
+
+function add_to_sentence(sentence, phrase, sentence_start, prefixes) {
+	// apply all prefixes
+	while(prefixes.length) {
+		curphrase = add_prefix(curphrase, prefixes.pop());
+	}
+	if(sentence_start) {
+		phrase = capitalize(phrase);
+	}
+	if(sentence.length > 0) {
+		sentence += " " + phrase;
+	} else {
+		sentence = phrase;
+	}
+	return sentence
+}
 
 function updateSentence() {
 	$('#sentence').empty();
+	var words = []
 	$.each($('#dropbox > .wordbox'), function(idx, box) {
-		$('#sentence').append($(box).text() + " ");
+		words.push($(box).text())
 	});
+
+	var prefixstack = [];
+	var sentence = "";
+	var curphrase = "";
+	var sentence_start = true;
+	var capitalize_next = false;
+	for(var wordnum in words) {
+		var word = words[wordnum];
+		var dict_entry = dictionary[word];
+		if(dictionary[curphrase] && dictionary[curphrase][word]) { // a special way to combine
+			curphrase = dictionary[curphrase][word];
+		} else if(dict_entry && dict_entry["type"] == SUFFIX) {
+			curphrase = add_suffix(curphrase, word);
+		} else if(dict_entry && dict_entry["type"] == NONENDING_PUNCTUATION) {
+			curphrase += word;
+		} else if(dict_entry && dict_entry["type"] == ENDING_PUNCTUATION) {
+			 curphrase += word;
+			 capitalize_next = true;
+		} else {
+			sentence = add_to_sentence(sentence, curphrase, sentence_start, prefixstack);
+
+			// start new phrase
+			if(dict_entry && dict_entry["type"] == PREFIX) {
+				curphrase = ""
+				prefixstack.push(word);
+			} else {
+				curphrase = word;
+			}
+			if(sentence.length > 0) {
+				log("currently the sentence is " + sentence + " and curphrase is " + curphrase + ", setting sentence start to " + capitalize_next);
+				sentence_start = capitalize_next;
+				capitalize_next = false;
+			}
+		}
+	}
+	sentence = add_to_sentence(sentence, curphrase, sentence_start, prefixstack);
+	$('#sentence').append(sentence);
 }
 
 function shouldInsertBefore(target, dropX, dropY, insertee) {
@@ -51,8 +121,8 @@ $(function(){
 	});
 
 	// first, insert all the boxes with static positioning
-	for(var i = 0; i < words.length; i++) {
-		var box = $('<span id="wordbox' + i + '" class="wordbox">' + words[i] + '</span>');
+	for(var i = 0; i < wordlist.length; i++) {
+		var box = $('<span id="wordbox' + i + '" class="wordbox">' + wordlist[i] + '</span>');
 		$('#wordsbox').append(box);
 	}
 
