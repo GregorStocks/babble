@@ -67,7 +67,6 @@ function updateSentence() {
 				curphrase = word;
 			}
 			if(sentence.length > 0) {
-				log("currently the sentence is " + sentence + " and curphrase is " + curphrase + ", setting sentence start to " + capitalize_next);
 				sentence_start = capitalize_next;
 				capitalize_next = false;
 			}
