@@ -5,9 +5,9 @@
 	text-align: center;
 	cursor: move;
 	margin: 1px;
-	float:left;
+	float: left;
 }
-.wordcontainer {
+.wordscontainer {
 	padding: .3em .15em .3em .15em;
 	clear: both;
 	width: 60em;
@@ -21,8 +21,9 @@
 }
 .dropbox {
 	border-top: 0;
-	height: 1.3em;
+/*	height: 1.3em;*/
 	background: #bbb;
+	height: auto;
 }
 .sentence {
 	margin: 0;
@@ -31,4 +32,12 @@
 .notes {
 	text-align: center;
 	font-size: small;
+}
+.clear {
+	clear: both;
+}
+.prop {
+	padding: 5px 0px 5px 0px;
+	height: 1em;
+	float: right;
 }

@@ -1,4 +1,4 @@
-var words = ["butts",  "bums", "buttes", "frankly i am insulted by the preceding terms", "butt", "-y", "-s", "hurf", ",", "!", ".", "this is a very long word! why its not even a word at all!", "test", "bums", "test test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test"];
+var words = ["butts",  "bums", "buttes", "frankly i am insulted by the preceding terms", "butt", "-y", "-s", "hurf", ",", "!", ".", "this is a very long word! why its not even a word at all!", "test", "bums", "test test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "this one is pretty long too, in fact it might even be longer than the others!!!!!"];
 
 function updateSentence() {
 	$('#sentence').empty();
@@ -7,27 +7,37 @@ function updateSentence() {
 	});
 }
 
+function insertBefore(target, insertee) {
+	if(insertee != target)
+		// can't insert it before itself, just don't do anything instead
+		$(insertee).insertBefore(target)
+}
+
 $(function(){
 	$('#dropbox').bind('drop', function(event) {
 		// find the farthest-left wordbox with a center to the right of the mouse pointer.
 		// insert word before it.
 		// note that the wordboxes are already sorted in order for us.
 		var done = false;
+		var best = $('#clear'); // lowest guy he can be inserted before
 		$.each($('#dropbox > .wordbox'), function(idx, box) {
 			if(!done && $(box).position()['left'] + $(box).width() / 2 > event.pageX) {
-				done = true;
-				if(box != event.dragTarget) {
-					// can't insert it before itself, just don't do anything instead
-					$(event.dragTarget).insertBefore(box);
+				if($(box).position()['top'] > event.pageY) {
+					done = true;
+					insertBefore(box, event.dragTarget);
+				} else {
+					best = box;
 				}
 			}
 		});
 		if(!done) {
-			$(this).append(event.dragTarget);
+			$(event.dragTarget).insertBefore(best)
 		}
 		$(event.dragTarget).css({
 			position: 'static',
+			float: 'left'
 		});
+		$.dropManage(); // might have resized from adding a fella
 		updateSentence();
 	});
 
@@ -61,6 +71,7 @@ $(function(){
 	})
 	.bind('dragstart', function(event) {
 		$('body').append(this); // remove from the sentence
+		$.dropManage(); // drop area might have resized from removing it
 		updateSentence();
 	});
 });

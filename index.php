@@ -10,8 +10,11 @@
 	<script src="amalgam.js" type="text/javascript"></script>
 </head>
 <body>
-<div class="wordsbox wordcontainer" id="wordsbox"></div>
-<div class="dropbox wordcontainer" id="dropbox"></div>
+<div class="wordsbox wordscontainer" id="wordsbox"></div>
+<div class="dropbox wordscontainer" id="dropbox">
+	<div class="prop" id="prop"></div>
+	<div class="clear" id="clear"></div>
+</div>
 <p class="sentence" id="sentence"></p>
 <p id="log"></p>
 <p class="notes">By the way, you probably shouldn't resize the browser window.</p>
