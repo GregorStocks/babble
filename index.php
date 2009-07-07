@@ -4,7 +4,7 @@
 	<title>Amalgam</title>
 	<link rel="shortcut icon" href="/favicon.ico" />
 	<link rel="stylesheet" type="text/css" href="style.css" />
-	<script src="jquery-1.3.2.js" type="text/javascript"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 	<script src="jquery.event.drag-1.5.js" type="text/javascript"></script>
 	<script src="jquery.event.drop-1.2.js" type="text/javascript"></script>
 	<script src="amalgam.js" type="text/javascript"></script>
