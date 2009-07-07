@@ -14,5 +14,6 @@
 <div class="dropbox wordcontainer" id="dropbox"></div>
 <p class="sentence" id="sentence"></p>
 <p id="log"></p>
+<p class="notes">By the way, you probably shouldn't resize the browser window.</p>
 </body>
 </html>

@@ -1,4 +1,4 @@
-var words = ["butts",  "bums", "buttes", "frankly i am insulted by the preceding terms", "butt", "-y", "-s", "hurf", ",", "!", "."];
+var words = ["butts",  "bums", "buttes", "frankly i am insulted by the preceding terms", "butt", "-y", "-s", "hurf", ",", "!", ".", "this is a very long word! why its not even a word at all!", "test", "bums", "test test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test"];
 
 function updateSentence() {
 	$('#sentence').empty();
@@ -48,7 +48,8 @@ $(function(){
 		$(box).css({
 			position: 'absolute',
 			top: box_poses[$(box).attr('id')]['top'],
-			left: box_poses[$(box).attr('id')]['left']
+			left: box_poses[$(box).attr('id')]['left'],
+			float: 'none'
 		});
 	});
 	$('.wordbox').bind('drag', function(event){
