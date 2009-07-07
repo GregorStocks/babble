@@ -7,10 +7,24 @@ function updateSentence() {
 	});
 }
 
-function insertBefore(target, insertee) {
-	if(insertee != target)
-		// can't insert it before itself, just don't do anything instead
-		$(insertee).insertBefore(target)
+function shouldInsertBefore(target, dropX, dropY, insertee) {
+	var targpos = target.position();
+	var targwidth = target.width
+	if(dropY < target.position()['top']) { // top of target is below drop loc
+		if(target.position()['top'] != $('#dropbox > .wordbox:first').position()['top']) { // not in the top row
+			return true;
+		}
+	}
+	if(dropX > target.position()['left'] + target.width() / 2) { // center of target is to the left of droploc
+		return false;
+	}
+	if(dropY < target.position()['top'] + insertee.height()) { // bottom of target is below drop loc
+		return true;
+	}
+	if(target.position()['top'] == $('#dropbox > .wordbox:last').position()['top']) { // target is in the bottom row
+		return true;
+	}
+	return false;
 }
 
 $(function(){
@@ -19,19 +33,14 @@ $(function(){
 		// insert word before it.
 		// note that the wordboxes are already sorted in order for us.
 		var done = false;
-		var best = $('#clear'); // lowest guy he can be inserted before
 		$.each($('#dropbox > .wordbox'), function(idx, box) {
-			if(!done && $(box).position()['left'] + $(box).width() / 2 > event.pageX) {
-				if($(box).position()['top'] > event.pageY) {
-					done = true;
-					insertBefore(box, event.dragTarget);
-				} else {
-					best = box;
-				}
+			if(!done && shouldInsertBefore($(box), event.pageX, event.pageY, $(event.dragTarget))) {
+				done = true;
+				$(event.dragTarget).insertBefore(box);
 			}
 		});
 		if(!done) {
-			$(event.dragTarget).insertBefore(best)
+			$(event.dragTarget).insertBefore($('#clear'))
 		}
 		$(event.dragTarget).css({
 			position: 'static',
