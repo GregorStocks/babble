@@ -121,7 +121,12 @@ $(function(){
 		$.dropManage(); // might have resized from adding a fella
 		updateSentence();
 	});
+	$.getJSON("getwordlist.php", function(wordlist) {
+		insertWords(wordlist);
+	});
+});
 
+function insertWords(wordlist) {
 	// first, insert all the boxes with static positioning
 	for(var i = 0; i < wordlist.length; i++) {
 		var box = $('<span id="wordbox' + i + '" class="wordbox">' + wordlist[i] + '</span>');
@@ -155,4 +160,4 @@ $(function(){
 		$.dropManage(); // drop area might have resized from removing it
 		updateSentence();
 	});
-});
+}

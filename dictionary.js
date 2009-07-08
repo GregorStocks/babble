@@ -1,33 +1,14 @@
-var wordlist = [
-'I', 'you', 'he', 'she', 'they', 'it', 'we',
-'is', 'are', 'eat', 'kill', 'cuss',
-'butt', 'human', 'pair',
-'groggy', 'ugly', 'dumb', 'fat', 'phat',
-'-s', '-y', '-ly', '-ize', 'ify', '-ed',
-'pro-', 'anti-',
-'nine', 'four', 'six', 'eighty',
-'ain\'t',
-'myself', 'yourself', 'herself',
-'my', 'your', 'her', 'his',
-'other',
-'who',
-'through', 'on', 'top', 'of', 'with', 'for', 'to', 'from', 'until', 'the', 'even', 'so', 'well',
-'still', 'yet', 'also', 'and', 'too', 'but', 'while',
-'a', 'a', 'the', 'any', 'many',
-'!', '!', '.', '.', '?',
-',', ';', ':'
-];
-
 var SUFFIX = 'suffix';
 var PREFIX = 'prefix';
 var ENDING_PUNCTUATION = 'ending punctuation'; // ! . ? etc
 var NONENDING_PUNCTUATION = 'nonending punctuation'; // , ; : etc
 
 var dictionary = {
-	// any words not specified in the dictionary are assumed to be ordinary, well-behaved English
-	// words without any special cases or anything.
-	// unfortunately, JSON is so smart that it lets you have unquoted strings as keys, so we can't
-	// use constants as keys. hopefully nobody ever mistypes 'type'.
+	// any words not specified in the dictionary are assumed to be ordinary,
+	// well-behaved English words without any special cases or anything.
+	// unfortunately, JSON is so smart that it lets you have unquoted strings
+	// as keys, so we can't use constants as keys. hopefully nobody ever 
+	// mistypes 'type'.
 	'pro-': {
 		type: PREFIX
 	},
