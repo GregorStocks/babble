@@ -1,10 +1,10 @@
 .wordbox {
 	padding: 1px 4px 1px 4px;
-	border: 1px solid #AAD;
+	border: 1px solid #000;
 	background: #CCF;
 	text-align: center;
 	cursor: move;
-	margin: 4px;
+	margin: 3px;
 	float: left;
 }
 .wordscontainer {
@@ -37,7 +37,7 @@
 	clear: both;
 }
 .prop {
-	padding: 8px 0px 8px 0px;
+	padding: 7px 0px 7px 0px;
 	height: 1em;
 	float: right;
 }

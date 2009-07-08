@@ -8,10 +8,6 @@ function add_prefix(phrase, prefix) {
 	return pref + phrase;
 }
 
-function log(text) {
-	$('#log').append('<p>' + text + '</p>');
-}
-
 function capitalize(word) {
 	return word.substring(0, 1).toUpperCase() + word.substring(1, word.length);
 }
@@ -36,7 +32,12 @@ function updateSentence() {
 	$('#sentence').empty();
 	var words = []
 	$.each($('#dropbox > .wordbox'), function(idx, box) {
-		words.push($(box).text())
+		var idstr = $(box).attr('id');
+		var i = idstr.match(/\d+/);
+		if(i) {
+			idnum = parseInt(i);
+			words.push(wordlist[idnum]);
+		}
 	});
 
 	var prefixstack = [];
@@ -121,15 +122,19 @@ $(function(){
 		$.dropManage(); // might have resized from adding a fella
 		updateSentence();
 	});
-	$.getJSON("getwordlist.php", function(wordlist) {
-		insertWords(wordlist);
+	$.getJSON("getwordlist.php", function(words) {
+		insertWords(words);
 	});
 });
 
-function insertWords(wordlist) {
+var wordlist = []
+
+function insertWords(words) {
+	wordlist = words;
+
 	// first, insert all the boxes with static positioning
-	for(var i = 0; i < wordlist.length; i++) {
-		var box = $('<span id="wordbox' + i + '" class="wordbox">' + wordlist[i] + '</span>');
+	for(var i = 0; i < words.length; i++) {
+		var box = $('<span id="wordbox' + i + '" class="wordbox">' + capitalize(words[i]) + '</span>');
 		$('#wordsbox').append(box);
 	}
 
