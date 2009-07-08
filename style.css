@@ -1,7 +1,10 @@
+body {
+	background: #048;
+}
 .wordbox {
 	padding: 1px 4px 1px 4px;
 	border: 1px solid #000;
-	background: #CCF;
+	background: #DDE;
 	text-align: center;
 	cursor: move;
 	margin: 3px;
@@ -17,7 +20,7 @@
 }
 .wordsbox {
 	height: 20.6em;
-	background: #c0c;
+	background: #024;
 }
 .dropbox {
 	border-top: 0;

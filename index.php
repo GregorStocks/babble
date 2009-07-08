@@ -20,5 +20,6 @@
 <p class="sentence" id="sentence"></p>
 <p class="notes">By the way, you probably shouldn't resize the browser window.</p>
 <p class="notes"><a href="tos.php">Terms of Service</a></p>
+<p class="notes"><a href="http://github.com/Kurper/amalgam">Source</a></p>
 </body>
 </html>
