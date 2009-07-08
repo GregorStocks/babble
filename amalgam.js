@@ -122,7 +122,7 @@ $(function(){
 		$.dropManage(); // might have resized from adding a fella
 		updateSentence();
 	});
-	$.getJSON("getwordlist.php", function(words) {
+	$.getJSON("getwordlist.cgi", function(words) {
 		insertWords(words);
 	});
 });

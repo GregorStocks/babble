@@ -1,4 +1,8 @@
-[
+#!/usr/bin/python
+print "Content-type: text/html"
+print
+
+print """[
 'I', 'you', 'he', 'she', 'they', 'it', 'we',
 'is', 'are', 'eat', 'kill', 'cuss',
 'butt', 'human', 'pair',
@@ -6,7 +10,7 @@
 '-s', '-y', '-ly', '-ize', '-ify', '-ed',
 'pro-', 'anti-',
 'nine', 'four', 'six', 'eighty',
-'ain\'t',
+'ain\\'t',
 'myself', 'yourself', 'herself',
 'my', 'your', 'her', 'his',
 'other',
@@ -17,3 +21,4 @@
 '!', '!', '.', '.', '?',
 ',', ';', ':'
 ]
+"""
