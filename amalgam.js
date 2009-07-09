@@ -122,10 +122,20 @@ $(function(){
 		$.dropManage(); // might have resized from adding a fella
 		updateSentence();
 	});
-	$.getJSON("getwordlist.cgi", function(words) {
-		insertWords(words);
+	$.getJSON("api/geteventssince.cgi?eventnum=0", function(events) {
+		var event = events;
+		for(var i in events) {
+			processEvent(events[i]);
+			
+		}
 	});
 });
+
+function processEvent(e) {
+	if(e["type"] == "words" && e["words"]) {
+		insertWords(e["words"]);
+	}
+}
 
 var wordlist = []
 
