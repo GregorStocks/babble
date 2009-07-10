@@ -46,6 +46,9 @@ var dictionary = {
 	'I': {
 		'is': 'I\'m'
 	},
+	'to': {
+		'-s': 'tos'
+	},
 	'!': {
 		type: ENDING_PUNCTUATION
 	},

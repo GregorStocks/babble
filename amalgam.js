@@ -1,21 +1,26 @@
 function add_suffix(phrase, suffix) {
-	var suff = suffix.replace(/^-(.*)$/, "$1");
-	if(suff == "s") { // pluralization, hoo boy
+	// strip the leading dash
+	var suff = suffix.replace(/^-(.*)$/, '$1');
+	if(suff == 's') { // pluralization, hoo boy
 		// don't try to implement a fully correct pluralization algorithm, since our set of words is small
 		// (relative to the english language anyways)
 		// using a cut-down form of the algorithm described in Conway's "An Algorithmic Approach to English
 		// Pluralization"
 		// special dictionary-defined cases are handled before we ever get to this function
 		if(phrase.match(/ch$/) || phrase.match(/sh$/) || phrase.match(/ss$/)) {
-			suff = "es";
+			suff = 'es';
 		} else if(phrase.match(/[aeo]lf$/) || phrase.match(/[^d]eaf/) || phrase.match(/arf$/)) {
-			return phrase.replace(/f$/, "ves");
+			return phrase.replace(/f$/, 'ves');
 		} else if(phrase.match(/[nlw]ife$/)) {
-			return phrase.replace(/fe$/, "ves");
+			return phrase.replace(/fe$/, 'ves');
 		} else if(phrase.match(/y$/) && !(phrase.match(/[aeiou]y$/) || phrase.match(/[A-Z].*y$/))) {
-			return phrase.replace(/y$/, "ies");
+			return phrase.replace(/y$/, 'ies');
 		} else if(phrase.match(/o$/) && !phrase.match(/[aeiou]o$/)) {
-			suff = "es";
+			suff = 'es';
+		}
+	} else if(suff == 'y') {
+		if(phrase.match(/t$/)) {
+			suff = 'ty';
 		}
 	}
 	return phrase + suff;
