@@ -9,13 +9,11 @@ if(form.has_key("eventnum")):
 	eventnum = form["eventnum"].value
 	# TODO: return all events since that one.
 
-import MySQLdb
-
+import MySQLdb, json
 
 db = MySQLdb.connect("localhost", "username", "password", "amalgam")
-cursor = db.cursor()
-sql = "SELECT word FROM words"
-cursor.execute(sql)
+cursor = db.cursor(MySQLdb.cursors.DictCursor)
+cursor.execute("SELECT word FROM words")
 rows = cursor.fetchall()
 cursor.close()
 
@@ -24,13 +22,4 @@ print "Content-type: text/plain;charset=utf-8"
 # a "save" box for that instead of displaying it inline, which is inconvenient
 # for debugging. 
 print
-print """[{
-	type: 'words',
-	words: [
-		""",
-
-# TODO: more robust escaping for the JSON
-print ',\n\t\t'.join(["'" + row[0].replace("'", "\\'") + "'" for row in rows])
-print """
-		]
-}]"""
+print json.dumps([{'type': 'words', 'words': [row["word"] for row in rows]}], indent=4)
