@@ -44,3 +44,11 @@ body {
 	height: 1em;
 	float: right;
 }
+.userbox {
+	margin-left: auto;
+	margin-right: auto;
+	background: #fff;
+	width: 400px;
+	text-align: center;
+	border: 1px solid #000;
+}

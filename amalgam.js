@@ -22,6 +22,10 @@ function add_suffix(phrase, suffix) {
 		if(phrase.match(/t$/)) {
 			suff = 'ty';
 		}
+	} else if(suff == 'ly') {
+		if(phrase.match(/ic$/)) {
+			suff = 'ally';
+		}
 	}
 	return phrase + suff;
 }

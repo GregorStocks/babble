@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import absolute_import
 
 import cgitb, cgi
 cgitb.enable()
@@ -8,17 +9,11 @@ if(form.has_key("eventnum")):
 	eventnum = form["eventnum"].value
 	# TODO: return all events since that one.
 
-import MySQLdb, json, random
-
-def getConn():
-	return MySQLdb.connect("localhost", "username", "password", "amalgam")
-
-def getCursor(conn):
-	return conn.cursor(MySQLdb.cursors.DictCursor)
+import lib.SQL as SQL, json, random, lib.template as template
 
 def newWordList(conn):
-	cursor = getCursor(conn)
-	cursor.execute('SELECT * FROM words')
+	cursor = SQL.getCursor(conn)
+	cursor.execute('SELECT word, minnum, id FROM words')
 	rows = cursor.fetchall()
 	wordrows = []
 	for row in rows:
@@ -31,26 +26,21 @@ def newWordList(conn):
 		wordrows.append(random.choice(rows))
 
 	# add it to the SQL server
-	# WARNING! This probably only works on MySQL
-	# TODO: make this use transaction?
-	sql = 'INSERT INTO rounds () VALUES (); INSERT INTO roundwords (roundid, wordid) VALUES'
-	sql += ', '.join(['(LAST_INSERT_ID(), ' + str(wordrow['id']) + ')' for wordrow in wordrows])
-	cursor.execute(sql)
+	# WARNING! This probably only works on MySQL.
+	sql = 'INSERT INTO rounds () VALUES (); INSERT INTO roundwords (roundid, wordid) VALUES ('
+	sql += ', '.join(['(LAST_INSERT_ID(), %s)' for wordrow in wordrows])
+	sql += ')'
+	cursor.execute(sql, [str(wordrow['id']) for wordrow in wordrows]) 
 	return [wordrow['word'] for wordrow in wordrows]
 
 def getWordList(roundnum, conn):
-	cursor = getCursor(conn)
-	cursor.execute('SELECT words.word FROM words JOIN roundwords ON roundwords.wordid = words.id JOIN rounds ON rounds.id = roundwords.roundid WHERE rounds.id = ' + str(roundnum)) # TODO: use prepared statements you ape
+	cursor = SQL.getCursor(conn)
+	cursor.execute('SELECT words.word AS word FROM words JOIN roundwords ON roundwords.wordid = words.id JOIN rounds ON rounds.id = roundwords.roundid WHERE rounds.id = %s', roundnum) # TODO: use prepared statements you ape
 	rows = cursor.fetchall()
 	return [row['word'] for row in rows]
 
-conn = getConn()
-words = newWordList(9, conn)
+conn = SQL.getConn()
+words = newWordList(conn)
 conn.close()
 
-print "Content-type: text/plain;charset=utf-8"
-# theoretically this should be served as application/json, but firefox opens up
-# a "save" box for that instead of displaying it inline, which is inconvenient
-# for debugging. 
-print
-print json.dumps([{'type': 'words', 'words': sorted(words, key=str.lower)}], indent=4)
+template.output_json([{'type': 'words', 'words': sorted(words, key=str.lower)}])
