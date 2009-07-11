@@ -1,7 +1,9 @@
+from __future__ import absolute_import
+
 import MySQLdb
 
-def getConn():
+def get_conn():
 	return MySQLdb.connect("localhost", "username", "password", "amalgam")
 
-def getCursor(conn):
+def get_cursor(conn):
 	return conn.cursor(MySQLdb.cursors.DictCursor)

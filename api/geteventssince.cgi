@@ -12,7 +12,7 @@ if(form.has_key("eventnum")):
 import lib.SQL as SQL, json, random, lib.template as template
 
 def newWordList(conn):
-	cursor = SQL.getCursor(conn)
+	cursor = SQL.get_cursor(conn)
 	cursor.execute('SELECT word, minnum, id FROM words')
 	rows = cursor.fetchall()
 	wordrows = []
@@ -34,12 +34,12 @@ def newWordList(conn):
 	return [wordrow['word'] for wordrow in wordrows]
 
 def getWordList(roundnum, conn):
-	cursor = SQL.getCursor(conn)
+	cursor = SQL.get_cursor(conn)
 	cursor.execute('SELECT words.word AS word FROM words JOIN roundwords ON roundwords.wordid = words.id JOIN rounds ON rounds.id = roundwords.roundid WHERE rounds.id = %s', roundnum) # TODO: use prepared statements you ape
 	rows = cursor.fetchall()
 	return [row['word'] for row in rows]
 
-conn = SQL.getConn()
+conn = SQL.get_conn()
 words = newWordList(conn)
 conn.close()
 

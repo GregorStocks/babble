@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-from __ future__ import absolute_import
+from __future__ import absolute_import
 
 import cgitb, cgi
 cgitb.enable()
 
-import api.lib.template as template, api.lib.SQL as SQL
+import api.lib.template as template, api.lib.SQL as SQL, api.lib.auth as auth
 import re
 
-form = cgi.FieldStorage(keep_blank_values = "1")
+form = cgi.FieldStorage()
 
 if(form.has_key('username') and form.has_key('password')):
-	username = form.getfirst('username')
+	username = form.getfirst('username', '').strip()
 	password = form.getfirst('password')
 	email = form.getfirst('email', None)
 	legal = form.getfirst('legal', False)
@@ -19,10 +19,12 @@ if(form.has_key('username') and form.has_key('password')):
 		errors.append('Usernames can only contain letters, numbers, and underscores')
 	if len(username) > 20:
 		errors.append('Your username is too long.')
+	if not username:
+		errors.append('Your username must contain at least one character.')
 	
+	conn = SQL.get_conn()
+	cursor = SQL.get_cursor(conn)
 	if not errors:
-		conn = SQL.getConn()
-		cursor = SQL.getCursor(conn)
 		cursor.execute("SELECT * FROM users WHERE username = %s", username)
 		if cursor.fetchall():
 			errors.append('This username is already in use.') 
@@ -40,11 +42,16 @@ if(form.has_key('username') and form.has_key('password')):
 		<p><a href="register.cgi">Try Again</a></p></div>""")
 	
 	else:
-		template.output()
 		# add user to database
+		hashedpass = auth.hash_pass(password)
+		if not email:
+			email = None # 
+		cursor.execute('INSERT INTO users (username, hashedpass, email) VALUES (%s, %s, %s)', (username, hashedpass, email)) 
 
-		# log them in
-		pass
+		# TODO: automatically log them in
+		template.output(title = "Registered", body =
+			'	<div class="userbox"><p>Account "' + username + '" created!</p></div>')
+
 else:
 	template.output(title = "Register", body = """	<div class="userbox">
 	<form action="register.cgi" method="post">
