@@ -43,10 +43,10 @@ if(form.has_key('username') and form.has_key('password')):
 	
 	else:
 		# add user to database
-		hashedpass = auth.hash_pass(password)
+		passhash = auth.hash_pass(password)
 		if not email:
 			email = None # 
-		cursor.execute('INSERT INTO users (username, hashedpass, email) VALUES (%s, %s, %s)', (username, hashedpass, email)) 
+		cursor.execute('INSERT INTO users (username, passhash, email) VALUES (%s, %s, %s)', (username, passhash, email)) 
 
 		# TODO: automatically log them in
 		template.output(title = "Registered", body =

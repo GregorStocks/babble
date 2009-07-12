@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
-import hashlib, random
+import hashlib, random, re
+import api.lib.template as template
 
 def hash_pass(password, salt = None):
 	if not salt:
@@ -8,3 +9,13 @@ def hash_pass(password, salt = None):
 		# hopefully only the NSA has 16^10 sets of rainbow tables for sha1
 	hash = hashlib.sha1(salt + password).hexdigest()
 	return 'sha1$' + salt + '$' + hash
+
+def hashes_to(password, hash):
+	# extract salt
+	saltmatch = re.search('\$([^$]+)\$', hash)
+	if not saltmatch:
+		return False
+	salt = saltmatch.groups()[0]
+	if hash_pass(password, salt) == hash:
+		return True
+	return False
