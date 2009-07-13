@@ -170,10 +170,8 @@ $(function(){
 });
 
 function processEvent(ev) {
-	if(ev["type"] == "words" && ev["words"]) {
+	if(ev["type"] == "new round" && ev["words"]) {
 		insertWords(ev["words"]);
-	} else if(ev["type"] == "sentence" && ev["sentence"]) {
-		console.log(ev["sentence"]);
 	}
 }
 

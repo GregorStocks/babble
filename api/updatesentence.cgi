@@ -4,7 +4,7 @@ from __future__ import absolute_import
 import cgitb, cgi
 cgitb.enable()
 
-import lib.template as template, lib.SQL as SQL
+import lib.template as template, lib.SQL as SQL, lib.amalgutils as amalgutils
 
 form = cgi.FieldStorage()
 
@@ -27,15 +27,9 @@ if not errors:
 	else:
 		userid = row['id']
 
-roundid = 0
-if not errors:
-	# get current roundid
-	cursor.execute('SELECT id FROM rounds ORDER BY id DESC LIMIT 1')
-	row = cursor.fetchone()
-	if not row:
-		errors.append("There don't seem to be any rounds at all!")
-	else:
-		roundid = row['id']
+roundid = amalgutils.current_round(cursor)
+if not roundid:
+	errors.append("There does not appear to be a round.")
 
 wordids = []
 if not errors:

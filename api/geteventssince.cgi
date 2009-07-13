@@ -4,14 +4,11 @@ from __future__ import absolute_import
 import cgitb, cgi
 cgitb.enable()
 
-form = cgi.FieldStorage()
-if(form.has_key("eventnum")):
-	eventnum = form["eventnum"].value
-	# TODO: return all events since that one.
-
 import lib.SQL as SQL, json, random, lib.template as template
+import lib.amalgutils as amalgutils
+import lib.const.event as event
 
-def newWordList(conn):
+def start_new_round(conn):
 	cursor = SQL.get_cursor(conn)
 	cursor.execute('SELECT word, minnum, id FROM words')
 	rows = cursor.fetchall()
@@ -26,24 +23,50 @@ def newWordList(conn):
 		wordrows.append(random.choice(rows))
 
 	# add it to the SQL server
-	# WARNING! This probably only works on MySQL.
-	# TODO: make this use cursor.executemany by storing last_insert_id
-	sql = 'INSERT INTO rounds () VALUES ();'
-	roundwords = ', '.join(['(LAST_INSERT_ID(), %s)' for wordrow in wordrows])
-	sql += 'INSERT INTO roundwords (roundid, wordid) VALUES %s' % roundwords
-	cursor.execute(sql, [wordrow['id'] for wordrow in wordrows])
-	return [wordrow['word'] for wordrow in wordrows]
+	# this is not actually a race condition - last_insert_id is per-connection
+	# note that this will only work unmodified on MySQL
+	cursor.execute('INSERT INTO rounds () VALUES ()')
+	cursor.execute('SELECT LAST_INSERT_ID()')
+	row = cursor.fetchone()
+	roundid = row['LAST_INSERT_ID()']
+	cursor.executemany(
+		'INSERT INTO roundwords (roundid, wordid) VALUES (%s, %s)',
+		[(roundid, wordrow['id']) for wordrow in wordrows])
 
-def getWordList(roundnum, conn):
+	amalgutils.add_event(cursor, roundid, event.ROUND_START, None)
+
+def get_word_list(conn, roundid):
 	cursor = SQL.get_cursor(conn)
 	cursor.execute('''SELECT words.word AS word
 	FROM words JOIN roundwords ON roundwords.wordid = words.id
 	JOIN rounds ON rounds.id = roundwords.roundid
-	WHERE rounds.id = %s''', roundnum)
+	WHERE rounds.id = %s''', roundid)
 	rows = cursor.fetchall()
 	return [row['word'] for row in rows]
 
-conn = SQL.get_conn()
-words = newWordList(conn)
+def get_events_since(conn, eventid):
+	cursor = SQL.get_cursor(conn)
+	roundid = amalgutils.get_current_round(cursor)
+	events = []
+	cursor.execute(
+		'''SELECT eventtype, value FROM events WHERE roundid = %s AND id > %s''',
+		(roundid, eventid))
+	for row in cursor.fetchall():
+		eventtype = row['eventtype']
+		if eventtype == event.ROUND_START:
+			events.append({'type': 'new round', 'words':
+				sorted(get_word_list(conn, roundid), key=str.lower)})
+	return events
 
-template.output_json([{'type': 'words', 'words': sorted(words, key=str.lower)}])
+conn = SQL.get_conn()
+
+form = cgi.FieldStorage()
+if form.has_key("eventnum"):
+	eventnum = form.getfirst('eventnum')
+	if eventnum.strip() == '10':
+		start_new_round(conn)
+	# TODO: return all events since that one.
+
+events = get_events_since(conn, 0)
+
+template.output_json(events)
