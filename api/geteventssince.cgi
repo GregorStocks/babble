@@ -7,6 +7,7 @@ cgitb.enable()
 import lib.SQL as SQL, json, random, lib.template as template
 import lib.amalgutils as amalgutils
 import lib.const.event as event
+import lib.const.config as config
 
 def start_new_round(conn):
 	cursor = SQL.get_cursor(conn)
@@ -17,9 +18,7 @@ def start_new_round(conn):
 		for i in range(row["minnum"]):
 			wordrows.append(row)
 
-	numwords = 60
-
-	while len(wordrows) < numwords:
+	while len(wordrows) < config.WORDS_PER_ROUND:
 		wordrows.append(random.choice(rows))
 
 	# add it to the SQL server
@@ -49,13 +48,15 @@ def get_events_since(conn, eventid):
 	roundid = amalgutils.get_current_round(cursor)
 	events = []
 	cursor.execute(
-		'''SELECT eventtype, value FROM events WHERE roundid = %s AND id > %s''',
+		'''SELECT eventtype, value, id FROM events WHERE roundid = %s AND id > %s''',
 		(roundid, eventid))
 	for row in cursor.fetchall():
+		ev = {'id': row['id']}
 		eventtype = row['eventtype']
 		if eventtype == event.ROUND_START:
-			events.append({'type': 'new round', 'words':
-				sorted(get_word_list(conn, roundid), key=str.lower)})
+			ev['type'] = 'new round'
+			ev['words'] = sorted(get_word_list(conn, roundid), key=str.lower)
+		events.append(ev)
 	return events
 
 conn = SQL.get_conn()

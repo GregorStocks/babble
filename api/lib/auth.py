@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 import hashlib, random, re
-import api.lib.template as template
+from . import template
 
 def hash_pass(password, salt = None):
 	if not salt:
