@@ -37,17 +37,20 @@ var dictionary = {
 		type: SUFFIX
 	},
 	'butt': {
-		'-s': 'buttz',
-		'-ly': 'buttily'
+		combos: {
+			'-s': 'buttz',
+			'-ly': 'buttily'
+		}
 	},
 	'test': {
-		'-ed' : 'testized'
+		combos: {
+			'-ed' : 'testized'
+		}
 	},
 	'I': {
-		'is': 'I\'m'
-	},
-	'to': {
-		'-s': 'tos'
+		combos: {
+			'is': 'I\'m'
+		}
 	},
 	'!': {
 		type: ENDING_PUNCTUATION

@@ -79,8 +79,8 @@ function renderSentence(words) {
 	for(var wordnum in words) {
 		var word = words[wordnum];
 		var dict_entry = dictionary[word];
-		if(dictionary[curphrase] && dictionary[curphrase][word]) { // a special way to combine
-			curphrase = dictionary[curphrase][word];
+		if(dictionary[curphrase] && dictionary[curphrase]['combos'] && dictionary[curphrase]['combos'][word]) { // a special way to combine
+			curphrase = dictionary[curphrase]['combos'][word];
 		} else if(dict_entry && dict_entry["type"] == SUFFIX) {
 			curphrase = add_suffix(curphrase, word);
 		} else if(dict_entry && dict_entry["type"] == NONENDING_PUNCTUATION) {
