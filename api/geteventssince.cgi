@@ -4,7 +4,10 @@ from __future__ import absolute_import
 import cgitb, cgi
 cgitb.enable()
 
-import lib.SQL as SQL, json, random, lib.template as template
+import random
+import cjson as json
+import lib.SQL as SQL
+import lib.template as template
 import lib.amalgutils as amalgutils
 import lib.const.event as event
 import lib.const.config as config

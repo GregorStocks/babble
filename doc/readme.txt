@@ -10,3 +10,8 @@ and api/lib/) aren't, using .htaccess or your server's equivalent.
 
 4. ensure that every .cgi file in / and api/ is executable (chmod +x api/*.cgi 
 *.cgi)
+
+
+Dependencies:
+MySQLdb
+cjson
