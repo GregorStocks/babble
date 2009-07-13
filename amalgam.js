@@ -139,40 +139,61 @@ function shouldInsertBefore(target, dropX, dropY, insertee) {
 	return false;
 }
 
-$(function(){
-	$('#dropbox').bind('drop', function(event) {
-		// find the farthest-left wordbox with a center to the right of the mouse pointer.
-		// insert word before it.
-		// note that the wordboxes are already sorted in order for us.
-		var done = false;
-		$.each($('#dropbox > .wordbox'), function(idx, box) {
-			if(!done && shouldInsertBefore($(box), event.pageX, event.pageY, $(event.dragTarget))) {
-				done = true;
-				$(event.dragTarget).insertBefore(box);
-			}
-		});
-		if(!done) {
-			$(event.dragTarget).insertBefore($('#clear'))
-		}
-		$(event.dragTarget).css({
-			position: 'static',
-			float: 'left'
-		});
-		$.dropManage(); // might have resized from adding a fella
-		updateSentence();
-	});
-	$.getJSON("api/geteventssince.cgi", {"eventnum": 0}, function(events) {
+var cureventid = 0
+
+function eventLoop() {
+	// TODO: find out whether TCP guarantees that the events will arrive in order
+	// when you do it asynchronously like this
+	// also, ensure that only one event is being applied at any given time
+	$.getJSON("api/geteventssince.cgi", {"eventid": cureventid}, function(events) {
 		var event = events;
 		for(var i in events) {
 			processEvent(events[i]);
 		}
 	});
-});
+	setTimeout(eventLoop, 1000);
+}
+
+$(eventLoop());
 
 function processEvent(ev) {
+	cureventid = ev["eventid"]
 	if(ev["type"] == "new round" && ev["words"]) {
+		startRound();
 		insertWords(ev["words"]);
 	}
+}
+
+function startRound() {
+	$("#gamebox")
+		.empty()
+		.append("<div class='wordsbox wordscontainer' id='wordsbox'></div>")
+		.append("<div class='dropbox wordscontainer' id='dropbox'></div>")
+		.append("<p class='sentence' id='sentence'></p>");
+	$("#dropbox")
+		.append("<div class='prop' id='prop'></div>")
+		.append("<div class='clear' id='clear'></div></div>")
+		.bind('drop', function(event) {
+			// find the farthest-left wordbox with a center to the right of the mouse pointer.
+			// insert word before it.
+			// note that the wordboxes are already sorted in order for us.
+			var done = false;
+			$.each($('#dropbox > .wordbox'), function(idx, box) {
+				if(!done && shouldInsertBefore($(box), event.pageX, event.pageY, $(event.dragTarget))) {
+					done = true;
+					$(event.dragTarget).insertBefore(box);
+				}
+			});
+			if(!done) {
+				$(event.dragTarget).insertBefore($('#clear'))
+			}
+			$(event.dragTarget).css({
+				position: 'static',
+				float: 'left'
+			});
+			$.dropManage(); // might have resized from adding a fella
+			updateSentence();
+		});
 }
 
 var wordlist = []

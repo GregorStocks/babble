@@ -49,13 +49,9 @@ else:
 	<script src="jquery.event.drag-1.5.js" type="text/javascript"></script>
 	<script src="jquery.event.drop-1.2.js" type="text/javascript"></script>
 	<script src="dictionary.js" type="text/javascript"></script>
-	<script src="amalgam.js" type="text/javascript"></script>''', body = '''<div class="wordsbox wordscontainer" id="wordsbox"></div>
-<div class="dropbox wordscontainer" id="dropbox">
-	<div class="prop" id="prop"></div>
-	<div class="clear" id="clear"></div>
-</div>
-<p class="sentence" id="sentence"></p>
+	<script src="amalgam.js" type="text/javascript"></script>''', body = '''<div class="gamebox" id="gamebox"></div>
 <p class="notes">You are logged in as "%s"</p>
+<center><button type="button" onclick="$.get('api/newround.cgi')">New Round</button></center>
 <p class="notes">By the way, you probably shouldn't resize the browser window.</p>
 <p class="notes"><a href="tos.cgi">Terms of Service</a></p>
 <p class="notes"><a href="http://github.com/Kurper/amalgam">Source</a></p>
