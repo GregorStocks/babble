@@ -7,29 +7,31 @@ import json
 
 def output(title = "", head = "", body = ""):
 	if title:
-		title = str(title) + ' - '
+		title = '%s - Amalgam' % str(title)
+	else:
+		title = 'Amalgam'
 	if head:
-		head = '\n\t' + str(head)
+		head = '\n\t%s' % str(head)
 
 	print "Content-type: text/html;charset=utf-8"
 	print
 	print """<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>""" + str(title) + """Amalgam</title>
+	<title>%s</title>
 	<link rel="shortcut icon" href="/favicon.ico" />
 	<link rel="stylesheet" type="text/css" href="style.css" />
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />""" + str(head) + """
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />%s
 </head>
 <body>
-""" + str(body) + """
+%s
 </body>
-</html>"""
+</html>""" % (str(title), str(head), str(body))
 
 def debug(text):
 	print "Content-type: text/html"
 	print
-	print "DEBUG: " + str(text)
+	print "DEBUG: %s" % str(text)
 
 def output_json(obj):
 	# theoretically this should be served as application/json, but firefox opens up

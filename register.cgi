@@ -16,7 +16,7 @@ if(form.has_key('username') and form.has_key('password')):
 	legal = form.getfirst('legal', False)
 	errors = []
 	if not re.match(r'^\w+$', username):
-		errors.append('Usernames can only contain letters, numbers, and underscores')
+		errors.append('Usernames can only contain letters, numbers, and underscores.')
 	if len(username) > 20:
 		errors.append('Your username is too long.')
 	if not username:
@@ -33,13 +33,10 @@ if(form.has_key('username') and form.has_key('password')):
 		errors.append('You must be 18 to play Amalgam.')
 	
 	if errors:
-		errorhtml = '<p>'
-		for error in errors:
-			errorhtml += error + '<br>'
-		errorhtml += '</p>'
-		template.output(title = 'Registration failed!',
-		                    body = '	<div class="userbox">' + errorhtml + """
-		<p><a href="register.cgi">Try Again</a></p></div>""")
+		template.output(title = 'Registration failed',
+		                    body = """	<div class="userbox">
+		%s
+		<p><a href="register.cgi">Try Again</a></p></div>""" % '\n\t\t'.join(['<p>%s</p>' % error for error in errors]))
 	
 	else:
 		# add user to database
@@ -50,7 +47,8 @@ if(form.has_key('username') and form.has_key('password')):
 
 		# TODO: automatically log them in
 		template.output(title = "Registered", body =
-			'	<div class="userbox"><p>Account "' + username + '" created!</p></div>')
+			'''	<div class="userbox"><p>Account %s created!</p>
+			<p><a href="index.cgi">Return to main page</a></p></div>''' % username)
 
 else:
 	template.output(title = "Register", body = """	<div class="userbox">

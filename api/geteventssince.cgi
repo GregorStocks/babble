@@ -27,20 +27,23 @@ def newWordList(conn):
 
 	# add it to the SQL server
 	# WARNING! This probably only works on MySQL.
-	sql = 'INSERT INTO rounds () VALUES (); INSERT INTO roundwords (roundid, wordid) VALUES ('
-	sql += ', '.join(['(LAST_INSERT_ID(), %s)' for wordrow in wordrows])
-	sql += ')'
-	cursor.execute(sql, [str(wordrow['id']) for wordrow in wordrows]) 
+	# TODO: make this use cursor.executemany by storing last_insert_id
+	sql = 'INSERT INTO rounds () VALUES ();'
+	roundwords = ', '.join(['(LAST_INSERT_ID(), %s)' for wordrow in wordrows])
+	sql += 'INSERT INTO roundwords (roundid, wordid) VALUES %s' % roundwords
+	cursor.execute(sql, [wordrow['id'] for wordrow in wordrows])
 	return [wordrow['word'] for wordrow in wordrows]
 
 def getWordList(roundnum, conn):
 	cursor = SQL.get_cursor(conn)
-	cursor.execute('SELECT words.word AS word FROM words JOIN roundwords ON roundwords.wordid = words.id JOIN rounds ON rounds.id = roundwords.roundid WHERE rounds.id = %s', roundnum) # TODO: use prepared statements you ape
+	cursor.execute('''SELECT words.word AS word
+	FROM words JOIN roundwords ON roundwords.wordid = words.id
+	JOIN rounds ON rounds.id = roundwords.roundid
+	WHERE rounds.id = %s''', roundnum)
 	rows = cursor.fetchall()
 	return [row['word'] for row in rows]
 
 conn = SQL.get_conn()
 words = newWordList(conn)
-conn.close()
 
 template.output_json([{'type': 'words', 'words': sorted(words, key=str.lower)}])

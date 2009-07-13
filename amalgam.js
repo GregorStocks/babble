@@ -66,7 +66,11 @@ function updateSentence() {
 			words.push(wordlist[idnum]);
 		}
 	});
+	renderSentence(words);
+	sendSentence(words);
+}
 
+function renderSentence(words) {
 	var prefixstack = [];
 	var sentence = "";
 	var curphrase = "";
@@ -105,6 +109,14 @@ function updateSentence() {
 	}
 	sentence = add_to_sentence(sentence, curphrase, sentence_start, prefixstack);
 	$('#sentence').append(sentence);
+}
+
+function sendSentence(words) {
+	$.post("api/updatesentence.cgi", {"sesskey": getSessKey(), "words": words}); 
+}
+
+function getSessKey() {
+	return $('#sesskey').val();
 }
 
 function shouldInsertBefore(target, dropX, dropY, insertee) {
@@ -149,18 +161,19 @@ $(function(){
 		$.dropManage(); // might have resized from adding a fella
 		updateSentence();
 	});
-	$.getJSON("api/geteventssince.cgi?eventnum=0", function(events) {
+	$.getJSON("api/geteventssince.cgi", {"eventnum": 0}, function(events) {
 		var event = events;
 		for(var i in events) {
 			processEvent(events[i]);
-			
 		}
 	});
 });
 
-function processEvent(e) {
-	if(e["type"] == "words" && e["words"]) {
-		insertWords(e["words"]);
+function processEvent(ev) {
+	if(ev["type"] == "words" && ev["words"]) {
+		insertWords(ev["words"]);
+	} else if(ev["type"] == "sentence" && ev["sentence"]) {
+		console.log(ev["sentence"]);
 	}
 }
 

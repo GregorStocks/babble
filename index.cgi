@@ -35,7 +35,7 @@ if not username:
 
 # not logged in
 if not username:
-	template.output(body = '	<div class="userbox">' + '\n'.join(errors) + """
+	template.output(body = '''	<div class="userbox">%s
 		<form action="index.cgi" method="post">
 			<p>Username: <input type="text" name="username" /></p>
 			<p>Password: <input type="password" name="password" /></p>
@@ -43,20 +43,23 @@ if not username:
 			<p class="notes"><a href="register.cgi">Register</a></p>
 			<p class="notes"><a href="forgot.cgi">Forgot your password?</a></p>
 		</form>
-	</div>""")
+	</div>''' % '\n'.join(errors))
 else:
-	template.output(head = """ 
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+	template.output(head = '''<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 	<script src="jquery.event.drag-1.5.js" type="text/javascript"></script>
 	<script src="jquery.event.drop-1.2.js" type="text/javascript"></script>
 	<script src="dictionary.js" type="text/javascript"></script>
-	<script src="amalgam.js" type="text/javascript"></script>""", body = """<div class="wordsbox wordscontainer" id="wordsbox"></div>
+	<script src="amalgam.js" type="text/javascript"></script>''', body = '''<div class="wordsbox wordscontainer" id="wordsbox"></div>
 <div class="dropbox wordscontainer" id="dropbox">
 	<div class="prop" id="prop"></div>
 	<div class="clear" id="clear"></div>
 </div>
 <p class="sentence" id="sentence"></p>
-<p class="notes">You are logged in as """ + username + """.</p>
+<p class="notes">You are logged in as "%s"</p>
 <p class="notes">By the way, you probably shouldn't resize the browser window.</p>
 <p class="notes"><a href="tos.cgi">Terms of Service</a></p>
-<p class="notes"><a href="http://github.com/Kurper/amalgam">Source</a></p>""")
+<p class="notes"><a href="http://github.com/Kurper/amalgam">Source</a></p>
+<form>
+	<input type="hidden" id="username" name="username" value="%s" />
+	<input type="hidden" id="sesskey" name="sesskey" value="%s" />
+</form>''' % (username, username, sesskey))
