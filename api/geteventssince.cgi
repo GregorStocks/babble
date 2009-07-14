@@ -5,7 +5,6 @@ import cgitb, cgi
 cgitb.enable()
 
 import random
-import cjson as json
 import lib.SQL as SQL
 import lib.template as template
 import lib.amalgutils as amalgutils
