@@ -35,7 +35,9 @@ if not username:
 
 # not logged in
 if not username:
-	template.output(body = '''	<div class="userbox">%s
+	template.output(body = '''	<h2>Amalgam: multiplayer magnetic poetry basically</h2>
+	<div class="userbox">
+		%s
 		<form action="index.cgi" method="post">
 			<p>Username: <input type="text" name="username" /></p>
 			<p>Password: <input type="password" name="password" /></p>

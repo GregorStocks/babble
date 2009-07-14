@@ -10,6 +10,7 @@ import lib.template as template
 import lib.amalgutils as amalgutils
 import lib.const.event as event
 import lib.const.config as config
+import lib.updateround as updateround
 
 def get_word_list(conn, roundid):
 	cursor = SQL.get_cursor(conn)
@@ -22,7 +23,9 @@ def get_word_list(conn, roundid):
 
 def get_events_since(conn, eventid):
 	cursor = SQL.get_cursor(conn)
-	roundid = amalgutils.get_current_round(cursor)
+	roundid = amalgutils.get_current_round_id(cursor)
+	if not roundid:
+		return []
 	events = []
 	cursor.execute(
 		'''SELECT eventtype, value, id FROM events WHERE roundid = %s AND id > %s''',
@@ -39,10 +42,11 @@ def get_events_since(conn, eventid):
 conn = SQL.get_conn()
 
 form = cgi.FieldStorage()
-eventnum = 0
+eventid = 0
 if form.has_key("eventid"):
 	eventid = form.getfirst('eventid')
 
+updateround.update_round(conn)
 events = get_events_since(conn, eventid)
 
 template.output_json(events)

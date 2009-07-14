@@ -27,7 +27,7 @@ if not errors:
 	else:
 		userid = row['id']
 
-roundid = amalgutils.current_round(cursor)
+roundid = amalgutils.get_current_round_id(cursor)
 if not roundid:
 	errors.append("There does not appear to be a round.")
 
