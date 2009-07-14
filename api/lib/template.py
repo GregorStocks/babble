@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import cgitb, cgi
 cgitb.enable()
 
-import json
+import cjson as json
 
 def output(title = "", head = "", body = ""):
 	if title:
