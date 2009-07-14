@@ -39,4 +39,4 @@ def output_json(obj):
 	# for debugging. 
 	print "Content-type: text/plain;charset=utf-8"
 	print
-	print json.dumps(obj, indent=4)
+	print json.encode(obj)
