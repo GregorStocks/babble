@@ -9,7 +9,7 @@ function add_suffix(phrase, suffix) {
 		// special dictionary-defined cases are handled before we ever get to this function
 		if(phrase.match(/ch$/) || phrase.match(/sh$/) || phrase.match(/ss$/)) {
 			suff = 'es';
-		} else if(phrase.match(/[aeo]lf$/) || phrase.match(/[^d]eaf/) || phrase.match(/arf$/)) {
+		} else if(phrase.match(/[aeo]lf$/) || phrase.match(/[^d]eaf$/) || phrase.match(/arf$/)) {
 			return phrase.replace(/f$/, 'ves');
 		} else if(phrase.match(/[nlw]ife$/)) {
 			return phrase.replace(/fe$/, 'ves');
@@ -177,9 +177,14 @@ function processEvent(ev) {
 	}
 }
 
+function resetUi() {
+	$("#gamebox").empty();
+	$(".wordbox").remove();
+}
+
 function startRound() {
+	resetUi();
 	$("#gamebox")
-		.empty()
 		.append("<div class='wordsbox wordscontainer' id='wordsbox'></div>")
 		.append("<div class='dropbox wordscontainer' id='dropbox'></div>")
 		.append("<p class='sentence' id='sentence'></p>");
@@ -210,21 +215,23 @@ function startRound() {
 }
 
 function startCollecting() {
-	$("#gamebox").empty().append("<p>Collecting sentences!</p>");
+	resetUi();
+	$("#gamebox").append("<p>Collecting sentences!</p>");
 }
 
 function startVoting(sentences) {
-	$("#gamebox")
-		.empty()
-		.append("<p>you should vote now OH WAIT IM TOO LAZY TO CODE THAT IN HAHA");
+	resetUi();
+	$("#gamebox").append("<p>you should vote now OH WAIT IM TOO LAZY TO CODE THAT IN HAHA");
 }
 
 function startCollectingVotes() {
-	$("#gamebox").empty().append("<p>Collecting votes!</p>");
+	resetUi();
+	$("#gamebox").append("<p>Collecting votes!</p>");
 }
 
 function showWinners(winners) {
-	$("#gamebox").empty().append("<p>theres some winners!</p>");
+	resetUi();
+	$("#gamebox").append("<p>theres some winners!</p>");
 }
 
 var wordlist = []
