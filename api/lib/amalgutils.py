@@ -15,6 +15,6 @@ def get_current_round_data(cursor):
 	else:
 		return row
 
-def add_event(cursor, roundid, eventtype, value):
+def add_event(cursor, roundid, eventtype, value = None):
 	cursor.execute('INSERT INTO events (roundid, eventtype, value) VALUES (%s, %s, %s)',
 		(roundid, eventtype, value))

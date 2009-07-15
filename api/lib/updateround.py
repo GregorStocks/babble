@@ -33,7 +33,7 @@ def start_new_round(conn):
 		'INSERT INTO roundwords (roundid, wordid) VALUES (%s, %s)',
 		[(roundid, wordrow['id']) for wordrow in wordrows])
 
-	amalgutils.add_event(cursor, roundid, event.ROUND_START, None)
+	amalgutils.add_event(cursor, roundid, event.ROUND_START)
 
 def update_round(conn):
 	cursor = SQL.get_cursor(conn)
@@ -46,10 +46,21 @@ def update_round(conn):
 		round['id'])
 	row = cursor.fetchone()
 	if row:
-		time = row['time']
-		eventtype = row['eventtype']
-		if eventtype == event.ROUND_START: 
-			delta = datetime.timedelta(seconds = config.SENTENCE_MAKING_TIME)
-			if datetime.datetime.today() - time > delta:
-				start_new_round(conn)
-
+		cureventtime = row['time']
+		cureventtype = row['eventtype']
+		eventtypes = (
+			(event.ROUND_START, config.SENTENCE_MAKING_TIME, event.SENTENCE_MAKING_OVER, None),
+			(event.SENTENCE_MAKING_OVER, config.SENTENCE_COLLECTING_TIME, event.COLLECTING_OVER, None),
+			(event.COLLECTING_OVER, config.VOTING_TIME, event.VOTING_OVER, None),
+			(event.VOTING_OVER, config.VOTE_COLLECTING_TIME, event.VOTE_COLLECTING_OVER, None),
+			(event.VOTE_COLLECTING_OVER, config.WINNER_VIEWING_TIME, None, start_new_round))
+		for x in eventtypes:
+			eventtype, time, nexttype, action = x
+			if cureventtype == eventtype:
+				delta = datetime.timedelta(seconds = time) 
+				if datetime.datetime.today() - cureventtime > delta:
+					if nexttype:
+						amalgutils.add_event(cursor, round['id'], nexttype) 
+					if action:
+						action(conn)
+				break

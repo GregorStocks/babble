@@ -157,10 +157,23 @@ function eventLoop() {
 $(eventLoop());
 
 function processEvent(ev) {
-	cureventid = ev["eventid"]
-	if(ev["type"] == "new round" && ev["words"]) {
+	eventid = ev["eventid"]
+	if(eventid <= cureventid) { // likely with lag of > 1 second
+		return;
+	}
+	cureventid = eventid;
+	evtype = ev["type"];
+	if(evtype == "new round" && ev["words"]) {
 		startRound();
 		insertWords(ev["words"]);
+	} else if(evtype == "collecting") {
+		startCollecting();
+	} else if(evtype == "vote" && ev["sentences"]) {
+		startVoting(ev["sentences"]);
+	} else if(evtype == "voting over") {
+		startCollectingVotes();
+	} else if(evtype == "winners" && ev["winners"]) {
+		showWinners(ev["winners"]);
 	}
 }
 
@@ -194,6 +207,24 @@ function startRound() {
 			$.dropManage(); // might have resized from adding a fella
 			updateSentence();
 		});
+}
+
+function startCollecting() {
+	$("#gamebox").empty().append("<p>Collecting sentences!</p>");
+}
+
+function startVoting(sentences) {
+	$("#gamebox")
+		.empty()
+		.append("<p>you should vote now OH WAIT IM TOO LAZY TO CODE THAT IN HAHA");
+}
+
+function startCollectingVotes() {
+	$("#gamebox").empty().append("<p>Collecting votes!</p>");
+}
+
+function showWinners(winners) {
+	$("#gamebox").empty().append("<p>theres some winners!</p>");
 }
 
 var wordlist = []

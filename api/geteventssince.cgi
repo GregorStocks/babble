@@ -21,6 +21,14 @@ def get_word_list(conn, roundid):
 	rows = cursor.fetchall()
 	return [row['word'] for row in rows]
 
+def get_sentences(conn, roundid):
+	cursor = SQL.get_cursor(conn)
+	return {'bob': ['butt', '-s']}
+
+def get_winners(conn, roundid):
+	cursor = SQL.get_cursor(conn)
+	return {'winner': 'bob'}
+
 def get_events_since(conn, eventid):
 	cursor = SQL.get_cursor(conn)
 	roundid = amalgutils.get_current_round_id(cursor)
@@ -36,6 +44,16 @@ def get_events_since(conn, eventid):
 		if eventtype == event.ROUND_START:
 			ev['type'] = 'new round'
 			ev['words'] = sorted(get_word_list(conn, roundid), key=str.lower)
+		elif eventtype == event.SENTENCE_MAKING_OVER:
+			ev['type'] = 'collecting'
+		elif eventtype == event.COLLECTING_OVER:
+			ev['type'] = 'vote'
+			ev['sentences'] = get_sentences(conn, roundid)
+		elif eventtype == event.VOTING_OVER:
+			ev['type'] = 'voting over' 
+		elif eventtype == event.VOTE_COLLECTING_OVER:
+			ev['type'] = 'winners'
+			ev['winners'] = get_winners(conn, roundid)
 		events.append(ev)
 	return events
 
