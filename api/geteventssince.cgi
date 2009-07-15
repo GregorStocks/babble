@@ -23,7 +23,28 @@ def get_word_list(conn, roundid):
 
 def get_sentences(conn, roundid):
 	cursor = SQL.get_cursor(conn)
-	return {'bob': ['butt', '-s']}
+	cursor.execute('''
+	SELECT words.word AS word, sentences.id AS id, sentences.userid as userid
+	FROM sentences JOIN rounds ON sentences.roundid = rounds.id
+	JOIN words ON sentences.wordid = words.id
+	WHERE rounds.id = %s ORDER BY sentences.id''', roundid)
+
+	# combine sentences
+	sentences_by_user = {}
+	rows = cursor.fetchall()
+	for row in rows:
+		if row['userid'] in sentences_by_user:
+			sentences_by_user[row['userid']].append(row['word'])
+		else:
+			sentences_by_user[row['userid']] = [row['word']]
+	
+	# give arbitrary IDs so mean clients can't do mean things
+	sentences = {}
+	for row in rows:
+		if row['userid'] in sentences_by_user:
+			sentences[str(row['id'])] = sentences_by_user[row['userid']]
+			del sentences_by_user[row['userid']]
+	return sentences
 
 def get_winners(conn, roundid):
 	cursor = SQL.get_cursor(conn)

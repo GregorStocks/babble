@@ -66,11 +66,11 @@ function updateSentence() {
 			words.push(wordlist[idnum]);
 		}
 	});
-	renderSentence(words);
+	$("#sentence").append(makeSentence(words));
 	sendSentence(words);
 }
 
-function renderSentence(words) {
+function makeSentence(words) {
 	var prefixstack = [];
 	var sentence = "";
 	var curphrase = "";
@@ -108,7 +108,7 @@ function renderSentence(words) {
 		}
 	}
 	sentence = add_to_sentence(sentence, curphrase, sentence_start, prefixstack);
-	$('#sentence').append(sentence);
+	return sentence;
 }
 
 function sendSentence(words) {
@@ -221,7 +221,11 @@ function startCollecting() {
 
 function startVoting(sentences) {
 	resetUi();
-	$("#gamebox").append("<p>you should vote now OH WAIT IM TOO LAZY TO CODE THAT IN HAHA");
+	$("#gamebox").append("<table class='votetable' id='votetable' border=1></table");
+	for(sentencemaker in sentences) {
+		sentence = makeSentence(sentences[sentencemaker]);
+		$("#votetable").append("<tr><td>" + sentencemaker + "</td><td>" + sentence + "</td></tr>");
+	}
 }
 
 function startCollectingVotes() {
