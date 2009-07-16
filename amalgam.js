@@ -172,8 +172,8 @@ function processEvent(ev) {
 		startVoting(ev["sentences"]);
 	} else if(evtype == "voting over") {
 		startCollectingVotes();
-	} else if(evtype == "winners" && ev["winners"]) {
-		showWinners(ev["winners"]);
+	} else if(evtype == "winner" && ev["winner"] && ev["votes"]) {
+		showWinners(ev["winner"], ev["votes"]);
 	}
 }
 
@@ -233,9 +233,12 @@ function startCollectingVotes() {
 	$("#gamebox").append("<p>Collecting votes!</p>");
 }
 
-function showWinners(winners) {
+function showWinners(winner, votes) {
 	resetUi();
-	$("#gamebox").append("<p>theres some winners!</p>");
+	$("#gamebox").append("<p>Winner: " + winner + "</p>");
+	for(vote in votes) {
+		$("#gamebox").append("<p>" + vote + " got " + votes[vote] + " votes!</p>");
+	}
 }
 
 var wordlist = []

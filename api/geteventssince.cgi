@@ -37,7 +37,6 @@ def get_sentences(conn, roundid):
 			sentences_by_user[row['userid']].append(row['word'])
 		else:
 			sentences_by_user[row['userid']] = [row['word']]
-	
 	# give arbitrary IDs so mean clients can't do mean things
 	sentences = {}
 	for row in rows:
@@ -48,7 +47,30 @@ def get_sentences(conn, roundid):
 
 def get_winners(conn, roundid):
 	cursor = SQL.get_cursor(conn)
-	return {'winner': 'bob'}
+	cursor.execute('''
+	SELECT users.username AS username
+	FROM votes JOIN users ON votes.voteid = users.id
+	WHERE votes.roundid = %s ORDER BY votes.id''', roundid)
+	rows = cursor.fetchall()
+	votes = {}
+	mostvotes = 0
+	winner = None
+	# TODO: a better winning algorithm than "whoever was first to get more 
+	# votes than everyone else"
+	# TODO: make it work with the people who got no votes too
+	# TODO: make it return the sentences too
+	for row in rows:
+		user = row['username']
+		if user in votes:
+			votes[user] += 1
+		else:
+			votes[user] = 1
+		if votes[user] > mostvotes:
+			mostvotes = votes[user]
+			winner = user
+	# Note that currently usernames can only be alphanumeric + _, so there's no
+	# need to sanitize, either here or clientside.
+	return (winner, votes)
 
 def get_events_since(conn, eventid):
 	cursor = SQL.get_cursor(conn)
@@ -73,8 +95,8 @@ def get_events_since(conn, eventid):
 		elif eventtype == event.VOTING_OVER:
 			ev['type'] = 'voting over' 
 		elif eventtype == event.VOTE_COLLECTING_OVER:
-			ev['type'] = 'winners'
-			ev['winners'] = get_winners(conn, roundid)
+			ev['type'] = 'winner'
+			ev['winner'], ev['votes'] = get_winners(conn, roundid)
 		events.append(ev)
 	return events
 
