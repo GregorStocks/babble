@@ -222,9 +222,9 @@ function startCollecting() {
 function startVoting(sentences) {
 	resetUi();
 	$("#gamebox").append("<table class='votetable' id='votetable' border=1></table");
-	for(sentencemaker in sentences) {
-		sentence = makeSentence(sentences[sentencemaker]);
-		$("#votetable").append("<tr><td>" + sentencemaker + "</td><td>" + sentence + "</td></tr>");
+	for(sentenceid in sentences) {
+		sentence = makeSentence(sentences[sentenceid]);
+		$("#votetable").append("<tr><td>" + sentence + "</td><td><button onclick=\"$.get('api/vote.cgi', {sentenceid: '" + sentenceid + "', sesskey: '" + getSessKey() + "'}) \">Vote</button></td></tr>");
 	}
 }
 
