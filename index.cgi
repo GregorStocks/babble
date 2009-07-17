@@ -58,4 +58,5 @@ else:
 <form>
 	<input type="hidden" id="username" name="username" value="%s" />
 	<input type="hidden" id="sesskey" name="sesskey" value="%s" />
+	<input type="hidden" id="roomid" name="roomid" value="1" />
 </form>''' % (username, username, sesskey))

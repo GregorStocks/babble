@@ -10,8 +10,11 @@ import lib.const.event as event
 import random
 import datetime
 
-def start_new_round(conn):
-	cursor = SQL.get_cursor(conn)
+def start_new_game(cursor, roomid):
+	cursor.execute('INSERT INTO games (roomid) VALUES (%s)', roomid)
+	start_new_game(cursor, roomid)
+
+def start_new_round(cursor, roomid):
 	cursor.execute('SELECT word, minnum, id FROM words')
 	rows = cursor.fetchall()
 	wordrows = []
@@ -25,7 +28,8 @@ def start_new_round(conn):
 	# add it to the SQL server
 	# this is not actually a race condition - last_insert_id is per-connection
 	# note that this will only work unmodified on MySQL
-	cursor.execute('INSERT INTO rounds () VALUES ()')
+	gameid = amalgutils.get_current_game_id(cursor, roomid)
+	cursor.execute('INSERT INTO rounds (gameid) VALUES (%s)', gameid)
 	cursor.execute('SELECT LAST_INSERT_ID()')
 	row = cursor.fetchone()
 	roundid = row['LAST_INSERT_ID()']
@@ -35,11 +39,16 @@ def start_new_round(conn):
 
 	amalgutils.add_event(cursor, roundid, event.ROUND_START)
 
-def update_round(conn):
-	cursor = SQL.get_cursor(conn)
-	round = amalgutils.get_current_round_data(cursor)
+def update_room(cursor, roomid):
+	if not amalgutils.is_valid_room(cursor, roomid):
+		return
+	gameid = amalgutils.get_current_game_id(cursor, roomid)
+	round = amalgutils.get_current_round_data(cursor, roomid)
+	if not gameid:
+		start_new_game(cursor, roomid)
+		return
 	if not round:
-		start_new_round(conn)
+		start_new_round(cursor, roomid)
 		return
 	cursor.execute(
 		'''SELECT eventtype, value, id, time FROM events WHERE roundid = %s ORDER BY time DESC''',
@@ -62,5 +71,5 @@ def update_round(conn):
 					if nexttype:
 						amalgutils.add_event(cursor, round['id'], nexttype) 
 					if action:
-						action(conn)
+						action(cursor, roomid)
 				break

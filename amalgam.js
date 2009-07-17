@@ -112,11 +112,15 @@ function makeSentence(words) {
 }
 
 function sendSentence(words) {
-	$.post("api/updatesentence.cgi", {"sesskey": getSessKey(), "words": words}); 
+	$.post("api/updatesentence.cgi", {"sesskey": get_sess_key(), "words": words, "roomid": get_room_id()}); 
 }
 
-function getSessKey() {
+function get_sess_key() {
 	return $('#sesskey').val();
+}
+
+function get_room_id() {
+	return $('#roomid').val();
 }
 
 function shouldInsertBefore(target, dropX, dropY, insertee) {
@@ -145,7 +149,7 @@ function eventLoop() {
 	// TODO: find out whether TCP guarantees that the events will arrive in order
 	// when you do it asynchronously like this
 	// also, ensure that only one event is being applied at any given time
-	$.getJSON("api/geteventssince.cgi", {"eventid": cureventid}, function(events) {
+	$.getJSON("api/geteventssince.cgi", {"eventid": cureventid, "roomid": get_room_id()}, function(events) {
 		var event = events;
 		for(var i in events) {
 			processEvent(events[i]);
@@ -224,7 +228,7 @@ function startVoting(sentences) {
 	$("#gamebox").append("<table class='votetable' id='votetable' border=1></table");
 	for(sentenceid in sentences) {
 		sentence = makeSentence(sentences[sentenceid]);
-		$("#votetable").append("<tr><td>" + sentence + "</td><td><button onclick=\"$.get('api/vote.cgi', {sentenceid: '" + sentenceid + "', sesskey: '" + getSessKey() + "'}) \">Vote</button></td></tr>");
+		$("#votetable").append("<tr><td>" + sentence + "</td><td><button onclick=\"$.get('api/vote.cgi', {sentenceid: '" + sentenceid + "', sesskey: '" + get_sess_key() + "'}) \">Vote</button></td></tr>");
 	}
 }
 

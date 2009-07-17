@@ -10,10 +10,9 @@ import lib.template as template
 import lib.amalgutils as amalgutils
 import lib.const.event as event
 import lib.const.config as config
-import lib.updateround as updateround
+import lib.update as update
 
-def get_word_list(conn, roundid):
-	cursor = SQL.get_cursor(conn)
+def get_word_list(cursor, roundid):
 	cursor.execute('''SELECT words.word AS word
 	FROM words JOIN roundwords ON roundwords.wordid = words.id
 	JOIN rounds ON rounds.id = roundwords.roundid
@@ -21,8 +20,7 @@ def get_word_list(conn, roundid):
 	rows = cursor.fetchall()
 	return [row['word'] for row in rows]
 
-def get_sentences(conn, roundid):
-	cursor = SQL.get_cursor(conn)
+def get_sentences(cursor, roundid):
 	cursor.execute('''
 	SELECT words.word AS word, sentences.id AS id, sentences.userid as userid
 	FROM sentences JOIN rounds ON sentences.roundid = rounds.id
@@ -45,8 +43,7 @@ def get_sentences(conn, roundid):
 			del sentences_by_user[row['userid']]
 	return sentences
 
-def get_winners(conn, roundid):
-	cursor = SQL.get_cursor(conn)
+def get_winners(cursor, roundid):
 	cursor.execute('''
 	SELECT users.username AS username
 	FROM votes JOIN users ON votes.voteid = users.id
@@ -72,9 +69,8 @@ def get_winners(conn, roundid):
 	# need to sanitize, either here or clientside.
 	return (winner, votes)
 
-def get_events_since(conn, eventid):
-	cursor = SQL.get_cursor(conn)
-	roundid = amalgutils.get_current_round_id(cursor)
+def get_events_since(cursor, eventid, roomid):
+	roundid = amalgutils.get_current_round_id(cursor, roomid)
 	if not roundid:
 		return []
 	events = []
@@ -86,28 +82,32 @@ def get_events_since(conn, eventid):
 		eventtype = row['eventtype']
 		if eventtype == event.ROUND_START:
 			ev['type'] = 'new round'
-			ev['words'] = sorted(get_word_list(conn, roundid), key=str.lower)
+			ev['words'] = sorted(get_word_list(cursor, roundid), key=str.lower)
 		elif eventtype == event.SENTENCE_MAKING_OVER:
 			ev['type'] = 'collecting'
 		elif eventtype == event.COLLECTING_OVER:
 			ev['type'] = 'vote'
-			ev['sentences'] = get_sentences(conn, roundid)
+			ev['sentences'] = get_sentences(cursor, roundid)
 		elif eventtype == event.VOTING_OVER:
 			ev['type'] = 'voting over' 
 		elif eventtype == event.VOTE_COLLECTING_OVER:
 			ev['type'] = 'winner'
-			ev['winner'], ev['votes'] = get_winners(conn, roundid)
+			ev['winner'], ev['votes'] = get_winners(cursor, roundid)
 		events.append(ev)
 	return events
 
 conn = SQL.get_conn()
+cursor = SQL.get_cursor(conn)
 
 form = cgi.FieldStorage()
 eventid = 0
-if form.has_key("eventid"):
+roomid = 0
+if form.has_key("eventid"): 
 	eventid = form.getfirst('eventid')
+if form.has_key("roomid"):
+	roomid = form.getfirst('roomid')
 
-updateround.update_round(conn)
-events = get_events_since(conn, eventid)
+update.update_room(cursor, roomid)
+events = get_events_since(cursor, eventid, roomid)
 
 template.output_json(events)
