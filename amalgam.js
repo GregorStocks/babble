@@ -225,6 +225,7 @@ function startCollecting() {
 
 function startVoting(sentences) {
 	resetUi();
+	$("#gamebox").append("<p>voting!</p");
 	$("#gamebox").append("<table class='votetable' id='votetable' border=1></table");
 	for(sentenceid in sentences) {
 		sentence = makeSentence(sentences[sentenceid]);
@@ -238,10 +239,11 @@ function startCollectingVotes() {
 }
 
 function showWinners(winner, votes) {
+	// TODO: make this massively more sophisticated
 	resetUi();
 	$("#gamebox").append("<p>Winner: " + winner + "</p>");
 	for(vote in votes) {
-		$("#gamebox").append("<p>" + vote + " got " + votes[vote] + " votes!</p>");
+		$("#gamebox").append("<p>" + vote + " voted for " + votes[vote] + "!</p>");
 	}
 }
 

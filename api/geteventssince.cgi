@@ -43,32 +43,6 @@ def get_sentences(cursor, roundid):
 			del sentences_by_user[row['userid']]
 	return sentences
 
-def get_winners(cursor, roundid):
-	cursor.execute('''
-	SELECT users.username AS username
-	FROM votes JOIN users ON votes.voteid = users.id
-	WHERE votes.roundid = %s ORDER BY votes.id''', roundid)
-	rows = cursor.fetchall()
-	votes = {}
-	mostvotes = 0
-	winner = None
-	# TODO: a better winning algorithm than "whoever was first to get more 
-	# votes than everyone else"
-	# TODO: make it work with the people who got no votes too
-	# TODO: make it return the sentences too
-	for row in rows:
-		user = row['username']
-		if user in votes:
-			votes[user] += 1
-		else:
-			votes[user] = 1
-		if votes[user] > mostvotes:
-			mostvotes = votes[user]
-			winner = user
-	# Note that currently usernames can only be alphanumeric + _, so there's no
-	# need to sanitize, either here or clientside.
-	return (winner, votes)
-
 def get_events_since(cursor, eventid, roomid):
 	roundid = amalgutils.get_current_round_id(cursor, roomid)
 	if not roundid:
@@ -92,7 +66,7 @@ def get_events_since(cursor, eventid, roomid):
 			ev['type'] = 'voting over' 
 		elif eventtype == event.VOTE_COLLECTING_OVER:
 			ev['type'] = 'winner'
-			ev['winner'], ev['votes'] = get_winners(cursor, roundid)
+			ev['winner'], ev['votes'] = amalgutils.get_winner_data(cursor, roundid)
 		events.append(ev)
 	return events
 

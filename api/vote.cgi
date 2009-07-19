@@ -31,18 +31,16 @@ if not errors:
 	else:
 		userid = row['id']
 
-roundid = amalgutils.get_current_round_id(cursor)
-if not roundid:
-	errors.append("There does not appear to be a round.")
-
 voteid = None
+roundid = None
 if not errors:
-	cursor.execute("SELECT userid FROM sentences WHERE id = %s", sentenceid)
+	cursor.execute("SELECT userid, roundid FROM sentences WHERE id = %s", sentenceid)
 	row = cursor.fetchone()
 	if not row:
 		errors.append("Invalid sentence ID.")
 	else:
 		voteid = row["userid"]
+		roundid = row['roundid']
 
 if not errors:
 	cursor.execute('DELETE FROM votes WHERE userid = %s AND roundid = %s',

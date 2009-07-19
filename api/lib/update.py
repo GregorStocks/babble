@@ -11,8 +11,38 @@ import random
 import datetime
 
 def start_new_game(cursor, roomid):
+	roundid = amalgutils.get_current_round_id(cursor, roomid)
+	amalgutils.add_event(cursor, roundid, event.GAME_OVER)
 	cursor.execute('INSERT INTO games (roomid) VALUES (%s)', roomid)
-	start_new_game(cursor, roomid)
+
+def addpoints(dict, name, points):
+	dict[name] = points + dict.get(name, 0)
+
+def game_is_over(cursor, roomid):
+	# TODO: benchmark, denormalizing could make this way more efficient probably
+	curgameid = amalgutils.get_current_game_id(cursor, roomid)
+	cursor.execute('SELECT id FROM rounds WHERE gameid = %s', curgameid)
+	rows = cursor.fetchall()
+	points = {}
+	for row in rows:
+		roundid = row['id']
+		winner, votes = amalgutils.get_winner_data(cursor, roundid)
+		if winner:
+			addpoints(points, winner, config.POINTS_FOR_WINNING_ROUND)
+		for voter in votes:
+			addpoints(points, votes[voter], 1)
+			if votes[voter] == winner:
+				addpoints(points, voter, config.POINTS_FOR_VOTING_WINNER)
+	for username in points:
+		if points[username] > config.POINTS_TO_WIN:
+			return True
+	return False
+
+def round_end(cursor, roomid):
+	if game_is_over(cursor, roomid):
+		start_new_game(cursor, roomid)
+	else:
+		start_new_round(cursor, roomid)
 
 def start_new_round(cursor, roomid):
 	cursor.execute('SELECT word, minnum, id FROM words')
@@ -62,7 +92,8 @@ def update_room(cursor, roomid):
 			(event.SENTENCE_MAKING_OVER, config.SENTENCE_COLLECTING_TIME, event.COLLECTING_OVER, None),
 			(event.COLLECTING_OVER, config.VOTING_TIME, event.VOTING_OVER, None),
 			(event.VOTING_OVER, config.VOTE_COLLECTING_TIME, event.VOTE_COLLECTING_OVER, None),
-			(event.VOTE_COLLECTING_OVER, config.WINNER_VIEWING_TIME, None, start_new_round))
+			(event.VOTE_COLLECTING_OVER, config.WINNER_VIEWING_TIME, None, round_end),
+			(event.GAME_OVER, config.GAME_WINNER_VIEWING_TIME, None, start_new_round))
 		for x in eventtypes:
 			eventtype, time, nexttype, action = x
 			if cureventtype == eventtype:

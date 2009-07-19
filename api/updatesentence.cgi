@@ -10,6 +10,7 @@ form = cgi.FieldStorage()
 
 words = form.getlist("words")
 sesskey = form.getfirst("sesskey")
+roomid = form.getfirst("roomid")
 errors = []
 conn = SQL.get_conn()
 cursor = SQL.get_cursor(conn)
@@ -18,6 +19,8 @@ if len(words) > 50:
 	errors.append("This sentence is too long!")
 if not sesskey:
 	errors.append("No session key.")
+if not amalgutils.is_valid_room(cursor, roomid):
+	errors.append("Invalid room.")
 
 if not errors:
 	cursor.execute("SELECT id FROM users WHERE sesskey = %s LIMIT 1", sesskey)
@@ -27,9 +30,11 @@ if not errors:
 	else:
 		userid = row['id']
 
-roundid = amalgutils.get_current_round_id(cursor)
-if not roundid:
-	errors.append("There does not appear to be a round.")
+roundid = 0
+if not errors:
+	roundid = amalgutils.get_current_round_id(cursor, roomid)
+	if not roundid:
+		errors.append("There does not appear to be a round.")
 
 wordids = []
 if not errors:
