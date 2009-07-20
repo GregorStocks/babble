@@ -93,3 +93,21 @@ def get_scores(cursor, roomid):
 			if votes[voter] == winner:
 				addpoints(points, voter, config.POINTS_FOR_VOTING_WINNER)
 	return points
+
+def username_from_userid(cursor, userid):
+	cursor.execute('SELECT username FROM users WHERE id = %s', userid)
+	row = cursor.fetchone()
+	if row:
+		return row['username']
+	else:
+		return None
+
+def get_room_member_names(cursor, roomid):
+	cursor.execute('''SELECT users.username AS username
+		FROM users JOIN roommembers ON users.id = roommembers.userid
+		WHERE roommembers.roomid = %s''', roomid)
+	rows = cursor.fetchall()
+	names = []
+	for row in rows:
+		names.append(row['username'])
+	return names

@@ -52,6 +52,7 @@ else:
 	<script src="jquery.event.drop-1.2.js" type="text/javascript"></script>
 	<script src="dictionary.js" type="text/javascript"></script>
 	<script src="amalgam.js" type="text/javascript"></script>''', body = '''<div class="gamebox" id="gamebox"></div>
+<p class="notes" id="players"></p>
 <p class="notes">You are logged in as "%s"</p>
 <p class="notes"><a href="tos.cgi">Terms of Service</a></p>
 <p class="notes"><a href="http://github.com/Kurper/amalgam">Source</a></p>

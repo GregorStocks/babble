@@ -145,6 +145,17 @@ function shouldInsertBefore(target, dropX, dropY, insertee) {
 
 var cureventid = 0
 
+function start() {
+	$.get("api/join.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()});
+	setTimeout(pingLoop, 5000);
+	eventLoop();
+}
+
+function pingLoop() {
+	$.get("api/ping.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()});
+	setTimeout(pingLoop, 5000);
+}
+
 function eventLoop() {
 	// TODO: find out whether TCP guarantees that the events will arrive in order
 	// when you do it asynchronously like this
@@ -158,7 +169,7 @@ function eventLoop() {
 	setTimeout(eventLoop, 1000);
 }
 
-$(eventLoop());
+$(start);
 
 function processEvent(ev) {
 	eventid = ev["eventid"]
@@ -180,6 +191,10 @@ function processEvent(ev) {
 		showWinners(ev["winner"], ev["votes"], ev["scores"]);
 	} else if(evtype == "game over" && ev["scores"]) {
 		showGameWinners(ev["scores"]);
+	} else if(evtype == "join" && ev["name"]) {
+		playerJoined(ev["name"]);
+	} else if(evtype == "part" && ev["name"]) {
+		playerParted(ev["name"]);
 	}
 }
 
@@ -258,6 +273,14 @@ function showGameWinners(scores) {
 	for(person in scores) {
 		$("#gamebox").append("<p>" + person + " had " + scores[person] + " points.</p>");
 	}
+}
+
+function playerJoined(name) {
+	$("#players").append("<p>" + name + " joined!</p>");
+}
+
+function playerParted(name) {
+	$("#players").append("<p>" + name + " parted!</p>");
 }
 
 var wordlist = []

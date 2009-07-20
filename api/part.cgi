@@ -20,6 +20,7 @@ if not sesskey:
 if not amalgutils.is_valid_room(cursor, roomid):
 	errors.append("Invalid room.")
 
+userid = 0
 if not errors:
 	cursor.execute("SELECT id FROM users WHERE sesskey = %s LIMIT 1", sesskey)
 	row = cursor.fetchone()
@@ -32,15 +33,15 @@ if not errors:
 	cursor.execute(
 		"SELECT userid FROM roommembers WHERE userid = %s AND roomid = %s",
 		(userid, roomid))
-	if cursor.fetchone():
-		errors.append("You are already in this room!")
+	if not cursor.fetchone():
+		errors.append("You are not in this room!")
 
 if not errors:
-	cursor.execute("INSERT INTO roommembers (userid, roomid) VALUES (%s, %s)",
+	cursor.execute("DELETE FROM roomembers WHERE userid = %s AND roomid = %s",
 		(userid, roomid))
 	roundid = amalgutils.get_current_round_id(cursor, roomid)
 	if roundid:
-		amalgutils.add_event(cursor, roundid, event.JOIN, userid)
+		amalgutils.add_event(cursor, roundid, events.PART, userid)
 
 result = {}
 if errors:

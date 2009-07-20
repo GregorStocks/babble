@@ -64,9 +64,21 @@ def update_room(cursor, roomid):
 	if not round:
 		start_new_round(cursor, roomid)
 		return
-	cursor.execute(
-		'''SELECT eventtype, value, id, time FROM events WHERE roundid = %s ORDER BY time DESC''',
-		round['id'])
+	# kick everyone who hasnt pinged recently
+	cursor.execute('''SELECT id, userid FROM roommembers
+		WHERE TIMESTAMPDIFF(SECOND, lastping, CURRENT_TIMESTAMP) > %s''',
+		config.IDLE_TIMEOUT)
+	rows = cursor.fetchall()
+	roundid = amalgutils.get_current_round_id(cursor, roomid)
+	if roundid:
+		for row in rows:
+			amalgutils.add_event(cursor, roundid, event.PART, row['userid'])
+			cursor.execute('DELETE FROM roommembers WHERE id = %s', row['id'])
+
+	cursor.execute('''
+		SELECT eventtype, value, id, time FROM events WHERE roundid = %s
+		AND eventtype <= %s ORDER BY time DESC''',
+		(round['id'], event.GAME_OVER))
 	row = cursor.fetchone()
 	if row:
 		cureventtime = row['time']

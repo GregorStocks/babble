@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 WORDS_PER_ROUND = 60
 
 # all times are in seconds
@@ -20,6 +18,9 @@ GAME_WINNER_VIEWING_TIME = 30
 POINTS_TO_WIN = 30
 POINTS_FOR_WINNING_ROUND = 3
 POINTS_FOR_VOTING_WINNER = 1
+
+# if someone doesn't ping for this long, they're auto-kicked
+IDLE_TIMEOUT = 30
 
 SQL_NAME = "localhost"
 SQL_USERNAME = "username"

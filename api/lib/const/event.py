@@ -6,6 +6,7 @@ COLLECTING_OVER = 3
 VOTING_OVER = 4
 VOTE_COLLECTING_OVER = 5
 GAME_OVER = 6
+# Note: GAME_OVER _MUST_ be the last game-state-related event type numerically.
 CHAT = 7 
-JOINED = 8
-PARTED = 9
+JOIN = 8
+PART = 9
