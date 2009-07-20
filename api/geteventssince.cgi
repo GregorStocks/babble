@@ -57,6 +57,7 @@ def get_events_since(cursor, eventid, roomid):
 		if eventtype == event.ROUND_START:
 			ev['type'] = 'new round'
 			ev['words'] = sorted(get_word_list(cursor, roundid), key=str.lower)
+			ev['scores'] = points = amalgutils.get_scores(cursor, roomid)
 		elif eventtype == event.SENTENCE_MAKING_OVER:
 			ev['type'] = 'collecting'
 		elif eventtype == event.COLLECTING_OVER:
@@ -67,6 +68,7 @@ def get_events_since(cursor, eventid, roomid):
 		elif eventtype == event.VOTE_COLLECTING_OVER:
 			ev['type'] = 'winner'
 			ev['winner'], ev['votes'] = amalgutils.get_winner_data(cursor, roundid)
+			ev['scores'] = points = amalgutils.get_scores(cursor, roomid)
 		events.append(ev)
 	return events
 

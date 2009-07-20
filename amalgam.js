@@ -177,7 +177,7 @@ function processEvent(ev) {
 	} else if(evtype == "voting over") {
 		startCollectingVotes();
 	} else if(evtype == "winner" && ev["winner"] && ev["votes"]) {
-		showWinners(ev["winner"], ev["votes"]);
+		showWinners(ev["winner"], ev["votes"], ev["scores"]);
 	}
 }
 
@@ -238,12 +238,15 @@ function startCollectingVotes() {
 	$("#gamebox").append("<p>Collecting votes!</p>");
 }
 
-function showWinners(winner, votes) {
+function showWinners(winner, votes, scores) {
 	// TODO: make this massively more sophisticated
 	resetUi();
 	$("#gamebox").append("<p>Winner: " + winner + "</p>");
 	for(vote in votes) {
 		$("#gamebox").append("<p>" + vote + " voted for " + votes[vote] + "!</p>");
+	}
+	for(score in scores) {
+		$("#gamebox").append("<p>" + score + " has " + scores[score] + " points!</p>");
 	}
 }
 

@@ -15,24 +15,8 @@ def start_new_game(cursor, roomid):
 	amalgutils.add_event(cursor, roundid, event.GAME_OVER)
 	cursor.execute('INSERT INTO games (roomid) VALUES (%s)', roomid)
 
-def addpoints(dict, name, points):
-	dict[name] = points + dict.get(name, 0)
-
 def game_is_over(cursor, roomid):
-	# TODO: benchmark, denormalizing could make this way more efficient probably
-	curgameid = amalgutils.get_current_game_id(cursor, roomid)
-	cursor.execute('SELECT id FROM rounds WHERE gameid = %s', curgameid)
-	rows = cursor.fetchall()
-	points = {}
-	for row in rows:
-		roundid = row['id']
-		winner, votes = amalgutils.get_winner_data(cursor, roundid)
-		if winner:
-			addpoints(points, winner, config.POINTS_FOR_WINNING_ROUND)
-		for voter in votes:
-			addpoints(points, votes[voter], 1)
-			if votes[voter] == winner:
-				addpoints(points, voter, config.POINTS_FOR_VOTING_WINNER)
+	points = amalgutils.get_scores(cursor, roomid)
 	for username in points:
 		if points[username] > config.POINTS_TO_WIN:
 			return True

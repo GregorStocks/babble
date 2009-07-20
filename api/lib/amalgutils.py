@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 import lib.template as template
+import lib.const.config as config
 
 def get_current_game_id(cursor, roomid):
 	cursor.execute('''SELECT id FROM games
@@ -72,3 +73,23 @@ def get_winner_data(cursor, roundid):
 	# Note that currently usernames can only be alphanumeric + _, so there's no
 	# need to sanitize, either here or clientside.
 	return (winner, votes)
+
+def addpoints(dict, name, points):
+	dict[name] = points + dict.get(name, 0)
+
+def get_scores(cursor, roomid):
+	# TODO: benchmark, denormalizing could make this way more efficient probably
+	curgameid = get_current_game_id(cursor, roomid)
+	cursor.execute('SELECT id FROM rounds WHERE gameid = %s', curgameid)
+	rows = cursor.fetchall()
+	points = {}
+	for row in rows:
+		roundid = row['id']
+		winner, votes = get_winner_data(cursor, roundid)
+		if winner:
+			addpoints(points, winner, config.POINTS_FOR_WINNING_ROUND)
+		for voter in votes:
+			addpoints(points, votes[voter], 1)
+			if votes[voter] == winner:
+				addpoints(points, voter, config.POINTS_FOR_VOTING_WINNER)
+	return points
