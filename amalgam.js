@@ -176,8 +176,10 @@ function processEvent(ev) {
 		startVoting(ev["sentences"]);
 	} else if(evtype == "voting over") {
 		startCollectingVotes();
-	} else if(evtype == "winner" && ev["winner"] && ev["votes"]) {
+	} else if(evtype == "winner" && ev["winner"] && ev["votes"] && ev["scores"]) {
 		showWinners(ev["winner"], ev["votes"], ev["scores"]);
+	} else if(evtype == "game over" && ev["scores"]) {
+		showGameWinners(ev["scores"]);
 	}
 }
 
@@ -247,6 +249,14 @@ function showWinners(winner, votes, scores) {
 	}
 	for(score in scores) {
 		$("#gamebox").append("<p>" + score + " has " + scores[score] + " points!</p>");
+	}
+}
+
+function showGameWinners(scores) {
+	resetUi();
+	$("#gamebox").append("<p>GAME OVER!!!</p>");
+	for(person in scores) {
+		$("#gamebox").append("<p>" + person + " had " + scores[person] + " points.</p>");
 	}
 }
 

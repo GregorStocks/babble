@@ -11,20 +11,20 @@ import random
 import datetime
 
 def start_new_game(cursor, roomid):
-	roundid = amalgutils.get_current_round_id(cursor, roomid)
-	amalgutils.add_event(cursor, roundid, event.GAME_OVER)
 	cursor.execute('INSERT INTO games (roomid) VALUES (%s)', roomid)
+	start_new_round(cursor, roomid)
 
 def game_is_over(cursor, roomid):
 	points = amalgutils.get_scores(cursor, roomid)
 	for username in points:
-		if points[username] > config.POINTS_TO_WIN:
+		if points[username] >= config.POINTS_TO_WIN:
 			return True
 	return False
 
 def round_end(cursor, roomid):
 	if game_is_over(cursor, roomid):
-		start_new_game(cursor, roomid)
+		roundid = amalgutils.get_current_round_id(cursor, roomid)
+		amalgutils.add_event(cursor, roundid, event.GAME_OVER)
 	else:
 		start_new_round(cursor, roomid)
 
@@ -39,7 +39,7 @@ def start_new_round(cursor, roomid):
 	while len(wordrows) < config.WORDS_PER_ROUND:
 		wordrows.append(random.choice(rows))
 
-	# add it to the SQL server
+	# add it to the database
 	# this is not actually a race condition - last_insert_id is per-connection
 	# note that this will only work unmodified on MySQL
 	gameid = amalgutils.get_current_game_id(cursor, roomid)
@@ -77,7 +77,7 @@ def update_room(cursor, roomid):
 			(event.COLLECTING_OVER, config.VOTING_TIME, event.VOTING_OVER, None),
 			(event.VOTING_OVER, config.VOTE_COLLECTING_TIME, event.VOTE_COLLECTING_OVER, None),
 			(event.VOTE_COLLECTING_OVER, config.WINNER_VIEWING_TIME, None, round_end),
-			(event.GAME_OVER, config.GAME_WINNER_VIEWING_TIME, None, start_new_round))
+			(event.GAME_OVER, config.GAME_WINNER_VIEWING_TIME, None, start_new_game))
 		for x in eventtypes:
 			eventtype, time, nexttype, action = x
 			if cureventtype == eventtype:

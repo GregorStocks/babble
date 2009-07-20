@@ -36,15 +36,9 @@ var dictionary = {
 	'-ed': {
 		type: SUFFIX
 	},
-	'butt': {
+	'eat': {
 		combos: {
-			'-s': 'buttz',
-			'-ly': 'buttily'
-		}
-	},
-	'test': {
-		combos: {
-			'-ed' : 'testized'
+			'ed': 'ate'
 		}
 	},
 	'I': {

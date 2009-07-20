@@ -68,7 +68,10 @@ def get_events_since(cursor, eventid, roomid):
 		elif eventtype == event.VOTE_COLLECTING_OVER:
 			ev['type'] = 'winner'
 			ev['winner'], ev['votes'] = amalgutils.get_winner_data(cursor, roundid)
-			ev['scores'] = points = amalgutils.get_scores(cursor, roomid)
+			ev['scores'] = amalgutils.get_scores(cursor, roomid)
+		elif eventtype == event.GAME_OVER:
+			ev['type'] = 'game over'
+			ev['scores'] = amalgutils.get_scores(cursor, roomid)
 		events.append(ev)
 	return events
 
