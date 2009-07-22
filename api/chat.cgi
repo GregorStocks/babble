@@ -20,7 +20,7 @@ if not sesskey:
 	errors.append("No session key.")
 if not amalgutils.is_valid_room(cursor, roomid):
 	errors.append("Invalid room.")
-if not text.strip():
+if not text or not text.strip():
 	errors.append("No text.")
 
 if not errors:

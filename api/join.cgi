@@ -34,6 +34,10 @@ if not errors:
 		(userid, roomid))
 	if cursor.fetchone():
 		errors.append("You are already in this room!")
+		# ping
+		cursor.execute('''UPDATE roommembers SET lastping = CURRENT_TIMESTAMP
+			WHERE userid = %s AND roomid = %s''',
+			(userid, roomid))
 
 if not errors:
 	cursor.execute("INSERT INTO roommembers (userid, roomid) VALUES (%s, %s)",
