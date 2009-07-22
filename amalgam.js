@@ -195,6 +195,8 @@ function processEvent(ev) {
 		playerJoined(ev["name"]);
 	} else if(evtype == "part" && ev["name"]) {
 		playerParted(ev["name"]);
+	} else if(evtype == "chat" && ev["text"] && ev["username"]) {
+		chatMessage(ev["text"], ev["username"]);
 	}
 }
 
@@ -281,6 +283,19 @@ function playerJoined(name) {
 
 function playerParted(name) {
 	$("#players").append("<p>" + name + " parted!</p>");
+}
+
+function chatMessage(message, username) {
+	$("#chat").append($("<p></p>").text(username + ":" + message)) // TODO: colors and stuff
+}
+
+function sendChat() {
+	$.get("api/chat.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key(), 'text': get_chat_text()});
+	$("#chatmessage").empty();
+}
+
+function get_chat_text() {
+	return $('#chatmessage').val();
 }
 
 var wordlist = []

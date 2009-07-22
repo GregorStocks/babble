@@ -111,3 +111,9 @@ def get_room_member_names(cursor, roomid):
 	for row in rows:
 		names.append(row['username'])
 	return names
+
+def chatmessage_from_id(cursor, id):
+	cursor.execute('''SELECT users.username AS username, chatmessages.text AS text
+		FROM chatmessages JOIN users ON users.id = chatmessages.userid
+		WHERE chatmessages.id = %s''', id)
+	return cursor.fetchone()

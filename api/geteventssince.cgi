@@ -79,6 +79,11 @@ def get_events_since(cursor, eventid, roomid):
 		elif eventtype == event.PART:
 			ev['type'] = 'part'
 			ev['name'] = amalgutils.username_from_userid(cursor, row['value']) 
+		elif eventtype == event.CHAT:
+			ev['type'] = 'chat'
+			msg = amalgutils.chatmessage_from_id(cursor, row['value'])
+			ev['username'] = msg['username']
+			ev['text'] = msg['text']
 		events.append(ev)
 	return events
 
