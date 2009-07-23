@@ -161,7 +161,6 @@ function eventLoop() {
 	// when you do it asynchronously like this
 	// also, ensure that only one event is being applied at any given time
 	$.getJSON("api/geteventssince.cgi", {"eventid": cureventid, "roomid": get_room_id()}, function(events) {
-		var event = events;
 		for(var i in events) {
 			processEvent(events[i]);
 		}
@@ -169,7 +168,21 @@ function eventLoop() {
 	setTimeout(eventLoop, 1000);
 }
 
-$(start);
+function roomlist() {
+	$.getJSON("api/getroomlist.cgi", function(rooms) {
+		for(var roomid in rooms) {
+			$("#gamebox").append("<p><button name='room" + roomid + "' onclick='selectroom(" + roomid + ")'>" + rooms[roomid] + "</button></p>");
+		}
+	});
+}
+
+function selectroom(roomid) {
+	resetUi();
+	$("#roomid").val(roomid);
+	start();
+}
+
+$(roomlist);
 
 function processEvent(ev) {
 	eventid = ev["eventid"]
@@ -291,7 +304,7 @@ function chatMessage(message, username) {
 
 function sendChat() {
 	$.get("api/chat.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key(), 'text': get_chat_text()});
-	$("#chatmessage").empty();
+	$("#chatmessage").val("");
 }
 
 function get_chat_text() {
