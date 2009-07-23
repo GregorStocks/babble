@@ -169,6 +169,7 @@ function eventLoop() {
 }
 
 function roomlist() {
+	resetUi();
 	$.getJSON("api/getroomlist.cgi", function(rooms) {
 		for(var roomid in rooms) {
 			$("#gamebox").append("<p><button name='room" + roomid + "' onclick='selectroom(" + roomid + ")'>" + rooms[roomid] + "</button></p>");
@@ -179,10 +180,11 @@ function roomlist() {
 function selectroom(roomid) {
 	resetUi();
 	$("#roomid").val(roomid);
+	$("#body").append('<div class="chatbox" id="chatbox"><input type="text" id="chatmessage" /><input type="button" value="Send Chat" onclick="sendChat();" /></div>');
 	start();
 }
 
-$(roomlist);
+$(showLogin);
 
 function processEvent(ev) {
 	eventid = ev["eventid"]
@@ -216,6 +218,22 @@ function processEvent(ev) {
 function resetUi() {
 	$("#gamebox").empty();
 	$(".wordbox").remove();
+}
+
+function login() {
+	var username = $("#username").val();
+	var password = $("#password").val();
+	$.post("api/login.cgi", {"password": password, "username": username}, function(data, textStatus) {
+		if(data && data["status"] && data["status"] == "OK" && data["sesskey"]) {
+			$('#sesskey').val(data["sesskey"]);
+			roomlist();
+		}
+	}, "json");
+}
+
+function showLogin() {
+	resetUi();
+	$("#gamebox").append('<form action="index.cgi" method="post"><p>Username: <input type="text" name="username" id="username" /></p><p>Password: <input type="password" name="password" id="password" /></p><input type="submit" value="Log In" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"><a href="register.cgi">Register</a></p><p class="notes"><a href="forgot.cgi">Forgot your password?</a></p></form>');
 }
 
 function startRound() {
