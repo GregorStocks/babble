@@ -180,7 +180,7 @@ function roomlist() {
 function selectroom(roomid) {
 	resetUi();
 	$("#roomid").val(roomid);
-	$("#body").append('<div class="chatbox" id="chatbox"><input type="text" id="chatmessage" /><input type="button" value="Send Chat" onclick="sendChat();" /></div>');
+	$("body").append('<div class="chatbox" id="chatbox"><input type="text" id="chatmessage" /><input type="button" value="Send Chat" onclick="sendChat();" /></div>');
 	start();
 }
 
