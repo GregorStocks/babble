@@ -30,6 +30,7 @@ def round_end(cursor, roomid):
 
 def start_new_round(cursor, roomid):
 	cursor.execute('SELECT word, minnum, id FROM words')
+	# TODO: do this without having to fetch every single word from the database
 	rows = cursor.fetchall()
 	wordrows = []
 	for row in rows:

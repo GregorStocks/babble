@@ -14,6 +14,7 @@ errors = []
 template.output(head = '''<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 	<script src="jquery.event.drag-1.5.js" type="text/javascript"></script>
 	<script src="jquery.event.drop-1.2.js" type="text/javascript"></script>
+	<script src="jquery.cookie.js" type="text/javascript"></script>
 	<script src="dictionary.js" type="text/javascript"></script>
 	<script src="amalgam.js" type="text/javascript"></script>''', body = '''<div class="gamebox" id="gamebox"></div>
 <div class="chat" id="chat"></div>

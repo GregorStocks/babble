@@ -15,6 +15,45 @@ var dictionary = {
 	'anti-': {
 		type: PREFIX
 	},
+	'post-': {
+		type: PREFIX
+	},
+	'pre-': {
+		type: PREFIX
+	},
+	'de-': {
+		type: PREFIX
+	},
+	'super-': {
+		type: PREFIX
+	},
+	'ex-': {
+		type: PREFIX
+	},
+	'un-': {
+		type: PREFIX
+	},
+	'tri-': {
+		type: PREFIX
+	},
+	'centi-': {
+		type: PREFIX
+	},
+	'kilo-': {
+		type: PREFIX
+	},
+	'milli-': {
+		type: PREFIX
+	},
+	'multi-': {
+		type: PREFIX
+	},
+	'semi-': {
+		type: PREFIX
+	},
+	'mis-': {
+		type: PREFIX
+	},
 	'ultra-': {
 		type: PREFIX
 	},
@@ -36,15 +75,65 @@ var dictionary = {
 	'-ed': {
 		type: SUFFIX
 	},
-	'eat': {
-		combos: {
-			'ed': 'ate'
-		}
+	'-ing': {
+		type: SUFFIX
 	},
-	'I': {
-		combos: {
-			'is': 'I\'m'
-		}
+	'-able': {
+		type: SUFFIX
+	},
+	'-ic': {
+		type: SUFFIX
+	},
+	'-icious': {
+		type: SUFFIX
+	},
+	'-al': {
+		type: SUFFIX
+	},
+	'-ful': {
+		type: SUFFIX
+	},
+	'-holic': {
+		type: SUFFIX
+	},
+	'-ism': {
+		type: SUFFIX
+	},
+	'-ist': {
+		type: SUFFIX
+	},
+	'-itude': {
+		type: SUFFIX
+	},
+	'-less': {
+		type: SUFFIX
+	},
+	'-phagia': {
+		type: SUFFIX
+	},
+	'-ee': {
+		type: SUFFIX
+	},
+	'-ese': {
+		type: SUFFIX
+	},
+	'-ate': {
+		type: SUFFIX
+	},
+	'-cide': {
+		type: SUFFIX
+	},
+	'-er': {
+		type: SUFFIX
+	},
+	'-fy': {
+		type: SUFFIX
+	},
+	'-ism': {
+		type: SUFFIX
+	},
+	'-ize': {
+		type: SUFFIX
 	},
 	'!': {
 		type: ENDING_PUNCTUATION
@@ -63,5 +152,15 @@ var dictionary = {
 	},
 	':': {
 		type: NONENDING_PUNCTUATION
+	},
+	'eat': {
+		combos: {
+			'ed': 'ate'
+		}
+	},
+	'I': {
+		combos: {
+			'is': 'I\'m'
+		}
 	}
 };

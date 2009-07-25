@@ -226,6 +226,7 @@ function login() {
 	$.post("api/login.cgi", {"password": password, "username": username}, function(data, textStatus) {
 		if(data && data["status"] && data["status"] == "OK" && data["sesskey"]) {
 			$('#sesskey').val(data["sesskey"]);
+			$.cookie('amalgam-sesskey', data["sesskey"], {path: '/'});
 			roomlist();
 		}
 	}, "json");
@@ -233,7 +234,12 @@ function login() {
 
 function showLogin() {
 	resetUi();
-	$("#gamebox").append('<form action="index.cgi" method="post"><p>Username: <input type="text" name="username" id="username" /></p><p>Password: <input type="password" name="password" id="password" /></p><input type="submit" value="Log In" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"><a href="register.cgi">Register</a></p><p class="notes"><a href="forgot.cgi">Forgot your password?</a></p></form>');
+	if($.cookie('amalgam-sesskey')) {
+		$('#sesskey').val($.cookie('amalgam-sesskey'));
+		roomlist();
+	} else {
+		$("#gamebox").append('<form action="index.cgi" method="post"><p>Username: <input type="text" name="username" id="username" /></p><p>Password: <input type="password" name="password" id="password" /></p><input type="submit" value="Log In" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"><a href="register.cgi">Register</a></p><p class="notes"><a href="forgot.cgi">Forgot your password?</a></p></form>');
+	}
 }
 
 function startRound() {
