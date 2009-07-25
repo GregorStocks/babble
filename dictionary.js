@@ -84,6 +84,12 @@ var dictionary = {
 	'-ic': {
 		type: SUFFIX
 	},
+	'-est': {
+		type: SUFFIX
+	},
+	'-ness': {
+		type: SUFFIX
+	},
 	'-icious': {
 		type: SUFFIX
 	},
@@ -145,6 +151,18 @@ var dictionary = {
 		type: ENDING_PUNCTUATION
 	},
 	',': {
+		type: NONENDING_PUNCTUATION
+	},
+	'...': {
+		type: NONENDING_PUNCTUATION
+	},
+	'-': {
+		type: NONENDING_PUNCTUATION
+	},
+	'/': {
+		type: NONENDING_PUNCTUATION
+	},
+	'\'': {
 		type: NONENDING_PUNCTUATION
 	},
 	';': {
