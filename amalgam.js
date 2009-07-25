@@ -147,6 +147,9 @@ var cureventid = 0
 
 function start() {
 	$.get("api/join.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()});
+	$(window).bind("beforeunload", function() {
+		$.post('api/part.cgi', {'sesskey': get_sess_key(), 'roomid': get_room_id()});
+	});
 	setTimeout(pingLoop, 5000);
 	eventLoop();
 }

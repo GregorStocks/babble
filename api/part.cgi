@@ -37,11 +37,11 @@ if not errors:
 		errors.append("You are not in this room!")
 
 if not errors:
-	cursor.execute("DELETE FROM roomembers WHERE userid = %s AND roomid = %s",
+	cursor.execute("DELETE FROM roommembers WHERE userid = %s AND roomid = %s",
 		(userid, roomid))
 	roundid = amalgutils.get_current_round_id(cursor, roomid)
 	if roundid:
-		amalgutils.add_event(cursor, roundid, events.PART, userid)
+		amalgutils.add_event(cursor, roundid, event.PART, userid)
 
 result = {}
 if errors:
