@@ -74,24 +74,30 @@ def get_winner_data(cursor, roundid):
 	# need to sanitize, either here or clientside.
 	return (winner, votes)
 
-def addpoints(dict, name, points):
-	dict[name] = points + dict.get(name, 0)
-
 def get_scores(cursor, roomid):
 	# TODO: benchmark, denormalizing could make this way more efficient probably
-	curgameid = get_current_game_id(cursor, roomid)
-	cursor.execute('SELECT id FROM rounds WHERE gameid = %s', curgameid)
+	cursor.execute('''SELECT users.username AS username
+	FROM roommembers JOIN users ON roommembers.userid = users.id
+	WHERE roommembers.roomid = %s''', roomid)
 	rows = cursor.fetchall()
 	points = {}
 	for row in rows:
+		points[row['username']] = 0
+			
+	curgameid = get_current_game_id(cursor, roomid)
+	cursor.execute('SELECT id FROM rounds WHERE gameid = %s', curgameid)
+	rows = cursor.fetchall()
+	for row in rows:
 		roundid = row['id']
 		winner, votes = get_winner_data(cursor, roundid)
-		if winner:
-			addpoints(points, winner, config.POINTS_FOR_WINNING_ROUND)
+		if winner and winner in points:
+			points[winner] += config.POINTS_FOR_WINNING_ROUND
 		for voter in votes:
-			addpoints(points, votes[voter], 1)
-			if votes[voter] == winner:
-				addpoints(points, voter, config.POINTS_FOR_VOTING_WINNER)
+			votee = votes[voter]
+			if votee in points:
+				points[votee] += 1
+			if votee == winner and voter in points:
+				points[voter] += config.POINTS_FOR_VOTING_WINNER
 	return points
 
 def username_from_userid(cursor, userid):
