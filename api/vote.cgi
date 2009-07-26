@@ -42,6 +42,8 @@ if not errors:
 	else:
 		voteid = row["userid"]
 		roundid = row['roundid']
+		if voteid == userid:
+			errors.append("You can't vote for yourself!")
 
 if not errors:
 	state = amalgutils.get_current_state(cursor, roundid)

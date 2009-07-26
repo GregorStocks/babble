@@ -47,22 +47,22 @@ if not errors:
 	# get all the words in the word list
 	# it's kind of gross that the IN has to be constructed as a string beforehand, but
 	# there doesn't seem to be any better way to do it
-	wordstr = '(%s)' % ', '.join("'%s'" % conn.escape_string(word) for word in words)
 	sql = '''SELECT words.id AS id, words.word AS word
 		FROM words JOIN roundwords ON roundwords.wordid = words.id
 		JOIN rounds	ON rounds.id = roundwords.roundid
-		WHERE rounds.id = %s AND words.word IN ''' + wordstr
+		WHERE rounds.id = %s'''
 	cursor.execute(sql, roundid)
-	rows = cursor.fetchall()
+	rows = list(cursor.fetchall())
 	for word in words:
 		found = False
 		for row in rows:
 			if row['word'] == word:
 				wordids.append(row['id'])
+				rows.remove(row)
 				found = True
 				break
 		if not found:
-			errors.append("Invalid word: %s" % word) # TODO: fix this potential XSS vulnerability
+			errors.append("Invalid word: %s" % word)
 			break
 
 if not errors:
