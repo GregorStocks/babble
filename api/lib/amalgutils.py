@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 import lib.template as template
 import lib.const.config as config
+import lib.const.event as event
 
 def get_current_game_id(cursor, roomid):
 	cursor.execute('''SELECT id FROM games
@@ -123,3 +124,13 @@ def chatmessage_from_id(cursor, id):
 		FROM chatmessages JOIN users ON users.id = chatmessages.userid
 		WHERE chatmessages.id = %s''', id)
 	return cursor.fetchone()
+
+def get_current_state(cursor, roundid):
+	cursor.execute(
+		'SELECT eventtype FROM events WHERE roundid = %s AND eventtype <= %s ORDER BY id DESC',
+		(roundid, event.GAME_OVER))
+	row = cursor.fetchone()
+	if row:
+		return row['eventtype']
+	else:
+		return None

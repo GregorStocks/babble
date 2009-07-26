@@ -5,6 +5,7 @@ import cgitb, cgi
 cgitb.enable()
 
 import lib.template as template, lib.SQL as SQL, lib.amalgutils as amalgutils
+import lib.const.event as event
 
 form = cgi.FieldStorage()
 
@@ -35,6 +36,11 @@ if not errors:
 	roundid = amalgutils.get_current_round_id(cursor, roomid)
 	if not roundid:
 		errors.append("There does not appear to be a round.")
+
+if not errors:
+	state = amalgutils.get_current_state(cursor, roundid)
+	if state != event.ROUND_START and state != event.SENTENCE_MAKING_OVER:
+		errors.append("Making sentences is not allowed at this time.")
 
 wordids = []
 if not errors:

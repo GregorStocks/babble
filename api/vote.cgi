@@ -5,6 +5,7 @@ import cgitb, cgi
 cgitb.enable()
 
 import lib.template as template, lib.SQL as SQL, lib.amalgutils as amalgutils
+import lib.const.event as event
 
 form = cgi.FieldStorage()
 
@@ -41,6 +42,11 @@ if not errors:
 	else:
 		voteid = row["userid"]
 		roundid = row['roundid']
+
+if not errors:
+	state = amalgutils.get_current_state(cursor, roundid)
+	if state != event.COLLECTING_OVER and state != event.VOTING_OVER:
+		errors.append("Voting is not allowed at this time. State is " + str(state))
 
 if not errors:
 	cursor.execute('DELETE FROM votes WHERE userid = %s AND roundid = %s',
