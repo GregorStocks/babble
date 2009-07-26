@@ -11,10 +11,58 @@ CREATE TABLE IF NOT EXISTS chatmessages (id INT NOT NULL AUTO_INCREMENT, userid 
 
 -- add the default wordlist
 INSERT INTO words (word, minnum) VALUES
--- probably some of these arent really in the right part of speech because i dont understand english and also didnt initially sort
--- em all right. deal w/it
+-- probably some of these arent really in the right part of speech because i
+-- dont understand english and also didnt initially sort em all right. deal w/it
 -- nouns
-('butt', 0), ('human', 0), ('pair', 0), ('thing', 0),
+('butt', 0), ('human', 0), ('pair', 0), ('body', 0), ('time', 0), ('person', 0),
+('year', 0), ('way', 0), ('day', 0), ('thing', 0), ('man', 0), ('world', 0),
+('life', 0), ('hand', 0), ('part', 0), ('child', 0), ('eye', 0), ('woman', 0),
+('place', 0), ('work', 0), ('case', 0), ('point', 0),
+('government', 0), ('company', 0), ('number', 0), ('group', 0), ('problem', 0),
+('fact', 0), ('inch', 0), ('street', 0), ('surface', 0), ('ocean', 0),
+('class', 0), ('note', 0), ('scientist', 0), ('wheel', 0), ('island', 0),
+('week', 0), ('machine', 0), ('base', 0), ('plane', 0), ('system', 0),
+('round', 0), ('boat', 0), ('game', 0), ('force', 0), ('language', 0),
+('shape', 0), ('equation', 0), ('government', 0), ('heat', 0), ('check', 0),
+('object', 0), ('rule', 0), ('noun', 0), ('power', 0), ('size', 0), ('ball', 0),
+('material', 0), ('fine', 0), ('circle', 0), ('matter', 0), ('square', 0),
+('syllable', 0), ('bill', 0), ('test', 0), ('direction', 0), ('center', 0),
+('farmer', 0), ('general', 0), ('energy', 0), ('moon', 0), ('region', 0),
+('dance', 0), ('member', 0), ('cell', 0), ('paint', 0), ('mind', 0), ('love', 0),
+('cause', 0), ('rain', 0), ('exercise', 0), ('egg', 0), ('train', 0), ('wish', 0),
+('drop', 0), ('window', 0), ('difference', 0), ('distance', 0), ('heart', 0),
+('sum', 0), ('summer', 0), ('wall', 0), ('forest', 0), ('leg', 0), ('winter', 0),
+('arm', 0), ('brother', 0), ('race', 0), ('store', 0), ('job', 0), ('edge', 0),
+('sign', 0), ('record', 0), ('sky', 0), ('glass', 0), ('weather', 0), ('root', 0),
+('instrument', 0), ('third', 0), ('month', 0), ('paragraph', 0), ('clothes', 0),
+('flower', 0), ('teacher', 0), ('cross', 0), ('metal', 0), ('son', 0), ('ice', 0),
+('sleep', 0), ('village', 0), ('factor', 0), ('result', 0), ('snow', 0), ('ride', 0),
+('floor', 0), ('hill', 0), ('baby', 0), ('century', 0), ('everything', 0),
+('tail', 0), ('phrase', 0), ('soil', 0), ('bed', 0), ('copy', 0), ('hope', 0),
+('spring', 0), ('case', 0), ('nation', 0), ('type', 0), ('temperature', 0),
+('lead', 0), ('everyone', 0), ('method', 0), ('section', 0), ('lake', 0), ('consonant', 0),
+('dictionary', 0), ('hair', 0), ('age', 0), ('scale', 0), ('pound', 0), ('moment', 0),
+('gold', 0), ('milk', 0), ('stone', 0), ('speed', 0), ('cat', 0), ('sail', 0),
+('bear', 0), ('angle', 0), ('fraction', 0), ('melody', 0), ('bottom', 0), ('trip', 0),
+('hole', 0), ('fight', 0), ('surprise', 0), ('dress', 0), ('iron', 0), ('finger', 0),
+('beer', 0), ('rum', 0), ('liquor', 0), ('tequila', 0), ('wine', 0), ('bud', 0),
+('cognac', 0), ('pot', 0), ('weed', 0), ('drug', 0), ('cocaine', 0), ('heroin', 0),
+('meth', 0), ('money', 0), ('cash', 0), ('cow', 0), ('genie', 0), ('mongoose', 0),
+('octopus', 0), ('ox', 0), ('herpes', 0), ('aid', 0), ('diabetes', 0), ('measles', 0),
+('asbestos', 0), ('rhino', 0), ('albino', 0), ('latex', 0), ('generalissimo', 0),
+('photograph', 0), ('bacteria', 0), ('virus', 0), ('gym', 0), ('succubus', 0),
+('lieutenant', 0), ('captain', 0), ('corporal', 0), ('sergeant', 0), ('general', 0),
+('major', 0), ('Africa', 0), ('Europe', 0), ('America', 0), ('Australia', 0),
+('Asia', 0), ('Antarctica', 0), ('Albania', 0), ('Angola', 0), ('Austria', 0),
+('Belgium', 0), ('Canada', 0), ('China', 0), ('Denmark', 0), ('Ethiopia', 0),
+('Finland', 0), ('France', 0), ('Georgia', 0), ('Germany', 0), ('Greece', 0), ('Hungary', 0),
+('India', 0), ('Iraq', 0), ('Israel', 0), ('Italy', 0), ('Japan', 0),
+('Korea', 0), ('Laos', 0), ('Liechtenstein', 0), ('Mali', 0), ('Mexico', 0),
+('Montenegro', 0), ('New Zealand', 0), ('Pakistan', 0), ('Paraguay', 0), ('Poland', 0),
+('Russia', 0), ('Samoa', 0), ('Spain', 0), ('Syria', 0), ('Tunisia', 0), ('Turkey', 0),
+('USA', 0), ('Vatican', 0), ('Zimbabwe', 0), ('California', 0), ('Utah', 0),
+('Texas', 0), ('Nebraska', 0), ('Illinois', 0), ('Ohio', 0), ('Virginia', 0),
+('Florida', 0), ('Pennsylvania', 0), ('Massachusetts', 0), ('Maine', 0), ('pi', 0),
 
 -- verbs
 ('is', 1), ('are', 1), ('eat', 0), ('kill', 0), ('cuss', 0), ('ain''t', 0)
@@ -45,7 +93,39 @@ INSERT INTO words (word, minnum) VALUES
 ('this', 0), ('that', 0), ('these', 0), ('those', 0), ('which', 0),
 ('all', 0), ('both', 0), ('few', 0), ('many', 0), ('some', 0), ('every', 0),
 ('any', 0), ('each', 0), ('either', 0), ('neither', 0),
-('nine', 0), ('four', 0), ('six', 0), ('eighty', 0),
+zero
+one
+two
+three
+four
+five
+six
+seven
+eight
+nine
+ten
+eleven
+twelve
+thirteen
+fourteen
+fifteen
+sixteen
+seventeen
+eighteen
+nineteen
+twenty
+thirty
+forty
+fifty
+sixty
+seventy
+eighty
+ninety
+hundred
+thousand
+million
+billion
+trillion
 ('another', 0), ('certain', 0), ('less', 0),
 ('more', 0), ('that', 0), ('these', 0), ('those', 0),
 ('which', 0),

@@ -180,5 +180,275 @@ var dictionary = {
 		combos: {
 			'is': 'I\'m'
 		}
+	},
+	'person': {
+		combos: {
+			'-fy': 'personify'
+		}
+	},
+	'succubus': {
+		combos: {
+			'-s': 'succubi'
+		}
+	},
+	'Africa': {
+		combos: {
+			'-er': 'African'
+		}
+	},
+	'Europe': {
+		combos: {
+			'-er': 'European'
+		}
+	},
+	'America': {
+		combos: {
+			'-er': 'American'
+		}
+	},
+	'Australia': {
+		combos: {
+			'-er': 'Australian'
+		}
+	},
+	'Asia': {
+		combos: {
+			'-er': 'Asian'
+		}
+	},
+	'Antarctica': {
+		combos: {
+			'-er': 'Antarctican'
+		}
+	},
+	'Albania': {
+		combos: {
+			'-er': 'Albanian'
+		}
+	},
+	'Angola': {
+		combos: {
+			'-er': 'Angolan'
+		}
+	},
+	'Austria': {
+		combos: {
+			'-er': 'Austrian'
+		}
+	},
+	'Belgium': {
+		combos: {
+			'-er': 'Belgian'
+		}
+	},
+	'Canada': {
+		combos: {
+			'-er': 'Canadian'
+		}
+	},
+	'China': {
+		combos: {
+			'-er': 'Chinese'
+		}
+	},
+	'Denmark': {
+		combos: {
+			'-er': 'Danish'
+		}
+	},
+	'Ethiopia': {
+		combos: {
+			'-er': 'Ethiopian'
+		}
+	},
+	'Finland': {
+		combos: {
+			'-er': 'Finnish'
+		}
+	},
+	'France': {
+		combos: {
+			'-er': 'French'
+		}
+	},
+	'Georgia': {
+		combos: {
+			'-er': 'Georgian'
+		}
+	},
+	'Germany': {
+		combos: {
+			'-er': 'German'
+		}
+	},
+	'Greece': {
+		combos: {
+			'-er': 'Greek'
+		}
+	},
+	'Hungary': {
+		combos: {
+			'-er': 'Hungarian'
+		}
+	},
+	'India': {
+		combos: {
+			'-er': 'Indian'
+		}
+	},
+	'Iraq': {
+		combos: {
+			'-er': 'Iraqi'
+		}
+	},
+	'Israel': {
+		combos: {
+			'-er': 'Israeli'
+		}
+	},
+	'Italy': {
+		combos: {
+			'-er': 'Italian'
+		}
+	},
+	'Japan': {
+		combos: {
+			'-er': 'Japanese'
+		}
+	},
+	'Korea': {
+		combos: {
+			'-er': 'Korean'
+		}
+	},
+	'Laos': {
+		combos: {
+			'-er': 'Laotian'
+		}
+	},
+	'Mexico': {
+		combos: {
+			'-er': 'Mexican'
+		}
+	},
+	'Montenegro': {
+		combos: {
+			'-er': 'Montenegrin'
+		}
+	},
+	'Pakistan': {
+		combos: {
+			'-er': 'Pakistani'
+		}
+	},
+	'Paraguay': {
+		combos: {
+			'-er': 'Paraguayan'
+		}
+	},
+	'Poland': {
+		combos: {
+			'-er': 'Polish'
+		}
+	},
+	'Russia': {
+		combos: {
+			'-er': 'Russian'
+		}
+	},
+	'Samoa': {
+		combos: {
+			'-er': 'Samoan'
+		}
+	},
+	'Spain': {
+		combos: {
+			'-er': 'Spanish'
+		}
+	},
+	'Syria': {
+		combos: {
+			'-er': 'Syrian'
+		}
+	},
+	'Tunisia': {
+		combos: {
+			'-er': 'Tunisian'
+		}
+	},
+	'Turkey': {
+		combos: {
+			'-er': 'Turkish'
+		}
+	},
+	'USA': {
+		combos: {
+			'-er': 'American'
+		}
+	},
+	'Vatican': {
+		combos: {
+			'-er': 'Vaticanese'
+		}
+	},
+	'Zimbabwe': {
+		combos: {
+			'-er': 'Zimbabwean'
+		}
+	},
+	'California': {
+		combos: {
+			'-er': 'Californian'
+		}
+	},
+	'Utah': {
+		combos: {
+			'-er': 'Utahn'
+		}
+	},
+	'Texas': {
+		combos: {
+			'-er': 'Texan'
+		}
+	},
+	'Nebraska': {
+		combos: {
+			'-er': 'Nebraskan'
+		}
+	},
+	'Illinois': {
+		combos: {
+			'-er': 'Illinois'
+		}
+	},
+	'Ohio': {
+		combos: {
+			'-er': 'Ohioan'
+		}
+	},
+	'Virginia': {
+		combos: {
+			'-er': 'Virginian'
+		}
+	},
+	'Florida': {
+		combos: {
+			'-er': 'Floridan'
+		}
+	},
+	'Pennsylvania': {
+		combos: {
+			'-er': 'Pennsylvanian'
+		}
+	},
+	'Massachusetts': {
+		combos: {
+			'-er': 'Masshole'
+		}
+	},
+	'Maine': {
+		combos: {
+			'-er': 'Mainer'
+		}
 	}
-};
+}
