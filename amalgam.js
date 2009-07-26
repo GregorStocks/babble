@@ -279,7 +279,7 @@ function startRound() {
 
 function startCollecting() {
 	resetUi();
-	$("#gamebox").append("<p>Collecting sentences!</p>");
+	$("#gamebox").append("<div class='notification'><p>Collecting sentences!</p></div>");
 }
 
 function startVoting(sentences) {
@@ -294,7 +294,7 @@ function startVoting(sentences) {
 
 function startCollectingVotes() {
 	resetUi();
-	$("#gamebox").append("<p>Collecting votes!</p>");
+	$("#gamebox").append("<div class='notification'><p>Collecting votes!</p></div>");
 }
 
 function showWinners(winner, votes, scores) {
@@ -318,11 +318,11 @@ function showGameWinners(scores) {
 }
 
 function playerJoined(name) {
-	$("#players").append("<p>" + name + " joined!</p>");
+	$("#chatmsgs").append("<p>" + name + " joined!</p>");
 }
 
 function playerParted(name) {
-	$("#players").append("<p>" + name + " parted!</p>");
+	$("#chatmsgs").append("<p>" + name + " parted!</p>");
 }
 
 function chatMessage(message, username) {
