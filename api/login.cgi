@@ -35,7 +35,7 @@ if not errors:
 			sesskey = hex(random.randint(0, 16 ** 10))
 			cursor.execute('UPDATE users SET sesskey = %s WHERE id = %s', (sesskey, row['id']))
 	if not sesskey:
-		errors.append('<p>Invalid username/password combination!</p>')
+		errors.append('Invalid username/password combination!')
 
 result = {}
 if errors:
