@@ -52,3 +52,17 @@ body {
 	text-align: center;
 	border: 1px solid #000;
 }
+
+.chat {
+	margin-left: auto;
+	margin-right: auto;
+	background: #fff;
+	width: 50em;
+	text-align: left;
+	border: 1px solid #000;
+}
+
+.chatmsgs {
+	height: 15em;
+	overflow: auto;
+}

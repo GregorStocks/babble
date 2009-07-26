@@ -17,7 +17,7 @@ template.output(head = '''<script type="text/javascript" src="http://ajax.google
 	<script src="jquery.cookie.js" type="text/javascript"></script>
 	<script src="dictionary.js" type="text/javascript"></script>
 	<script src="amalgam.js" type="text/javascript"></script>''', body = '''<div class="gamebox" id="gamebox"></div>
-<div class="chat" id="chat"></div>
+<div class="chat" id="chat"><div class="chatmsgs" id="chatmsgs"></div></div>
 <p class="notes" id="players"></p>
 <p class="notes"><a href="tos.cgi">Terms of Service</a></p>
 <p class="notes"><a href="http://github.com/Kurper/amalgam">Source</a></p>

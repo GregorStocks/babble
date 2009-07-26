@@ -183,7 +183,7 @@ function roomlist() {
 function selectroom(roomid) {
 	resetUi();
 	$("#roomid").val(roomid);
-	$("body").append('<div class="chatbox" id="chatbox"><input type="text" id="chatmessage" /><input type="button" value="Send Chat" onclick="sendChat();" /></div>');
+	$("#chat").append('<input type="text" id="chatmessage" /><input type="button" value="Send Chat" onclick="sendChat();" />');
 	start();
 }
 
@@ -326,7 +326,7 @@ function playerParted(name) {
 }
 
 function chatMessage(message, username) {
-	$("#chat").append($("<p></p>").text(username + ":" + message)) // TODO: colors and stuff
+	$("#chatmsgs").append($("<p></p>").text(username + ":" + message)) // TODO: colors and stuff
 }
 
 function sendChat() {
