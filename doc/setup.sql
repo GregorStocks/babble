@@ -63,13 +63,21 @@ INSERT INTO words (word, minnum) VALUES
 ('USA', 0), ('Vatican', 0), ('Zimbabwe', 0), ('California', 0), ('Utah', 0),
 ('Texas', 0), ('Nebraska', 0), ('Illinois', 0), ('Ohio', 0), ('Virginia', 0),
 ('Florida', 0), ('Pennsylvania', 0), ('Massachusetts', 0), ('Maine', 0), ('pi', 0),
-('felony', 0), ('crime, 0),
+('felony', 0), ('crime', 0), ('hook', 0),
+spite
+seal
+microwave
+whisk
+
 
 -- verbs
 ('is', 1), ('are', 1), ('eat', 0), ('kill', 0), ('cuss', 0), ('ain''t', 0)
 
 -- adjectives
 ('other', 0), ('groggy', 0), ('ugly', 0), ('dumb', 0), ('fat', 0), ('phat', 0),
+literal
+teenage
+
 
 -- interjections
 ('hello', 0), ('bye', 0), ('goodbye', 0), ('cheers', 0), ('yes', 0), ('no', 0),
@@ -79,7 +87,7 @@ INSERT INTO words (word, minnum) VALUES
 ('through', 0), ('on', 0), ('top', 0), ('of', 0), ('with', 0), ('for', 0),
 ('to', 0), ('from', 0), ('until', 0), ('even', 0), ('so', 0), ('well', 0),
 ('still', 0), ('yet', 0), ('also', 0), ('and', 0), ('too', 0), ('but', 0),
-('while', 0),
+('while', 0), ('often', 0),
 
 -- pronouns
 ('I', 1), ('you', 1), ('he', 0), ('she', 0), ('they', 0), ('it', 0), ('we', 0),
@@ -89,7 +97,7 @@ INSERT INTO words (word, minnum) VALUES
 ('my', 0), ('your', 0), ('his', 0), ('their', 0),
 ('who', 0), 
 
--- determiners and probably a few other thigns who knows
+-- determiners and probably a few other things who knows
 ('a', 2), ('the', 1),
 ('this', 0), ('that', 0), ('these', 0), ('those', 0), ('which', 0),
 ('all', 0), ('both', 0), ('few', 0), ('many', 0), ('some', 0), ('every', 0),
@@ -103,6 +111,9 @@ INSERT INTO words (word, minnum) VALUES
 ('billion', 0), ('trillion', 0), ('another', 0), ('certain', 0), ('less', 0),
 ('more', 0), ('that', 0), ('these', 0), ('those', 0),
 ('which', 0),
+
+-- adverbs
+('willy-nilly', 0),
 
 -- punctuation
 ('!', 1), ('.', 1), ('?', 1), (',', 1), (';', 0), (':', 0), ('...', 0),
