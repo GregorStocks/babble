@@ -15,11 +15,13 @@ template.output(head = '''<script type="text/javascript" src="http://ajax.google
 	<script src="jquery.event.drag-1.5.js" type="text/javascript"></script>
 	<script src="jquery.event.drop-1.2.js" type="text/javascript"></script>
 	<script src="jquery.cookie.js" type="text/javascript"></script>
+	<script src="jquery.rightClick.js" type="text/javascript"></script>
 	<script src="dictionary.js" type="text/javascript"></script>
 	<script src="amalgam.js" type="text/javascript"></script>''', body = '''<div class="gamebox" id="gamebox"></div>
 <div class="chat" id="chat"><div class="chatmsgs" id="chatmsgs"></div></div>
 <p class="notes"><a href="tos.cgi">Terms of Service</a></p>
 <p class="notes"><a href="http://github.com/Kurper/amalgam">Source</a></p>
+<p class="notes">If you're using Firefox, be sure that Javascript can disable context menus for the most pleasant user experience when resetting "==". If you're using Opera 9.5+, you apparently need to enable some setting somewhere to let this detect right-clicks so you can reset "==", and can't disable context menus at all???</p>
 <form>
 	<input type="hidden" id="sesskey" name="sesskey" value="0" />
 	<input type="hidden" id="roomid" name="roomid" value="1" />

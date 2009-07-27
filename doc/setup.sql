@@ -93,40 +93,13 @@ INSERT INTO words (word, minnum) VALUES
 ('this', 0), ('that', 0), ('these', 0), ('those', 0), ('which', 0),
 ('all', 0), ('both', 0), ('few', 0), ('many', 0), ('some', 0), ('every', 0),
 ('any', 0), ('each', 0), ('either', 0), ('neither', 0),
-zero
-one
-two
-three
-four
-five
-six
-seven
-eight
-nine
-ten
-eleven
-twelve
-thirteen
-fourteen
-fifteen
-sixteen
-seventeen
-eighteen
-nineteen
-twenty
-thirty
-forty
-fifty
-sixty
-seventy
-eighty
-ninety
-hundred
-thousand
-million
-billion
-trillion
-('another', 0), ('certain', 0), ('less', 0),
+('zero', 0), ('one', 0), ('two', 0), ('three', 0), ('four', 0), ('five', 0),
+('six', 0), ('seven', 0), ('eight', 0), ('nine', 0), ('ten', 0), ('eleven', 0),
+('twelve', 0), ('thirteen', 0), ('fourteen', 0), ('fifteen', 0), ('sixteen', 0),
+('seventeen', 0), ('eighteen', 0), ('nineteen', 0), ('twenty', 0),
+('thirty', 0), ('forty', 0), ('fifty', 0), ('sixty', 0), ('seventy', 0),
+('eighty', 0), ('ninety', 0), ('hundred', 0), ('thousand', 0), ('million', 0),
+('billion', 0), ('trillion', 0), ('another', 0), ('certain', 0), ('less', 0),
 ('more', 0), ('that', 0), ('these', 0), ('those', 0),
 ('which', 0),
 
@@ -144,7 +117,10 @@ trillion
 ('-able', 0), ('-ic', 0), ('-est', 0), ('-ness', 0), ('-icious', 0), ('-al', 0),
 ('-ful', 0), ('-holic', 0), ('-ism', 0), ('-ist', 0), ('-itude', 0),
 ('-less', 0), ('-phagia', 0), ('-ee', 0), ('-ese', 0), ('-ate', 0),
-('-cide', 0), ('-er', 0), ('-fy', 0), ('-ism', 0), ('-ize', 0);
+('-cide', 0), ('-er', 0), ('-fy', 0), ('-ism', 0), ('-ize', 0),
+
+-- special dealies
+('==', 1), ('^', 1), ('++', 0);
 
 -- add a room
 INSERT INTO rooms (name) VALUES ("Room 1");

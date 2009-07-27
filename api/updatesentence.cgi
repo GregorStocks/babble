@@ -53,6 +53,7 @@ if not errors:
 		WHERE rounds.id = %s'''
 	cursor.execute(sql, roundid)
 	rows = list(cursor.fetchall())
+	origwords = rows.copy()
 	for word in words:
 		found = False
 		for row in rows:
@@ -61,6 +62,15 @@ if not errors:
 				rows.remove(row)
 				found = True
 				break
+		if not found:
+			for row in rows:
+				if row['word'] == '==' and not found:
+					for origrow in origwords:
+						if origrow['word'] == word:
+							wordids.append(origrow['id'])
+							rows.remove(row)
+							found = True
+							break
 		if not found:
 			errors.append("Invalid word: %s" % word)
 			break

@@ -59,12 +59,7 @@ function updateSentence() {
 	$('#sentence').empty();
 	var words = []
 	$.each($('#dropbox > .wordbox'), function(idx, box) {
-		var idstr = $(box).attr('id');
-		var i = idstr.match(/\d+/);
-		if(i) {
-			idnum = parseInt(i);
-			words.push(wordlist[idnum]);
-		}
+		words.push($(box).text());
 	});
 	$("#sentence").append(makeSentence(words));
 	sendSentence(words);
@@ -155,7 +150,7 @@ function start() {
 }
 
 function pingLoop() {
-	$.get("api/ping.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()});
+	$.post("api/ping.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()});
 	setTimeout(pingLoop, 5000);
 }
 
@@ -338,14 +333,23 @@ function get_chat_text() {
 	return $('#chatmessage').val();
 }
 
-var wordlist = []
+var wordlist = [];
+var lastClick = null;
 
 function insertWords(words) {
 	wordlist = words;
+	lastClick = null;
 
 	// first, insert all the boxes with static positioning
 	for(var i = 0; i < words.length; i++) {
-		var box = $('<span id="wordbox' + i + '" class="wordbox">' + capitalize(words[i]) + '</span>');
+		word = words[i];
+		var box = $('<span id="wordbox' + i + '" class="wordbox">' + capitalize(word) + '</span>');
+		if(word == "==") {
+			box.addClass('copy');
+		}
+		if(word == "==" || word == "^" || word == "++") {
+			box.addClass('special');
+		}
 		$('#wordsbox').append(box);
 	}
 
@@ -371,9 +375,24 @@ function insertWords(words) {
 			left: event.offsetX
 		});
 	})
-	.bind('dragstart', function(event) {
+	.bind('dragstart', function() {
 		$('body').append(this); // remove from the sentence
 		$.dropManage(); // drop area might have resized from removing it
 		updateSentence();
+	})
+	.rightClick(function() {
+		if($(this).hasClass('copy')) {
+			$(this).text("==");
+			updateSentence();
+		}
+	})
+	.mousedown(function() {
+		if($(this).hasClass('copy') && $(this).text() == "==") {
+			if(lastClick) {
+				$(this).text(lastClick);
+			}
+		} else {
+			lastClick = $(this).text();
+		}
 	});
 }

@@ -54,7 +54,6 @@ body {
 	text-align: center;
 	border: 1px solid #000;
 }
-
 .chat {
 	margin-left: auto;
 	margin-right: auto;
@@ -63,12 +62,10 @@ body {
 	text-align: left;
 	border: 1px solid #000;
 }
-
 .chatmsgs {
 	height: 15em;
 	overflow: auto;
 }
-
 .notification {
 	margin-left: auto;
 	margin-right: auto;
@@ -76,4 +73,7 @@ body {
 	width: 600px;
 	text-align: center;
 	border: 1px solid #000;
+}
+.special {
+	color: #f00;
 }
