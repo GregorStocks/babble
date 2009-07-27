@@ -63,6 +63,7 @@ INSERT INTO words (word, minnum) VALUES
 ('USA', 0), ('Vatican', 0), ('Zimbabwe', 0), ('California', 0), ('Utah', 0),
 ('Texas', 0), ('Nebraska', 0), ('Illinois', 0), ('Ohio', 0), ('Virginia', 0),
 ('Florida', 0), ('Pennsylvania', 0), ('Massachusetts', 0), ('Maine', 0), ('pi', 0),
+('felony', 0), ('crime, 0),
 
 -- verbs
 ('is', 1), ('are', 1), ('eat', 0), ('kill', 0), ('cuss', 0), ('ain''t', 0)

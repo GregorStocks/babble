@@ -28,6 +28,14 @@ def round_end(cursor, roomid):
 	else:
 		start_new_round(cursor, roomid)
 
+def collected(cursor, roomid):
+	roundid = amalgutils.get_current_round_id(cursor, roomid)
+	cursor.execute('SELECT id FROM sentences WHERE roundid = %s LIMIT 1', roundid)
+	if cursor.fetchone():
+		amalgutils.add_event(cursor, roundid, event.COLLECTING_OVER)
+	else:
+		round_end(cursor, roomid)
+
 def start_new_round(cursor, roomid):
 	cursor.execute('SELECT word, minnum, id FROM words')
 	# TODO: do this without having to fetch every single word from the database
@@ -86,7 +94,7 @@ def update_room(cursor, roomid):
 		cureventtype = row['eventtype']
 		eventtypes = (
 			(event.ROUND_START, config.SENTENCE_MAKING_TIME, event.SENTENCE_MAKING_OVER, None),
-			(event.SENTENCE_MAKING_OVER, config.SENTENCE_COLLECTING_TIME, event.COLLECTING_OVER, None),
+			(event.SENTENCE_MAKING_OVER, config.SENTENCE_COLLECTING_TIME, event.COLLECTING_OVER, collected),
 			(event.COLLECTING_OVER, config.VOTING_TIME, event.VOTING_OVER, None),
 			(event.VOTING_OVER, config.VOTE_COLLECTING_TIME, event.VOTE_COLLECTING_OVER, None),
 			(event.VOTE_COLLECTING_OVER, config.WINNER_VIEWING_TIME, None, round_end),

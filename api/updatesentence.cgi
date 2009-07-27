@@ -53,7 +53,7 @@ if not errors:
 		WHERE rounds.id = %s'''
 	cursor.execute(sql, roundid)
 	rows = list(cursor.fetchall())
-	origwords = rows.copy()
+	origwords = rows[:]
 	for word in words:
 		found = False
 		for row in rows:
