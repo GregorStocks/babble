@@ -59,7 +59,21 @@ function updateSentence() {
 	$('#sentence').empty();
 	var words = []
 	$.each($('#dropbox > .wordbox'), function(idx, box) {
-		words.push($(box).text());
+		var idstr = $(box).attr('id');
+		var i = idstr.match(/\d+/);
+		if(i) {
+			var idnum = parseInt(i);
+			var word = wordlist[idnum];
+			if(word == "==") {
+				wordtext = $(box).text();
+				i = $(".wordbox:contains('" + wordtext + "')").attr('id').match(/\d+/);
+				if(i) {
+					idnum = parseInt(i);
+					word = wordlist[idnum];
+				}
+			}
+			words.push(word);
+		}
 	});
 	$("#sentence").append(makeSentence(words));
 	sendSentence(words);
@@ -71,30 +85,44 @@ function makeSentence(words) {
 	var curphrase = "";
 	var sentence_start = true;
 	var capitalize_next = false;
+	var phrase_done = false;
+	var connecting = false;
 	for(var wordnum in words) {
 		var word = words[wordnum];
 		var dict_entry = dictionary[word];
-		if(dictionary[curphrase] && dictionary[curphrase]['combos'] && dictionary[curphrase]['combos'][word]) { // a special way to combine
+		if(word == "^") {
+			capitalize_next = true;
+			phrase_done = true;
+		} else if(word == "++") {
+			connecting = true;
+		} else if(dictionary[curphrase] && dictionary[curphrase]['combos'] && dictionary[curphrase]['combos'][word]) { // a special way to combine
+			connecting = false;
 			curphrase = dictionary[curphrase]['combos'][word];
-		} else if(dict_entry && dict_entry["type"] == SUFFIX) {
+		} else if(dict_entry && dict_entry["type"] == SUFFIX && !phrase_done) {
+			connecting = false;
 			curphrase = add_suffix(curphrase, word);
 		} else if(dict_entry && dict_entry["type"] == NONENDING_PUNCTUATION) {
+			connecting = false;
 			curphrase += word;
+			phrase_done = true;
 		} else if(dict_entry && dict_entry["type"] == ENDING_PUNCTUATION) {
-			 curphrase += word;
-			 capitalize_next = true;
+			connecting = false;
+			curphrase += word;
+			capitalize_next = true;
+			phrase_done = true;
 		} else {
 			// if there's a phrase ready to add to the sentence, add it (empties prefix stack)
-			if(curphrase) {
+			if(curphrase && !connecting) {
 				sentence = add_to_sentence(sentence, curphrase, sentence_start, prefixstack);
+				curphrase = ""
 			}
 
+			connecting = false;
 			// start new phrase
 			if(dict_entry && dict_entry["type"] == PREFIX) {
-				curphrase = ""
 				prefixstack.push(word);
 			} else {
-				curphrase = word;
+				curphrase += word;
 			}
 			if(sentence.length > 0) {
 				sentence_start = capitalize_next;
