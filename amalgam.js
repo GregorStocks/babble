@@ -230,7 +230,7 @@ function processEvent(ev) {
 	} else if(evtype == "voting over") {
 		startCollectingVotes();
 	} else if(evtype == "winner" && ev["winner"] && ev["votes"] && ev["scores"]) {
-		showWinners(ev["winner"], ev["votes"], ev["scores"]);
+		showWinners(ev["data"]);
 	} else if(evtype == "game over" && ev["scores"]) {
 		showGameWinners(ev["scores"]);
 	} else if(evtype == "join" && ev["name"]) {
@@ -321,15 +321,15 @@ function startCollectingVotes() {
 	$("#gamebox").append("<div class='notification'><p>Collecting votes!</p></div>");
 }
 
-function showWinners(winner, votes, scores) {
+function showWinners(data) {
 	// TODO: make this massively more sophisticated
 	resetUi();
-	$("#gamebox").append("<p>Winner: " + winner + "</p>");
-	for(vote in votes) {
-		$("#gamebox").append("<p>" + vote + " voted for " + votes[vote] + "!</p>");
-	}
-	for(score in scores) {
-		$("#gamebox").append("<p>" + score + " has " + scores[score] + " points!</p>");
+	$("#gamebox").append("<table class='winners' id='winners'></table>");
+	for(name in data) {
+		if(data[name]["iswinner"]) {
+			$("#gamebox").append("<p>Winner: " + name + "</p>");
+		}
+		$("#winners").append("<tr><td>" + makeSentence(data[name]["sentence"]) + "</td><td>" + name + "</td><td>" + data[name]["score"] + "</td><td>" + data[name]["votes"]);
 	}
 }
 

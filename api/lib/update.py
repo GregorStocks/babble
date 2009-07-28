@@ -63,6 +63,7 @@ def start_new_round(cursor, roomid):
 	amalgutils.add_event(cursor, roundid, event.ROUND_START)
 
 def update_room(cursor, roomid):
+	# TODO: make this work properly when you call it a bunch of times
 	if not amalgutils.is_valid_room(cursor, roomid):
 		return
 	gameid = amalgutils.get_current_game_id(cursor, roomid)

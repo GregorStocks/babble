@@ -46,9 +46,9 @@ def is_valid_room(cursor, roomid):
 def get_winner_data(cursor, roundid):
 	cursor.execute('''
 	SELECT voters.username AS votername, votees.username AS voteename
-	FROM votes
+	FROM roommembers JOIN votes ON roommembers.userid = votes.userid
 	JOIN users voters ON votes.userid = voters.id
-	JOIN users votees ON votes.userid = votees.id
+	JOIN users votees ON votes.voteid = votees.id
 	WHERE votes.roundid = %s ORDER BY votes.id''', roundid)
 	rows = cursor.fetchall()
 	votes = {}
@@ -63,17 +63,67 @@ def get_winner_data(cursor, roundid):
 		voter = row['votername']
 		votee = row['voteename']
 		votes[voter] = votee
+	
+	for voter in votes:
+		votee = votes[voter]
+		if votee in votes:
+			if votee in votecounts:
+				votecounts[votee] += 1
+			else:
+				votecounts[votee] = 1
+			if votecounts[votee] > mostvotes:
+				mostvotes = votecounts[votee]
+				winner = votee
+	
+	# got the votes, now get the sentences
+	cursor.execute('''
+	SELECT words.word AS word, sentences.id AS id, users.username as username
+	FROM roommembers JOIN sentences ON roommembers.userid = sentences.userid
+	JOIN rounds ON sentences.roundid = rounds.id
+	JOIN users ON roommembers.userid = users.id
+	JOIN words ON sentences.wordid = words.id
+	WHERE rounds.id = %s ORDER BY sentences.id''', roundid)
 
-		if votee in votecounts:
-			votecounts[votee] += 1
+	sentences_by_user = {}
+	rows = cursor.fetchall()
+	for row in rows:
+		if row['username'] in sentences_by_user:
+			sentences_by_user[row['username']].append(row['word'])
 		else:
-			votecounts[votee] = 1
-		if votecounts[votee] > mostvotes:
-			mostvotes = votecounts[votee]
-			winner = votee
+			sentences_by_user[row['username']] = [row['word']]
+	
+	data = {}
+	for username in sentences_by_user:
+		dat = {}
+		dat['sentence'] = sentences_by_user[username]
+		
+		if username in votecounts:
+			dat['votes'] = votecounts[username]
+		else:
+			dat['votes'] = 0
+		
+		if username in votes:
+			dat['vote'] = votes[username]
+			score = dat['votes']
+			if winner == username:
+				score += config.POINTS_FOR_WINNING_ROUND
+			if dat['vote'] == winner:
+				score += config.POINTS_FOR_VOTING_WINNER
+			dat['score'] = score
+		else:
+			dat['vote'] = None
+			dat['score'] = 0
+		
+		if username == winner:
+			dat['iswinner'] = True
+		else:
+			dat['iswinner'] = False
+		
+		data[username] = dat
+
 	# Note that currently usernames can only be alphanumeric + _, so there's no
 	# need to sanitize, either here or clientside.
-	return (winner, votes)
+	return data
 
 def get_scores(cursor, roomid):
 	# TODO: benchmark, denormalizing could make this way more efficient probably
@@ -90,15 +140,10 @@ def get_scores(cursor, roomid):
 	rows = cursor.fetchall()
 	for row in rows:
 		roundid = row['id']
-		winner, votes = get_winner_data(cursor, roundid)
-		if winner and winner in points:
-			points[winner] += config.POINTS_FOR_WINNING_ROUND
-		for voter in votes:
-			votee = votes[voter]
-			if votee in points:
-				points[votee] += 1
-			if votee == winner and voter in points:
-				points[voter] += config.POINTS_FOR_VOTING_WINNER
+		data = get_winner_data(cursor, roundid)
+		for username in data:
+			if username in points:
+				points[username] = data[username]['score']
 	return points
 
 def username_from_userid(cursor, userid):
