@@ -7,7 +7,7 @@ function add_suffix(phrase, suffix) {
 		// using a cut-down form of the algorithm described in Conway's "An Algorithmic Approach to English
 		// Pluralization"
 		// special dictionary-defined cases are handled before we ever get to this function
-		if(phrase.match(/ch$/) || phrase.match(/sh$/) || phrase.match(/ss$/)) {
+		if(phrase.match(/ch$/) || phrase.match(/sh$/) || phrase.match(/ss$/) || phrase.match(/x$/) || phrase.match(/is$/)) {
 			suff = 'es';
 		} else if(phrase.match(/[aeo]lf$/) || phrase.match(/[^d]eaf$/) || phrase.match(/arf$/)) {
 			return phrase.replace(/f$/, 'ves');
@@ -25,6 +25,22 @@ function add_suffix(phrase, suffix) {
 	} else if(suff == 'ly') {
 		if(phrase.match(/ic$/)) {
 			suff = 'ally';
+		}
+	} else if(suff == "ed") {
+		if(phrase.match(/y$/)) {
+			return phrase.replace(/y$/, 'ied');
+		} else if(phrase.match(/e$/)) {
+			suff = "d";
+		} else if(phrase.match(/lf$/)) {
+			return phrase.replace(/lf$/, 'ved');
+		}
+	} else if(suff == "ing") {
+		if(phrase.match(/e$/)) {
+			return phrase.replace(/e$/, "ing");
+		}
+	} else if(suff == "ly") {
+		if(phrase.match(/ic$/)) {
+			suff = "ally";
 		}
 	}
 	return phrase + suff;
@@ -47,6 +63,17 @@ function add_to_sentence(sentence, phrase, sentence_start, prefixes) {
 	if(sentence_start) {
 		phrase = capitalize(phrase);
 	}
+
+	// a -> an
+	// this is a pretty ugly way to do this but OH WELL
+	if(sentence.match(/ a$/i) || sentence.match(/^a$/i) {
+		if(phrase.match(/^[aeiou]$/i) || phrase.match(/^h[aeiou]/i)) {
+			if(!phrase.match(/^uni/i)) {
+				sentence += "n";
+			}
+		}
+	}
+
 	if(sentence.length > 0) {
 		sentence += " " + phrase;
 	} else {

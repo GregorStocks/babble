@@ -178,7 +178,9 @@ var dictionary = {
 	},
 	'I': {
 		combos: {
-			'is': 'I\'m'
+			'is': 'I\'m',
+			'are': 'I\'m',
+			'am': 'I\'m'
 		}
 	},
 	'person': {
@@ -449,6 +451,11 @@ var dictionary = {
 	'Maine': {
 		combos: {
 			'-er': 'Mainer'
+		}
+	},
+	'be': {
+		combos: {
+			'-ing': 'being'
 		}
 	}
 }
