@@ -49,11 +49,21 @@ def get_events_since(cursor, eventid, roomid):
 		return []
 	events = []
 	cursor.execute(
-		'''SELECT eventtype, value, id FROM events WHERE roundid = %s AND id > %s''',
+		'''SELECT eventtype, value, id, CURRENT_TIMESTAMP - time AS timespent FROM events WHERE roundid = %s AND id > %s''',
 		(roundid, eventid))
 	for row in cursor.fetchall():
 		ev = {'eventid': row['id']}
 		eventtype = row['eventtype']
+		times = {
+			event.ROUND_START: config.SENTENCE_MAKING_TIME,
+			event.SENTENCE_MAKING_OVER: config.SENTENCE_COLLECTING_TIME,
+			event.COLLECTING_OVER: config.VOTING_TIME,
+			event.VOTING_OVER: config.VOTE_COLLECTING_TIME,
+			event.VOTE_COLLECTING_OVER: config.WINNER_VIEWING_TIME,
+			event.GAME_OVER: config.GAME_WINNER_VIEWING_TIME
+		}
+		if eventtype in times:
+			ev["timeleft"] = times[eventtype] - row["timespent"]
 		if eventtype == event.ROUND_START:
 			ev['type'] = 'new round'
 			ev['words'] = sorted(get_word_list(cursor, roundid), key=str.lower)

@@ -18,6 +18,7 @@ template.output(head = '''<script type="text/javascript" src="http://ajax.google
 	<script src="jquery.rightClick.js" type="text/javascript"></script>
 	<script src="dictionary.js" type="text/javascript"></script>
 	<script src="amalgam.js" type="text/javascript"></script>''', body = '''<div class="gamebox" id="gamebox"></div>
+<p class="notes" id="time"></p>
 <div class="chat" id="chat"><div class="chatmsgs" id="chatmsgs"></div></div>
 <p class="notes"><a href="tos.cgi">Terms of Service</a></p>
 <p class="notes"><a href="http://github.com/Kurper/amalgam">Source</a></p>

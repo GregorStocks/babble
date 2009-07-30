@@ -213,6 +213,21 @@ function selectroom(roomid) {
 
 $(showLogin);
 
+$(timeLoop);
+
+var timeLeft = 0;
+var lastUpdate = 0;
+var showTime = false;
+function timeLoop() {
+	var curTime = new Date().getTime();
+	timeLeft = Math.max(0, timeLeft + lastUpdate - curTime);
+	lastUpdate = curTime;
+	if(showTime) {
+		$("#time").text(Math.floor(timeLeft / 1000));
+	}
+	setTimeout(timeLoop, 100);
+}
+
 function processEvent(ev) {
 	eventid = ev["eventid"]
 	if(eventid <= cureventid) { // likely with lag of > 1 second
@@ -220,6 +235,10 @@ function processEvent(ev) {
 	}
 	cureventid = eventid;
 	evtype = ev["type"];
+	if(ev["timeleft"]) {
+		setTime(ev["timeleft"]);
+	}
+
 	if(evtype == "new round" && ev["words"]) {
 		startRound();
 		insertWords(ev["words"]);
@@ -240,6 +259,13 @@ function processEvent(ev) {
 	} else if(evtype == "chat" && ev["text"] && ev["username"]) {
 		chatMessage(ev["text"], ev["username"]);
 	}
+}
+
+function setTime(time) {
+	console.debug(time);
+	timeLeft = time * 1000;
+	lastUpdate = new Date().getTime();
+	showTime = true;
 }
 
 function resetUi() {

@@ -95,7 +95,7 @@ def update_room(cursor, roomid):
 		cureventtype = row['eventtype']
 		eventtypes = (
 			(event.ROUND_START, config.SENTENCE_MAKING_TIME, event.SENTENCE_MAKING_OVER, None),
-			(event.SENTENCE_MAKING_OVER, config.SENTENCE_COLLECTING_TIME, event.COLLECTING_OVER, collected),
+			(event.SENTENCE_MAKING_OVER, config.SENTENCE_COLLECTING_TIME, None, collected),
 			(event.COLLECTING_OVER, config.VOTING_TIME, event.VOTING_OVER, None),
 			(event.VOTING_OVER, config.VOTE_COLLECTING_TIME, event.VOTE_COLLECTING_OVER, None),
 			(event.VOTE_COLLECTING_OVER, config.WINNER_VIEWING_TIME, None, round_end),
