@@ -35,7 +35,7 @@ if not errors:
 voteid = None
 roundid = None
 if not errors:
-	cursor.execute("SELECT userid, roundid FROM sentences WHERE id = %s", sentenceid)
+	cursor.execute("SELECT userid, roundid FROM sentences WHERE hashedid = %s", sentenceid)
 	row = cursor.fetchone()
 	if not row:
 		errors.append("Invalid sentence ID.")

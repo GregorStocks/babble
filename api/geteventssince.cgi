@@ -22,7 +22,7 @@ def get_word_list(cursor, roundid):
 
 def get_sentences(cursor, roundid):
 	cursor.execute('''
-	SELECT words.word AS word, sentences.id AS id, sentences.userid as userid
+	SELECT words.word AS word, sentences.hashedid AS id, sentences.userid as userid
 	FROM sentences JOIN rounds ON sentences.roundid = rounds.id
 	JOIN words ON sentences.wordid = words.id
 	WHERE rounds.id = %s ORDER BY sentences.id''', roundid)

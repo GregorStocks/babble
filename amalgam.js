@@ -358,13 +358,36 @@ function startCollecting() {
 	$("#gamebox").append("<div class='notification'><p>Collecting sentences!</p></div>");
 }
 
+function hashesTo(key, hash) {
+	console.debug("key is " + key + " and hash is " + hash);
+	var saltstart = hash.indexOf("$");
+	var saltend = hash.lastIndexOf("$");
+	if(saltstart == -1) {
+		return false;
+	}
+	var salt = hash.slice(saltstart + 1, saltend);
+	console.debug(salt);
+	var hashpart = hash.slice(saltend + 1);
+	if(hex_sha1(salt + key) == hashpart) {
+		return true
+	}
+	return false;
+}
+
 function startVoting(sentences) {
 	resetUi();
 	$("#gamebox").append("<p>voting!</p");
 	$("#gamebox").append("<table class='votetable' id='votetable' border=1></table");
 	for(sentenceid in sentences) {
 		sentence = makeSentence(sentences[sentenceid]);
-		$("#votetable").append("<tr><td>" + sentence + "</td><td><button onclick=\"$.get('api/vote.cgi', {sentenceid: '" + sentenceid + "', sesskey: '" + get_sess_key() + "'}) \">Vote</button></td></tr>");
+		console.debug(sentence);
+		if(hashesTo(get_sess_key(), sentenceid)) {
+			$("#votetable").append("<tr><td>" + sentence + "</td><td>YOUR SENTENCE</td></tr>");
+			console.debug(sentence + "A");
+		} else {
+			$("#votetable").append("<tr><td>" + sentence + "</td><td><button onclick=\"$.get('api/vote.cgi', {sentenceid: '" + sentenceid + "', sesskey: '" + get_sess_key() + "'}) \">Vote</button></td></tr>");
+		console.debug(sentence + "B");
+		}
 	}
 }
 

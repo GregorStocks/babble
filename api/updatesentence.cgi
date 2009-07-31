@@ -6,6 +6,7 @@ cgitb.enable()
 
 import lib.template as template, lib.SQL as SQL, lib.amalgutils as amalgutils
 import lib.const.event as event
+import lib.auth as auth
 
 form = cgi.FieldStorage()
 
@@ -81,8 +82,8 @@ if not errors:
 		(userid, roundid))
 	# insert new sentence
 	cursor.executemany(
-		'INSERT INTO sentences (userid, wordid, roundid) VALUES (%s, %s, %s)',
-		[(userid, wordid, roundid) for wordid in wordids])
+		'INSERT INTO sentences (userid, wordid, roundid, hashedid) VALUES (%s, %s, %s, %s)',
+		[(userid, wordid, roundid, auth.hash_pass(sesskey)) for wordid in wordids])
 
 result = {}
 if errors:
