@@ -48,11 +48,6 @@ def start_new_round(cursor, roomid):
 	
 	for x in xrange(len(wordtype.TYPES)):
 		# I'm pretty confident there's a better way to do this but I'm also pretty confident that this works well enough
-		template.debug(config.WORDS_PER_ROUND)
-		template.debug(len(wordrows))
-		template.debug(len(wordtype.TYPES))
-		template.debug(x)
-		template.debug(round((config.WORDS_PER_ROUND - len(wordrows) / (len(wordtype.TYPES) - x))))
 		cursor.execute('SELECT word, minnum, id FROM words WHERE wordtype = %s ORDER BY RAND() LIMIT %s',
 			(x, round((config.WORDS_PER_ROUND - len(wordrows)) / (len(wordtype.TYPES) - x))))
 		rows = cursor.fetchall()
