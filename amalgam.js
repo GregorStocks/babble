@@ -25,7 +25,7 @@ function add_suffix(phrase, suffix) {
 	} else if(suff == 'ly') {
 		if(phrase.match(/ic$/)) {
 			suff = 'ally';
-		} else if(phrase.match(/le$/) {
+		} else if(phrase.match(/le$/)) {
 			return phrase.replace(/e$/, "y");
 		}
 	} else if(suff == "ed") {
@@ -567,15 +567,6 @@ function insertWords(words) {
 					if (curSpacer != box) {
 						killSpacers();
 						curSpacer = box;
-
-						/*$('<img src="images/spacer.png" alt="spacer" class="spacer" />')
-							.insertBefore(box)
-							.css({
-								position: 'static',
-								float: 'left',
-								height: $(event.dragTarget).height() + 'px'
-							})
-							.animate({width: ($(event.dragTarget).width()) + "px"},	200);*/
 					}
 				}
 			});
@@ -600,7 +591,7 @@ function insertWords(words) {
 										float: 'left',
 										width: '0px'
 									})
-									.animate({width: ($(event.dragTarget).width()) + "px"},	200);
+									.animate({width: ($(event.dragTarget).width()) + "px"},	25);
 			}			
 		}
 	})
@@ -656,7 +647,7 @@ function killSpacers() {
 	var spacers = $('.spacer')
 		spacers.animate({
 			width: '0px'
-		}, 200, function () {
+		}, 25, function () {
 			spacers.remove();
 			$.dropManage(); // might have resized from adding a fella
 		});
