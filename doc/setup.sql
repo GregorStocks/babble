@@ -3889,7 +3889,7 @@ INSERT INTO words (word, minnum, wordtype) VALUES
 ('-ly', 1, 3),
 ('-ment', 0, 3),
 ('-ness', 0, 3),
-('-s', 0, 3),
+('-s', 2, 3),
 ('able', 0, 3),
 ('abnormal', 0, 3),
 ('about', 0, 3),
@@ -4830,7 +4830,7 @@ INSERT INTO words (word, minnum, wordtype) VALUES
 -- other
 ('!', 1, 0),
 ('++', 1, 0),
-(',', 0, 0),
+(',', 1, 0),
 ('-''d', 0, 0),
 ('-''ll', 0, 0),
 ('-''s', 0, 0),
