@@ -191,9 +191,36 @@ function get_room_id() {
 }
 
 function shouldInsertBefore(target, dropX, dropY, insertee) {
-	var targpos = target.position();
-	var targwidth = target.width
-	if(dropY < target.position()['top']) { // top of target is below drop loc
+	var db = $('#dropbox')
+	var dragCenterX = insertee.position()['left'] + insertee.width() / 2;
+	var dragCenterY = insertee.position()['top'] + insertee.height() / 2;
+	if (dragCenterX < db.position()['left'] || dragCenterX > db.position()['left'] + db.width()) {
+		return false;
+	}
+	
+	var debug = false;
+	if (target.text() == 'Impress') debug = true;
+	
+	if (dragCenterY < target.position()['top'] - 15 || dragCenterY > target.position()['top'] + target.height()) {
+		var p = target.prevAll('.wordbox');
+		
+		if (p.length) {
+			p = $(p.get(0));
+			if (dragCenterX > p.position()['left'] + p.width() / 2 && 
+					target.position()['top'] > p.position()['top']) {
+				return true;
+			}
+		}
+
+		return false
+	}
+	
+	if (dropX < target.position()['left'] + target.width() / 2) {
+		return true;
+	}
+	
+	return false;
+	/*if(dropY < target.position()['top']) { // top of target is below drop loc
 		if(target.position()['top'] != $('#dropbox > .wordbox:first').position()['top']) { // not in the top row
 			return true;
 		}
@@ -207,7 +234,7 @@ function shouldInsertBefore(target, dropX, dropY, insertee) {
 	if(target.position()['top'] == $('#dropbox > .wordbox:last').position()['top']) { // target is in the bottom row
 		return true;
 	}
-	return false;
+	return false;*/
 }
 
 var cureventid = 0
@@ -218,6 +245,12 @@ function start() {
 		$.post('api/part.cgi', {'sesskey': get_sess_key(), 'roomid': get_room_id()});
 	});
 	setTimeout(pingLoop, 5000);
+}
+
+function scrollChat() {
+	if (($("#chatmsgs").attr("scrollHeight") - $("#chatmsgs").attr('scrollTop')) < $("#chatmsgs").height() + 50) {
+		$("#chatmsgs").stop(true, true).animate({scrollTop: $("#chatmsgs").attr("scrollHeight")}, 700);
+	}
 }
 
 function pingLoop() {
@@ -250,7 +283,13 @@ function roomlist() {
 function selectroom(roomid) {
 	resetUi();
 	$("#roomid").val(roomid);
-	$("#chat").append('<input type="text" id="chatmessage" /><input type="button" value="Send Chat" onclick="sendChat();" />');
+	$("#chat").append(
+		$('<div id="chatinput">').append(
+			$('<input type="text" id="chatmessage" />').keypress(function(e) {
+					if (e.which == 13) sendChat();
+			})
+		)
+	);
 	start();
 }
 
@@ -275,7 +314,7 @@ function setPlayers(players) {
 	$("#members").empty();
 	for(player in players) {
 		var name = players[player];
-		$("#members").append("<p id=" + name + ">" + name + "</p>");
+		$("#members").append("<p id='user_" + name + "' class='username'>" + name + "</p>");
 	}
 }
 
@@ -349,9 +388,12 @@ function showLogin() {
 function startRound() {
 	resetUi();
 	$("#gamebox")
-		.append("<div class='wordsbox wordscontainer' id='wordsbox'></div>")
-		.append("<div class='dropbox wordscontainer' id='dropbox'></div>")
-		.append("<p class='sentence' id='sentence'></p>");
+		.append(
+			$("<div class='wordsouter' />")
+				.append("<div class='wordsbox wordscontainer' id='wordsbox'></div>")
+				.append("<div class='dropbox wordscontainer' id='dropbox'></div>")
+				.append("<p class='sentence' id='sentence'>&nbsp;</p>")
+			);
 	$("#dropbox")
 		.append("<div class='prop' id='prop'></div>")
 		.append("<div class='clear' id='clear'></div></div>")
@@ -359,6 +401,7 @@ function startRound() {
 			// find the farthest-left wordbox with a center to the right of the mouse pointer.
 			// insert word before it.
 			// note that the wordboxes are already sorted in order for us.
+			
 			var done = false;
 			$.each($('#dropbox > .wordbox'), function(idx, box) {
 				if(!done && shouldInsertBefore($(box), event.pageX, event.pageY, $(event.dragTarget))) {
@@ -373,6 +416,7 @@ function startRound() {
 				position: 'static',
 				float: 'left'
 			});
+			$('.spacer').css({width: '0px'}).remove();
 			$.dropManage(); // might have resized from adding a fella
 			updateSentence();
 		});
@@ -437,20 +481,34 @@ function showGameWinners(scores) {
 }
 
 function playerJoined(name) {
-	$("#chatmsgs").append("<p>" + name + " joined!</p>");
-	$("#members").append("<p id=" + name + ">" + name + "</p>");
-	$("#chatmsgs").animate({scrollTop: $("#chatmsgs").attr("scrollHeight")});
+	$("#chatmsgs").append(
+		$("<p />").append(
+			$("<span />").addClass("chat_action").text(name + " joined.")
+		)
+	);
+	$("#members").append("<p id='user_" + name + "' class='username'>" + name + "</p>");
+	scrollChat();
 }
 
 function playerParted(name) {
-	$("#chatmsgs").append("<p>" + name + " parted!</p>");
-	$("#" + name).remove();
-	$("#chatmsgs").animate({scrollTop: $("#chatmsgs").attr("scrollHeight")});
+	$("#chatmsgs").append(
+		$("<p />").append(
+			$("<span />").addClass("chat_action").text(name + " left.")
+		)
+	);
+	$("#user_" + name).remove();
+	scrollChat();
 }
 
 function chatMessage(message, username) {
-	$("#chatmsgs").append($("<p></p>").text(username + ":" + message)) // TODO: colors and stuff
-	$("#chatmsgs").animate({scrollTop: $("#chatmsgs").attr("scrollHeight")});
+	$("#chatmsgs").append(
+		$("<p />").append(
+			$("<span />").addClass("chat_username").text(username + ":")
+		).append(
+			$("<span />").addClass("chat_text").text(message)
+		)
+	)
+	scrollChat();
 }
 
 function sendChat() {
@@ -464,6 +522,7 @@ function get_chat_text() {
 
 var wordlist = [];
 var lastClick = null;
+var curSpacer;
 
 function insertWords(words) {
 	wordlist = words;
@@ -503,11 +562,85 @@ function insertWords(words) {
 			top: event.offsetY,
 			left: event.offsetX
 		});
+
+		var done = false;
+		var db = $('#dropbox');
+		var oldCurSpacer = curSpacer;
+		if (event.pageY > db.position()['top'] && event.pageY < db.position()['top'] + db.height()) {
+			$.each($('#dropbox > .wordbox'), function(idx, box) {
+				if(!done && shouldInsertBefore($(box), event.pageX, event.pageY, $(event.dragTarget))) {
+					done = true;
+	
+					if (curSpacer != box) {
+						killSpacers();
+						curSpacer = box;
+
+						/*$('<img src="images/spacer.png" alt="spacer" class="spacer" />')
+							.insertBefore(box)
+							.css({
+								position: 'static',
+								float: 'left',
+								height: $(event.dragTarget).height() + 'px'
+							})
+							.animate({width: ($(event.dragTarget).width()) + "px"},	200);*/
+					}
+				}
+			});
+			
+			if (!done) {
+				curSpacer = $('#clear').get(0);
+			}
+		} else {
+			curSpacer = null;
+		}
+		
+		if (curSpacer != oldCurSpacer) {
+			killSpacers();
+			
+			if (curSpacer != null) {
+				$(event.dragTarget).clone()
+									.removeClass('wordbox')
+									.addClass('spacer')
+									.insertBefore(curSpacer)
+									.css({
+										position: 'static',
+										float: 'left',
+										width: '0px'
+									})
+									.animate({width: ($(event.dragTarget).width()) + "px"},	200);
+			}			
+		}
 	})
-	.bind('dragstart', function() {
+	.bind('dragstart', function(event) {
+		if ($(this).parent().get(0).id == 'dropbox') {
+			
+			var done = false;
+			$.each($('#dropbox > .wordbox'), function(idx, box) {
+				if(!done && shouldInsertBefore($(box), event.pageX, event.pageY, $(event.dragTarget))) {
+					done = true;
+					curSpacer = box;
+				}
+			});
+			if (!done) {
+				curSpacer = $("#clear").get(0);
+			}
+			$(event.dragTarget).clone()
+				.removeClass('wordbox')
+				.addClass('spacer')
+				.insertBefore(curSpacer)
+				.css({
+					position: 'static',
+					float: 'left',
+					width: $(event.dragTarget).width() + 'px'
+			});
+		}
 		$('body').append(this); // remove from the sentence
 		$.dropManage(); // drop area might have resized from removing it
 		updateSentence();
+	})
+	.bind('dragend', function() {
+		killSpacers();
+		curSpacer = null;
 	})
 	.rightClick(function() {
 		if($(this).hasClass('copy')) {
@@ -524,4 +657,14 @@ function insertWords(words) {
 			lastClick = $(this).text();
 		}
 	});
+}
+
+function killSpacers() {
+	var spacers = $('.spacer')
+		spacers.animate({
+			width: '0px'
+		}, 200, function () {
+			spacers.remove();
+			$.dropManage(); // might have resized from adding a fella
+		});
 }

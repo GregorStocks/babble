@@ -1,38 +1,71 @@
 body {
-	background: #77D;
+	background: #751919;
 }
 .wordbox {
 	padding: 1px 4px 1px 4px;
-	border: 1px solid #000;
-	background: #DDE;
+	border: 1px outset #e9e9c4;
+	background: #e9e9c4;
 	text-align: center;
 	cursor: move;
 	margin: 3px;
 	float: left;
+	font-size: 0.8em;
+	line-height: 1.5em;
+	font-weight: bold;
+	font-family: Tahoma, Verdana, Sans;	
+}
+.spacer {
+	padding: 1px 4px 1px 4px;
+	text-align: center;
+	cursor: move;
+	margin: 3px;
+	float: left;
+	font-size: 0.8em;
+	line-height: 1.5em;
+	font-weight: bold;
+	font-family: Tahoma, Verdana, Sans;	
+	
+	background:  #666666;
+	color: #444444;
+	border: 1px solid #444444;
 }
 .wordscontainer {
 	padding: .3em .15em .3em .15em;
 	clear: both;
-	width: 60em;
-	border: 1px solid #000;
 	margin-left: auto;
 	margin-right: auto;
 }
+
+.wordsouter {
+	background: #333333;
+	border: .2em inset #751919;
+	width: 40em;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .wordsbox {
 	height: 20.6em;
-	background: #024;
+	width: 100%;
 }
 .gamebox {
 	height: 27em;
 }
 .dropbox {
-	border-top: 0;
-	background: #bbb;
+	border-top: 1px dotted #aaaaaa;
+	background: #444444;
 	height: auto;
+	width: 39.65em;
 }
 .sentence {
 	margin: 0;
 	text-align: center;
+	padding: 4px;
+	border-top: 1px dotted #aaaaaa;
+	color: white;
+	font-size: 0.7em;
+	font-family: Tahoma, Verdana, Sans;
+	font-weight: bold;
 }
 .notes {
 	text-align: center;
@@ -57,24 +90,60 @@ body {
 .chat {
 	margin-left: auto;
 	margin-right: auto;
-	padding: 0;
-	background: #fff;
+	background: #e9e9c4;
 	width: 50em;
 	text-align: left;
-	border: 1px solid #000;
+	border: 1px inset #555555;
+	font-size: 0.8em;
+	font-family: Tahoma, Verdana, Sans;
+	padding: 0px;
 }
+.chat p {
+	margin: 0px;
+}
+.chat .chat_action {
+	color: #0000cc;
+}
+
+.chat .chat_username {
+	font-weight: bold;
+	color: #008800;
+	margin-right: 2px;
+}
+
+#chatinput {
+	background: white;
+	padding: 8px;
+	border-top: 1px solid #cccccc;
+}
+
+#chatmessage {
+	border: none;
+	width: 100%;
+}
+
 .members {
 	height: 15em;
 	overflow: auto;
 	float: left;
 	width: 10em;
+	padding: 6px;
+	background: white;
+	border-right: 1px solid #cccccc;
 }
+
+.username {
+	color: #440000;
+}
+
 .chatmsgs {
 	height: 15em;
-	width: 30em;
+	width: 37.5em;
 	overflow: auto;
+	padding: 6px;
 	float: right;
 }
+
 .notification {
 	margin-left: auto;
 	margin-right: auto;
