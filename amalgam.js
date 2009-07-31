@@ -418,10 +418,12 @@ function showGameWinners(scores) {
 
 function playerJoined(name) {
 	$("#chatmsgs").append("<p>" + name + " joined!</p>");
+	$("#chatmsgs").animate({scrollTop: $("#chatmsgs").attr("scrollHeight")});
 }
 
 function playerParted(name) {
 	$("#chatmsgs").append("<p>" + name + " parted!</p>");
+	$("#chatmsgs").animate({scrollTop: $("#chatmsgs").attr("scrollHeight")});
 }
 
 function chatMessage(message, username) {
