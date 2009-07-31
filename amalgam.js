@@ -282,7 +282,7 @@ function eventLoop() {
 function roomlist() {
 	resetUi();
 	$.getJSON("api/getroomlist.cgi", function(rooms) {
-		$("#gamebox").append("<div class='notification' id='rooms><h3>Choose a room to join:</h3></div>");
+		$("#gamebox").append("<div class='notification' id='rooms'><h3>Choose a room to join:</h3></div>");
 		for(var roomid in rooms) {
 			$("#rooms").append("<p><button name='room" + roomid + "' onclick='selectroom(" + roomid + ")'>" + rooms[roomid] + "</button></p>");
 		}
