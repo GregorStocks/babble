@@ -25,7 +25,7 @@ function add_suffix(phrase, suffix) {
 	} else if(suff == 'ly') {
 		if(phrase.match(/ic$/)) {
 			suff = 'ally';
-		} else if(phrase.match(/le$/) {
+		} else if(phrase.match(/le$/)) {
 			return phrase.replace(/e$/, "y");
 		}
 	} else if(suff == "ed") {
