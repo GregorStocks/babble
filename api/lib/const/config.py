@@ -1,4 +1,4 @@
-WORDS_PER_ROUND = 60
+WORDS_PER_ROUND = 80
 
 # all times are in seconds
 SENTENCE_MAKING_TIME = 30

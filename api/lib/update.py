@@ -7,6 +7,7 @@ import lib.const.event as event
 import lib.const.config as config
 import lib.template as template
 import lib.const.event as event
+import lib.const.wordtype as wordtype
 import random
 import datetime
 
@@ -37,16 +38,26 @@ def collected(cursor, roomid):
 		round_end(cursor, roomid)
 
 def start_new_round(cursor, roomid):
-	cursor.execute('SELECT word, minnum, id FROM words')
+	cursor.execute('SELECT word, minnum, id FROM words WHERE minnum > 0')
 	# TODO: do this without having to fetch every single word from the database
 	rows = cursor.fetchall()
 	wordrows = []
 	for row in rows:
 		for i in range(row["minnum"]):
 			wordrows.append(row)
-
-	while len(wordrows) < config.WORDS_PER_ROUND:
-		wordrows.append(random.choice(rows))
+	
+	for x in xrange(len(wordtype.TYPES)):
+		# I'm pretty confident there's a better way to do this but I'm also pretty confident that this works well enough
+		template.debug(config.WORDS_PER_ROUND)
+		template.debug(len(wordrows))
+		template.debug(len(wordtype.TYPES))
+		template.debug(x)
+		template.debug(round((config.WORDS_PER_ROUND - len(wordrows) / (len(wordtype.TYPES) - x))))
+		cursor.execute('SELECT word, minnum, id FROM words WHERE wordtype = %s ORDER BY RAND() LIMIT %s',
+			(x, round((config.WORDS_PER_ROUND - len(wordrows)) / (len(wordtype.TYPES) - x))))
+		rows = cursor.fetchall()
+		for row in rows:
+			wordrows.append(row)
 
 	# add it to the database
 	# this is not actually a race condition - last_insert_id is per-connection

@@ -66,7 +66,7 @@ def get_events_since(cursor, eventid, roomid):
 			ev["timeleft"] = times[eventtype] - row["timespent"]
 		if eventtype == event.ROUND_START:
 			ev['type'] = 'new round'
-			ev['words'] = sorted(get_word_list(cursor, roundid), key=str.lower)
+			ev['words'] = get_word_list(cursor, roundid)
 			ev['scores'] = amalgutils.get_scores(cursor, roomid)
 			ev['players'] = amalgutils.get_room_member_names(cursor, roomid)
 		elif eventtype == event.SENTENCE_MAKING_OVER:

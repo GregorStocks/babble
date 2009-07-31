@@ -57,6 +57,21 @@ var dictionary = {
 	'ultra-': {
 		type: PREFIX
 	},
+	're-': {
+		type: PREFIX
+	},
+	'dis-': {
+		type: PREFIX
+	},
+	'in-': {
+		type: PREFIX
+	},
+	'mis-': {
+		type: PREFIX
+	},
+	'non-': {
+		type: PREFIX
+	},
 	'-ize': {
 		type: SUFFIX
 	},
@@ -139,6 +154,45 @@ var dictionary = {
 		type: SUFFIX
 	},
 	'-ize': {
+		type: SUFFIX
+	},
+	'-ous': {
+		type: SUFFIX
+	},
+	'-ion': {
+		type: SUFFIX
+	},
+	'-ity': {
+		type: SUFFIX
+	},
+	'-ive': {
+		type: SUFFIX
+	},
+	'-ment': {
+		type: SUFFIX
+	},
+	'-ness': {
+		type: SUFFIX
+	},
+	'-\'d': {
+		type: SUFFIX
+	},
+	'-\'ll': {
+		type: SUFFIX
+	},
+	'-\'s': {
+		type: SUFFIX
+	},
+	'-ance': {
+		type: SUFFIX
+	},
+	'-en': {
+		type: SUFFIX
+	},
+	'-ish': {
+		type: SUFFIX
+	},
+	'-n\'t': {
 		type: SUFFIX
 	},
 	'!': {

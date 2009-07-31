@@ -66,7 +66,7 @@ function add_to_sentence(sentence, phrase, sentence_start, prefixes) {
 
 	// a -> an
 	// this is a pretty ugly way to do this but OH WELL
-	if(sentence.match(/ a$/i) || sentence.match(/^a$/i) {
+	if(sentence.match(/ a$/i) || sentence.match(/^a$/i)) {
 		if(phrase.match(/^[aeiou]$/i) || phrase.match(/^h[aeiou]/i)) {
 			if(!phrase.match(/^uni/i)) {
 				sentence += "n";
@@ -289,8 +289,7 @@ function processEvent(ev) {
 }
 
 function setTime(time) {
-	console.debug(time);
-	timeLeft = time * 1000;
+	timeLeft = Math.max(time * 1000, 0);
 	lastUpdate = new Date().getTime();
 	showTime = true;
 }
