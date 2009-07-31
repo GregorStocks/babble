@@ -93,10 +93,16 @@ function updateSentence() {
 			var word = wordlist[idnum];
 			if(word == "==") {
 				wordtext = $(box).text();
-				i = $(".wordbox:not(.copy):contains('" + wordtext + "')").attr('id').match(/\d+/);
+				i = 0;
+				b = $(".wordbox:not(.copy):contains('" + wordtext + "')")
+				if(b && b.attr('id')) {
+					i = b.attr('id').match(/\d+/);
+				}
 				if(i) {
 					idnum = parseInt(i);
 					word = wordlist[idnum];
+				} else {
+					word = "==";
 				}
 			}
 			words.push(word);
