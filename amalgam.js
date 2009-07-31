@@ -240,7 +240,7 @@ function shouldInsertBefore(target, dropX, dropY, insertee) {
 var cureventid = 0
 
 function start() {
-	$.get("api/join.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()}, eventLoop);
+	$.get("api/join.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()}, stateLoop);
 	$(window).bind("beforeunload", function() {
 		$.post('api/part.cgi', {'sesskey': get_sess_key(), 'roomid': get_room_id()});
 	});
@@ -256,6 +256,15 @@ function scrollChat() {
 function pingLoop() {
 	$.post("api/ping.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()});
 	setTimeout(pingLoop, 5000);
+}
+
+function stateLoop() {
+	$.getJSON("api/getstate.cgi", {"roomid": get_room_id()}, function(state) {
+		processEvent(state["event"]);
+		cureventid = state["eventid"];
+		setPlayers(state["players"]);
+		setTimeout(eventLoop, 1000);
+	});
 }
 
 function eventLoop() {
@@ -319,7 +328,7 @@ function setPlayers(players) {
 }
 
 function processEvent(ev) {
-	eventid = ev["eventid"]
+	var eventid = ev["eventid"]
 	if(eventid <= cureventid) { // likely with lag of > 1 second
 		return;
 	}
@@ -331,7 +340,6 @@ function processEvent(ev) {
 
 	if(evtype == "new round" && ev["words"]) {
 		startRound();
-		setPlayers(ev["players"]);
 		insertWords(ev["words"]);
 	} else if(evtype == "collecting") {
 		startCollecting();

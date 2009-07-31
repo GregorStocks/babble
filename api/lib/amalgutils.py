@@ -179,3 +179,77 @@ def get_current_state(cursor, roundid):
 		return row['eventtype']
 	else:
 		return None
+
+def get_event(cursor, roundid, roomid, row):
+	ev = {'eventid': row['id']}
+	eventtype = row['eventtype']
+	times = {
+		event.ROUND_START: config.SENTENCE_MAKING_TIME,
+		event.SENTENCE_MAKING_OVER: config.SENTENCE_COLLECTING_TIME,
+		event.COLLECTING_OVER: config.VOTING_TIME,
+		event.VOTING_OVER: config.VOTE_COLLECTING_TIME,
+		event.VOTE_COLLECTING_OVER: config.WINNER_VIEWING_TIME,
+		event.GAME_OVER: config.GAME_WINNER_VIEWING_TIME
+	}
+	if eventtype in times:
+		ev["timeleft"] = times[eventtype] - row["timespent"]
+	if eventtype == event.ROUND_START:
+		ev['type'] = 'new round'
+		ev['words'] = get_word_list(cursor, roundid)
+	elif eventtype == event.SENTENCE_MAKING_OVER:
+		ev['type'] = 'collecting'
+	elif eventtype == event.COLLECTING_OVER:
+		ev['type'] = 'vote'
+		ev['sentences'] = get_sentences(cursor, roundid)
+	elif eventtype == event.VOTING_OVER:
+		ev['type'] = 'voting over' 
+	elif eventtype == event.VOTE_COLLECTING_OVER:
+		ev['type'] = 'winner'
+		ev['data'] = get_winner_data(cursor, roundid)
+		ev['scores'] = get_scores(cursor, roomid)
+	elif eventtype == event.GAME_OVER:
+		ev['type'] = 'game over'
+		ev['scores'] = get_scores(cursor, roomid)
+	elif eventtype == event.JOIN:
+		ev['type'] = 'join'
+		ev['name'] = username_from_userid(cursor, row['value']) 
+	elif eventtype == event.PART:
+		ev['type'] = 'part'
+		ev['name'] = username_from_userid(cursor, row['value']) 
+	elif eventtype == event.CHAT:
+		ev['type'] = 'chat'
+		msg = chatmessage_from_id(cursor, row['value'])
+		ev['username'] = msg['username']
+		ev['text'] = msg['text']
+	return ev
+
+def get_word_list(cursor, roundid):
+	cursor.execute('''SELECT words.word AS word
+	FROM words JOIN roundwords ON roundwords.wordid = words.id
+	JOIN rounds ON rounds.id = roundwords.roundid
+	WHERE rounds.id = %s''', roundid)
+	rows = cursor.fetchall()
+	return [row['word'] for row in rows]
+
+def get_sentences(cursor, roundid):
+	cursor.execute('''
+	SELECT words.word AS word, sentences.hashedid AS id, sentences.userid as userid
+	FROM sentences JOIN rounds ON sentences.roundid = rounds.id
+	JOIN words ON sentences.wordid = words.id
+	WHERE rounds.id = %s ORDER BY sentences.id''', roundid)
+
+	# combine sentences
+	sentences_by_user = {}
+	rows = cursor.fetchall()
+	for row in rows:
+		if row['userid'] in sentences_by_user:
+			sentences_by_user[row['userid']].append(row['word'])
+		else:
+			sentences_by_user[row['userid']] = [row['word']]
+	# give arbitrary IDs so mean clients can't do mean things
+	sentences = {}
+	for row in rows:
+		if row['userid'] in sentences_by_user:
+			sentences[str(row['id'])] = sentences_by_user[row['userid']]
+			del sentences_by_user[row['userid']]
+	return sentences
