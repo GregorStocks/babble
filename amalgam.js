@@ -151,6 +151,7 @@ function makeSentence(words) {
 			}
 
 			connecting = false;
+			phrase_done = false;
 			// start new phrase
 			if(dict_entry && dict_entry["type"] == PREFIX) {
 				prefixstack.push(word);
