@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __ future__ import absolute_import
+from __future__ import absolute_import
 
 import cgitb, cgi
 cgitb.enable()
