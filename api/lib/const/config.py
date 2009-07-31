@@ -1,13 +1,13 @@
 WORDS_PER_ROUND = 80
 
 # all times are in seconds
-SENTENCE_MAKING_TIME = 3000
+SENTENCE_MAKING_TIME = 60
 
 # can't change sentences, but ones made just before the deadline are accepted
 # potentially exploitable by badly-behaved clients, so shouldn't be very big
 SENTENCE_COLLECTING_TIME = 2 
 
-VOTING_TIME = 20
+VOTING_TIME = 30
 
 VOTE_COLLECTING_TIME = 2
 
@@ -23,6 +23,6 @@ POINTS_FOR_VOTING_WINNER = 1
 IDLE_TIMEOUT = 30
 
 SQL_NAME = "localhost"
-SQL_USERNAME = "username"
-SQL_PASSWORD = "password"
+SQL_USERNAME = "player"
+SQL_PASSWORD = "game"
 SQL_DATABASE = "amalgam"
