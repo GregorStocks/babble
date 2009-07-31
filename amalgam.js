@@ -403,6 +403,7 @@ function playerParted(name) {
 
 function chatMessage(message, username) {
 	$("#chatmsgs").append($("<p></p>").text(username + ":" + message)) // TODO: colors and stuff
+	$("#chatmsgs").animate({scrollTop: $("#chatmsgs").attr("scrollHeight")});
 }
 
 function sendChat() {
