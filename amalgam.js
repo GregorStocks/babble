@@ -255,6 +255,14 @@ function timeLoop() {
 	setTimeout(timeLoop, 100);
 }
 
+function setPlayers(players) {
+	$("#members").empty();
+	for(player in players) {
+		var name = players[player];
+		$("#members").append("<p id=" + name + ">" + name + "</p>");
+	}
+}
+
 function processEvent(ev) {
 	eventid = ev["eventid"]
 	if(eventid <= cureventid) { // likely with lag of > 1 second
@@ -268,6 +276,7 @@ function processEvent(ev) {
 
 	if(evtype == "new round" && ev["words"]) {
 		startRound();
+		setPlayers(ev["players"]);
 		insertWords(ev["words"]);
 	} else if(evtype == "collecting") {
 		startCollecting();
@@ -418,11 +427,13 @@ function showGameWinners(scores) {
 
 function playerJoined(name) {
 	$("#chatmsgs").append("<p>" + name + " joined!</p>");
+	$("#members").append("<p id=" + name + ">" + name + "</p>");
 	$("#chatmsgs").animate({scrollTop: $("#chatmsgs").attr("scrollHeight")});
 }
 
 function playerParted(name) {
 	$("#chatmsgs").append("<p>" + name + " parted!</p>");
+	$("#" + name).remove();
 	$("#chatmsgs").animate({scrollTop: $("#chatmsgs").attr("scrollHeight")});
 }
 

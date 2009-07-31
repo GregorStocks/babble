@@ -57,14 +57,23 @@ body {
 .chat {
 	margin-left: auto;
 	margin-right: auto;
+	padding: 0;
 	background: #fff;
 	width: 50em;
 	text-align: left;
 	border: 1px solid #000;
 }
-.chatmsgs {
+.members {
 	height: 15em;
 	overflow: auto;
+	float: left;
+	width: 10em;
+}
+.chatmsgs {
+	height: 15em;
+	width: 30em;
+	overflow: auto;
+	float: right;
 }
 .notification {
 	margin-left: auto;
