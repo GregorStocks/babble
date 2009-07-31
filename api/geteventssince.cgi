@@ -48,9 +48,16 @@ def get_events_since(cursor, eventid, roomid):
 	if not roundid:
 		return []
 	events = []
-	cursor.execute(
-		'''SELECT eventtype, value, id, CURRENT_TIMESTAMP - time AS timespent FROM events WHERE roundid = %s AND id > %s''',
-		(roundid, eventid))
+	if int(eventid):
+		cursor.execute(
+			'''SELECT eventtype, value, id, CURRENT_TIMESTAMP - time AS timespent
+			FROM events WHERE roundid = %s AND id > %s''',
+			(roundid, eventid))
+	else:
+		cursor.execute(
+			'''SELECT eventtype, value, id, CURRENT_TIMESTAMP - time AS timespent
+			FROM events WHERE roundid = %s AND eventtype <= %s''',
+			(roundid, event.GAME_OVER))
 	for row in cursor.fetchall():
 		ev = {'eventid': row['id']}
 		eventtype = row['eventtype']
