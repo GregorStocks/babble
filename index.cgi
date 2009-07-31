@@ -16,6 +16,7 @@ template.output(head = '''<script type="text/javascript" src="http://ajax.google
 	<script src="jquery.event.drop-1.2.js" type="text/javascript"></script>
 	<script src="jquery.cookie.js" type="text/javascript"></script>
 	<script src="jquery.rightClick.js" type="text/javascript"></script>
+	<script src="jquery.disable.text.select.js" type="text/javascript"></script>
 	<script src="sha1.js" type="text/javascript"></script>
 	<script src="dictionary.js" type="text/javascript"></script>
 	<script src="amalgam.js" type="text/javascript"></script>''', body = '''<div class="gamebox" id="gamebox"></div>

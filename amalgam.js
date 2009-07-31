@@ -405,6 +405,7 @@ function startRound() {
 	$("#dropbox")
 		.append("<div class='prop' id='prop'></div>")
 		.append("<div class='clear' id='clear'></div></div>")
+		.disableTextSelect()
 		.bind('drop', function(event) {
 			// find the farthest-left wordbox with a center to the right of the mouse pointer.
 			// insert word before it.
@@ -422,12 +423,13 @@ function startRound() {
 			}
 			$(event.dragTarget).css({
 				position: 'static',
-				float: 'left'
+				'float': 'left'
 			});
 			$('.spacer').css({width: '0px'}).remove();
 			$.dropManage(); // might have resized from adding a fella
 			updateSentence();
 		});
+	$("#wordsbox").disableTextSelect();
 }
 
 function startCollecting() {
@@ -540,6 +542,7 @@ function insertWords(words) {
 	for(var i = 0; i < words.length; i++) {
 		word = words[i];
 		var box = $('<span id="wordbox' + i + '" class="wordbox">' + capitalize_display(word) + '</span>');
+		box.disableTextSelect();
 		if(word == "==") {
 			box.addClass('copy');
 		}
@@ -561,7 +564,7 @@ function insertWords(words) {
 			position: 'absolute',
 			top: box_poses[$(box).attr('id')]['top'],
 			left: box_poses[$(box).attr('id')]['left'],
-			float: 'none'
+			'float': 'none'
 		});
 	});
 	$('.wordbox').bind('drag', function(event){
@@ -603,7 +606,7 @@ function insertWords(words) {
 									.insertBefore(curSpacer)
 									.css({
 										position: 'static',
-										float: 'left',
+										'float': 'left',
 										width: '0px'
 									})
 									.animate({width: ($(event.dragTarget).width()) + "px"},	25);
@@ -629,11 +632,11 @@ function insertWords(words) {
 				.insertBefore(curSpacer)
 				.css({
 					position: 'static',
-					float: 'left',
+					'float': 'left',
 					width: $(event.dragTarget).width() + 'px'
 			});
 		}
-		$('body').append(this); // remove from the sentence
+		$('#wordsbox').append(this); // remove from the sentence
 		$.dropManage(); // drop area might have resized from removing it
 		updateSentence();
 	})
