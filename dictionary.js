@@ -511,5 +511,10 @@ var dictionary = {
 		combos: {
 			'-ing': 'being'
 		}
+	},
+	'^': {
+		combos: {
+			'!': 'I'
+		}
 	}
 }

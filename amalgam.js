@@ -52,6 +52,14 @@ function add_prefix(phrase, prefix) {
 }
 
 function capitalize(word) {
+	if(word == "!") {
+		return "I";
+	 }else {
+		return word.substring(0, 1).toUpperCase() + word.substring(1, word.length);
+	}
+}
+
+function capitalize_display(word) {
 	return word.substring(0, 1).toUpperCase() + word.substring(1, word.length);
 }
 
@@ -123,14 +131,14 @@ function makeSentence(words) {
 	for(var wordnum in words) {
 		var word = words[wordnum];
 		var dict_entry = dictionary[word];
-		if(word == "^") {
+		if(dictionary[curphrase] && dictionary[curphrase]['combos'] && dictionary[curphrase]['combos'][word]) { // a special way to combine
+			connecting = false;
+			curphrase = dictionary[curphrase]['combos'][word];
+		} else if(word == "^") {
 			capitalize_next = true;
 			phrase_done = true;
 		} else if(word == "++") {
 			connecting = true;
-		} else if(dictionary[curphrase] && dictionary[curphrase]['combos'] && dictionary[curphrase]['combos'][word]) { // a special way to combine
-			connecting = false;
-			curphrase = dictionary[curphrase]['combos'][word];
 		} else if(dict_entry && dict_entry["type"] == SUFFIX && !phrase_done) {
 			connecting = false;
 			curphrase = add_suffix(curphrase, word);
@@ -462,7 +470,7 @@ function insertWords(words) {
 	// first, insert all the boxes with static positioning
 	for(var i = 0; i < words.length; i++) {
 		word = words[i];
-		var box = $('<span id="wordbox' + i + '" class="wordbox">' + capitalize(word) + '</span>');
+		var box = $('<span id="wordbox' + i + '" class="wordbox">' + capitalize_display(word) + '</span>');
 		if(word == "==") {
 			box.addClass('copy');
 		}
