@@ -314,7 +314,10 @@ function timeLoop() {
 	timeLeft = Math.max(0, timeLeft + lastUpdate - curTime);
 	lastUpdate = curTime;
 	if(showTime) {
+		var fullWidth = (timeLeft/totalTime)*$("#timer").width();
+		$("#timerfull").stop(true, true).css({width: fullWidth + 'px'});
 		$("#time").text(Math.floor(timeLeft / 1000));
+		$("#timediv").stop(true, true).css({left : fullWidth - $("#timediv").width() + 'px'});
 	}
 	setTimeout(timeLoop, 100);
 }
@@ -362,8 +365,9 @@ function processEvent(ev) {
 	}
 }
 
+var totalTime;
 function setTime(time) {
-	timeLeft = Math.max(time * 1000, 0);
+	totalTime = timeLeft = Math.max(time * 1000, 0);
 	lastUpdate = new Date().getTime();
 	showTime = true;
 }

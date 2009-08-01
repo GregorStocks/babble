@@ -67,9 +67,56 @@ body {
 	font-family: Tahoma, Verdana, Sans;
 	font-weight: bold;
 }
+#footer {
+	width: 600px;
+	margin-left: auto;
+	margin-right: auto;
+}
+#timerfull {
+	background: #4ab088;
+	height: 1em;
+	width: 0px;
+	float: left;
+}
+#timer {
+	background: #550909;
+	border: 1px inset #751919;
+	height: 1em;
+	width: 600px;
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+	clear: both;
+	overflow: hidden;
+}
+#timediv {
+	font-weight: bold;
+	position: absolute;
+	height: 1em;
+	line-height: 1em;
+	margin-top: auto;
+	margin-bottom: auto;
+	padding-right: .4em;
+}
+#time {
+	margin: 0px;
+	padding: 0px;
+	font-family: "Courier New", Monospace;
+	color: #03352b;
+	font-size: 0.7em;
+}
 .notes {
+	color: #dddddd;
 	text-align: center;
+	font-size: 0.6em;
+	font-family: Verdana, Sans;
+}
+.notes a {
+	color: #eeaa45;
+}
+.timer {
 	font-size: small;
+	text-align:center;
 }
 .clear {
 	clear: both;
