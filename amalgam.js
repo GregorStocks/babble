@@ -347,7 +347,7 @@ function processEvent(ev) {
 		startVoting(ev["sentences"]);
 	} else if(evtype == "voting over") {
 		startCollectingVotes();
-	} else if(evtype == "winner" && ev["winner"] && ev["votes"] && ev["scores"]) {
+	} else if(evtype == "winner" && ev["scores"] && ev["data"]) {
 		showWinners(ev["data"]);
 	} else if(evtype == "game over" && ev["scores"]) {
 		showGameWinners(ev["scores"]);
