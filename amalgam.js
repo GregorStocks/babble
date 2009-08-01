@@ -240,7 +240,7 @@ function shouldInsertBefore(target, dropX, dropY, insertee) {
 var cureventid = 0
 
 function start() {
-	$.get("api/join.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()}, stateLoop);
+	$.post("api/join.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()}, stateLoop);
 	$(window).bind("beforeunload", function() {
 		$.post('api/part.cgi', {'sesskey': get_sess_key(), 'roomid': get_room_id()});
 	});
@@ -262,7 +262,7 @@ function stateLoop() {
 	$.getJSON("api/getstate.cgi", {"roomid": get_room_id()}, function(state) {
 		processEvent(state["event"]);
 		cureventid = state["eventid"];
-		setPlayers(state["players"]);
+		addPlayers(state["players"], state["scores"]);
 		setTimeout(eventLoop, 1000);
 	});
 }
@@ -322,11 +322,13 @@ function timeLoop() {
 	setTimeout(timeLoop, 100);
 }
 
-function setPlayers(players) {
-	$("#members").empty();
+function addPlayers(players, scores) {
 	for(player in players) {
 		var name = players[player];
-		$("#members").append("<p id='user_" + name + "' class='username'>" + name + "</p>");
+		if(!(name in scores)) {
+			scores[name] = 0;
+		}
+		$("#membertable").append("<tr id='user_" + name + "' class='username'><td class='username'>" + name + "</td><td class='score'>" + scores[name] + "</td></tr>");
 	}
 }
 
@@ -350,12 +352,12 @@ function processEvent(ev) {
 		startVoting(ev["sentences"]);
 	} else if(evtype == "voting over") {
 		startCollectingVotes();
-	} else if(evtype == "winner" && ev["scores"] && ev["data"]) {
+	} else if(evtype == "winner" && ev["data"]) {
 		showWinners(ev["data"]);
-	} else if(evtype == "game over" && ev["scores"]) {
-		showGameWinners(ev["scores"]);
+	} else if(evtype == "game over") {
+		showGameWinners();
 	} else if(evtype == "join" && ev["name"]) {
-		playerJoined(ev["name"]);
+		playerJoined(ev["name"], ev["score"]);
 	} else if(evtype == "part" && ev["name"]) {
 		playerParted(ev["name"]);
 	} else if(evtype == "chat" && ev["text"] && ev["username"]) {
@@ -485,30 +487,37 @@ function startCollectingVotes() {
 function showWinners(data) {
 	// TODO: make this massively more sophisticated
 	resetUi();
-	$("#gamebox").append("<table class='winners' id='winners'></table>");
+	$("#gamebox").append("<table class='winners' id='winners'><tr><th>Sentence</th><th>Name</th><th>Votes</th><th>Points</th></table>");
 	for(name in data) {
 		if(data[name]["iswinner"]) {
 			$("#gamebox").append("<p>Winner: " + name + "</p>");
 		}
-		$("#winners").append("<tr><td>" + makeSentence(data[name]["sentence"]) + "</td><td>" + name + "</td><td>" + data[name]["score"] + "</td><td>" + data[name]["votes"]);
+		$("#winners").append("<tr><td>" + makeSentence(data[name]["sentence"]) + "</td><td>" + name + "</td><td>" + data[name]["votes"] + "</td><td>" + data[name]["points"]);
+		scorebox = $("#user_" + name + " > .score");
+		var points = parseInt(scorebox.text());
+		scorebox.text(points + data[name]["points"]);
 	}
 }
 
-function showGameWinners(scores) {
+function showGameWinners() {
 	resetUi();
 	$("#gamebox").append("<p>GAME OVER!!!</p>");
-	for(person in scores) {
+/*	for(person in scores) {
 		$("#gamebox").append("<p>" + person + " had " + scores[person] + " points.</p>");
-	}
+	}*/
+	$(".score").text(0)
 }
 
-function playerJoined(name) {
+function playerJoined(name, score) {
 	$("#chatmsgs").append(
 		$("<p />").append(
 			$("<span />").addClass("chat_action").text(name + " joined.")
 		)
 	);
-	$("#members").append("<p id='user_" + name + "' class='username'>" + name + "</p>");
+	if(!score) {
+		score = 0;
+	}
+	$("#membertable").append("<tr id='user_" + name + "' class='username'><td class='username'>" + name + "</td><td class='score'>" + score + "</td></tr>");
 	scrollChat();
 }
 
@@ -534,7 +543,7 @@ function chatMessage(message, username) {
 }
 
 function sendChat() {
-	$.get("api/chat.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key(), 'text': get_chat_text()});
+	$.post("api/chat.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key(), 'text': get_chat_text()});
 	$("#chatmessage").val("");
 }
 

@@ -20,9 +20,13 @@ template.output(head = '''<script type="text/javascript" src="http://ajax.google
 	<script src="sha1.js" type="text/javascript"></script>
 	<script src="dictionary.js" type="text/javascript"></script>
 	<script src="amalgam.js" type="text/javascript"></script>''', body = '''<div class="gamebox" id="gamebox"></div>
+<<<<<<< HEAD:index.cgi
 <div id="timer"><div id="timediv"><p id="time" /></div><div id="timerfull"></div></div>
 <br />
-<div class="chat" id="chat"><div class="members" id="members"></div><div class="chatmsgs" id="chatmsgs"></div><div class="clear"></div></div>
+<div class="chat" id="chat">
+	<div class="members" id="members"><table id="membertable"><tr><th>Name</th><th>Score</th></tr></table></div>
+	<div class="chatmsgs" id="chatmsgs"></div><div class="clear"></div>
+</div>
 <div id="footer">
 <p class="notes"><a href="tos.cgi">Terms of Service</a></p>
 <p class="notes"><a href="http://github.com/Kurper/amalgam">Source</a></p>
