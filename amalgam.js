@@ -128,8 +128,8 @@ function makeSentence(words) {
 	var curphrase = "";
 	var sentence_start = true;
 	var capitalize_next = false;
-	var phrase_done = false;
 	var connecting = false;
+	var in_caret = false;
 	for(var wordnum in words) {
 		var word = words[wordnum];
 		var dict_entry = dictionary[word];
@@ -137,22 +137,23 @@ function makeSentence(words) {
 			connecting = false;
 			curphrase = dictionary[curphrase]['combos'][word];
 		} else if(word == "^") {
-			capitalize_next = true;
-			phrase_done = true;
+			in_caret = true;
 		} else if(word == "++") {
 			connecting = true;
-		} else if(dict_entry && dict_entry["type"] == SUFFIX && !phrase_done) {
+		} else if(dict_entry && dict_entry["type"] == SUFFIX) {
+			if(in_caret) {
+				curphrase = add_suffix(curphrase, "-'");
+				in_caret = false;
+			}
 			connecting = false;
 			curphrase = add_suffix(curphrase, word);
 		} else if(dict_entry && dict_entry["type"] == NONENDING_PUNCTUATION) {
 			connecting = false;
 			curphrase += word;
-			phrase_done = true;
 		} else if(dict_entry && dict_entry["type"] == ENDING_PUNCTUATION) {
 			connecting = false;
 			curphrase += word;
 			capitalize_next = true;
-			phrase_done = true;
 		} else {
 			// if there's a phrase ready to add to the sentence, add it (empties prefix stack)
 			if(curphrase && !connecting) {
@@ -161,7 +162,6 @@ function makeSentence(words) {
 			}
 
 			connecting = false;
-			phrase_done = false;
 			// start new phrase
 			if(dict_entry && dict_entry["type"] == PREFIX) {
 				prefixstack.push(word);
@@ -170,6 +170,10 @@ function makeSentence(words) {
 			}
 			if(sentence.length > 0) {
 				sentence_start = capitalize_next;
+				if(in_caret) {
+					sentence_start = true;
+					in_caret = false;
+				}
 				capitalize_next = false;
 			}
 		}
