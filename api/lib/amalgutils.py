@@ -206,13 +206,13 @@ def get_event(cursor, roundid, roomid, row):
 	elif eventtype == event.VOTE_COLLECTING_OVER:
 		ev['type'] = 'winner'
 		ev['data'] = get_winner_data(cursor, roundid)
-		ev['scores'] = get_scores(cursor, roomid)
 	elif eventtype == event.GAME_OVER:
 		ev['type'] = 'game over'
-		ev['scores'] = get_scores(cursor, roomid)
 	elif eventtype == event.JOIN:
 		ev['type'] = 'join'
-		ev['name'] = username_from_userid(cursor, row['value']) 
+		username = username_from_userid(cursor, row['value']) 
+		ev['score'] = get_scores(cursor, roomid)[username]
+		ev['name'] = username
 	elif eventtype == event.PART:
 		ev['type'] = 'part'
 		ev['name'] = username_from_userid(cursor, row['value']) 
