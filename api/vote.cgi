@@ -46,6 +46,11 @@ if not errors:
 			errors.append("You can't vote for yourself!")
 
 if not errors:
+	cursor.execute("SELECT userid FROM sentences WHERE userid = %s AND roundid = %s", (userid, roundid))
+	if not cursor.fetchone():
+		errors.append("You didn't submit a sentence!")
+
+if not errors:
 	state = amalgutils.get_current_state(cursor, roundid)
 	if state != event.COLLECTING_OVER and state != event.VOTING_OVER:
 		errors.append("Voting is not allowed at this time. State is " + str(state))
