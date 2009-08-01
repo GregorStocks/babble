@@ -163,8 +163,16 @@ body {
 	border-right: 1px solid #cccccc;
 }
 
+#membertable {
+	width: 100%;
+}
+
 .username {
-	color: #440000;
+	color: #006600;
+}
+
+.score { 
+	text-align: right;
 }
 
 .chatmsgs {
