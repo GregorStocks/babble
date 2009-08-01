@@ -14,7 +14,7 @@ import lib.update as update
 
 def last_event_id(cursor, roomid):
 	roundid = amalgutils.get_current_round_id(cursor, roomid)
-	cursor.execute('SELECT id FROM events WHERE roundid = %s ORDER BY id DESC', roundid)
+	cursor.execute('SELECT id FROM events WHERE roundid = %s ORDER BY id DESC LIMIT 1', roundid)
 	row = cursor.fetchone()
 	if row:
 		return row['id']
@@ -27,7 +27,7 @@ def get_last_event(cursor, eventid, roomid):
 		return None
 	cursor.execute(
 		'''SELECT eventtype, value, id, CURRENT_TIMESTAMP - time AS timespent
-		FROM events WHERE roundid = %s AND eventtype <= %s''',
+		FROM events WHERE roundid = %s AND eventtype <= %s ORDER BY id DESC LIMIT 1''',
 		(roundid, event.GAME_OVER))
 	return amalgutils.get_event(cursor, roundid, roomid, cursor.fetchone())
 

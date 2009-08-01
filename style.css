@@ -155,3 +155,7 @@ body {
 .special {
 	color: #f00;
 }
+
+.voted {
+	background: #555
+}

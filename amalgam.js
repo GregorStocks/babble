@@ -451,16 +451,24 @@ function hashesTo(key, hash) {
 	return false;
 }
 
+function votefor(sentenceid) {
+	$(".sentence").removeClass("voted");
+	$.post('api/vote.cgi', {sentenceid: sentenceid, sesskey: get_sess_key()});
+	$("#" + sentenceid.replace(/\$/g, "")).addClass("voted");
+}
+
+
 function startVoting(sentences) {
 	resetUi();
 	$("#gamebox").append("<p>voting!</p");
 	$("#gamebox").append("<table class='votetable' id='votetable' border=1></table");
 	for(sentenceid in sentences) {
-		sentence = makeSentence(sentences[sentenceid]);
+		var sentence = makeSentence(sentences[sentenceid]);
+		var niceid = sentenceid.replace(/\$/g, "");
 		if(hashesTo(get_sess_key(), sentenceid)) {
-			$("#votetable").append("<tr><td>" + sentence + "</td><td>YOUR SENTENCE</td></tr>");
+			$("#votetable").append("<tr class='sentence' id='" + niceid + "'><td>" + sentence + "</td><td>YOUR SENTENCE</td></tr>");
 		} else {
-			$("#votetable").append("<tr><td>" + sentence + "</td><td><button onclick=\"$.get('api/vote.cgi', {sentenceid: '" + sentenceid + "', sesskey: '" + get_sess_key() + "'}) \">Vote</button></td></tr>");
+			$("#votetable").append("<tr class='sentence' id='" + niceid + "'><td>" + sentence + "</td><td><button onclick=\"votefor('" + sentenceid + "')\">Vote</button></td></tr>");
 		}
 	}
 }
@@ -662,11 +670,11 @@ function insertWords(words) {
 }
 
 function killSpacers() {
-	var spacers = $('.spacer')
-		spacers.animate({
-			width: '0px'
-		}, 25, function () {
-			spacers.remove();
-			$.dropManage(); // might have resized from adding a fella
-		});
+	var spacers = $('.spacer');
+	spacers.animate({
+		width: '0px'
+	}, 25, function () {
+		spacers.remove();
+		$.dropManage(); // might have resized from adding a fella
+	});
 }

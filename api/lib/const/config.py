@@ -1,7 +1,7 @@
 WORDS_PER_ROUND = 80
 
 # all times are in seconds
-SENTENCE_MAKING_TIME = 60
+SENTENCE_MAKING_TIME = 30
 
 # can't change sentences, but ones made just before the deadline are accepted
 # potentially exploitable by badly-behaved clients, so shouldn't be very big
