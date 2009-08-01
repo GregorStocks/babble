@@ -1,5 +1,6 @@
 body {
 	background: #751919;
+	background-image: url('images/background.png');
 }
 .wordbox {
 	padding: 1px 4px 1px 4px;
@@ -186,13 +187,31 @@ body {
 .notification {
 	margin-left: auto;
 	margin-right: auto;
-	background: #fff;
+	background-image: url('images/blacktrans50.png');
 	width: 600px;
 	text-align: center;
-	border: 1px solid #000;
+	border: 2px dotted #ffe890;
+	color: #ffe890;
 	font-size 4em;
-	font-family: Verdana, Tahoma, Sans;
+	font-family: Georgia, "Sans Serif";
 	font-weight: bold;
+}
+
+#rooms button {
+	border: 1px solid #953939;
+	width: 300px;
+	padding: 10px 0px;
+	background: #550909;
+	color: #ffe890;
+	font-family: Georgia, "Sans Serif";
+}
+
+#rooms button:hover {
+	background: #661919;
+}
+
+#rooms button:active {
+	background: #420000;
 }
 
 .special {
@@ -206,4 +225,16 @@ body {
 .error {
 	margin: 0px;
 	color: #f00;
+}
+
+#indicator {
+	background: #781818;
+	border: 1px solid #b72F2F;
+	width: 86px;
+	height: 86px;
+	z-index: 0;
+}
+
+#indicator img {
+	margin: 10px;
 }

@@ -295,6 +295,7 @@ function roomlist() {
 
 function selectroom(roomid) {
 	resetUi();
+	busyIndicator(true);
 	$("#roomid").val(roomid);
 	$("#chat").append(
 		$('<div id="chatinput">').append(
@@ -379,6 +380,25 @@ function resetUi() {
 	$(".wordbox").remove();
 }
 
+function busyIndicator(show) {
+	if (show) {
+		var ind = $("<div id='indicator'><img src='images/indicator.gif' alt='...' /></div>");
+		$("#gamebox").append(ind);
+		ind.css({
+				position: 'relative',
+				left: '50%',
+				top: '50%'
+			})
+			.css({
+				marginLeft: '-' + ind.outerWidth() / 2 + 'px',
+				marginTop: '-' + ind.outerHeight() / 2 + 'px'
+			});
+		
+	} else {
+		$("#indicator").remove();
+	}
+}
+
 function login() {
 	var username = $("#username").val();
 	var password = $("#password").val();
@@ -408,6 +428,7 @@ function showLogin() {
 
 function startRound() {
 	resetUi();
+	
 	$("#gamebox")
 		.append(
 			$("<div class='wordsouter' />")
@@ -447,6 +468,7 @@ function startRound() {
 
 function startCollecting() {
 	resetUi();
+	busyIndicator(true);
 	$("#gamebox").append("<div class='notification'><p>Collecting sentences!</p></div>");
 }
 
@@ -488,6 +510,7 @@ function startVoting(sentences) {
 
 function startCollectingVotes() {
 	resetUi();
+	busyIndicator(true);
 	$("#gamebox").append("<div class='notification'><p>Collecting votes!</p></div>");
 }
 
