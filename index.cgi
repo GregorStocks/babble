@@ -20,7 +20,7 @@ template.output(head = '''<script type="text/javascript" src="http://ajax.google
 	<script src="sha1.js" type="text/javascript"></script>
 	<script src="dictionary.js" type="text/javascript"></script>
 	<script src="amalgam.js" type="text/javascript"></script>''', body = '''<div class="gamebox" id="gamebox"></div>
-<<<<<<< HEAD:index.cgi
+
 <div id="timer"><div id="timediv"><p id="time" /></div><div id="timerfull"></div></div>
 <br />
 <div class="chat" id="chat">
