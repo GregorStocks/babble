@@ -206,3 +206,8 @@ body {
 .voted {
 	background: #555
 }
+
+.error {
+	margin: 0px;
+	color: #f00;
+}
