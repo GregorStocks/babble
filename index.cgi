@@ -24,7 +24,7 @@ template.output(head = '''<script type="text/javascript" src="http://ajax.google
 <div class="chat" id="chat"><div class="members" id="members"></div><div class="chatmsgs" id="chatmsgs"></div><div class="clear"></div></div>
 <p class="notes"><a href="tos.cgi">Terms of Service</a></p>
 <p class="notes"><a href="http://github.com/Kurper/amalgam">Source</a></p>
-<p class="notes">If you're using Firefox, be sure that Javascript is allowed to disable context menus for the most pleasant user experience when resetting "==". If you're using Opera 9.5+, you apparently need to enable some setting somewhere to let this detect right-clicks so you can reset "==" at all, and can't disable context menus no matter what</p>
+<p class="notes">If you're using Firefox, be sure that Javascript is allowed to disable context menus for the most pleasant user experience when resetting "==". If you're using Opera 9.5+, you apparently need to enable some setting somewhere to let Javascript detect right-clicks so you can reset "==" at all, and can't disable context menus no matter what</p>
 <form action="" name="hiddenthings">
 	<input type="hidden" id="sesskey" name="sesskey" value="0" />
 	<input type="hidden" id="roomid" name="roomid" value="1" />

@@ -481,12 +481,12 @@ function startCollectingVotes() {
 function showWinners(data) {
 	// TODO: make this massively more sophisticated
 	resetUi();
-	$("#gamebox").append("<table class='winners' id='winners'></table>");
+	$("#gamebox").append("<table class='winners' id='winners'><tr><th>Sentence</th><th>Name</th><th>Votes</th><th>Points</th></table>");
 	for(name in data) {
 		if(data[name]["iswinner"]) {
 			$("#gamebox").append("<p>Winner: " + name + "</p>");
 		}
-		$("#winners").append("<tr><td>" + makeSentence(data[name]["sentence"]) + "</td><td>" + name + "</td><td>" + data[name]["score"] + "</td><td>" + data[name]["votes"]);
+		$("#winners").append("<tr><td>" + makeSentence(data[name]["sentence"]) + "</td><td>" + name + "</td><td>" + data[name]["votes"] + "</td><td>" + data[name]["points"]);
 	}
 }
 
