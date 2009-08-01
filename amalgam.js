@@ -379,8 +379,13 @@ function login() {
 	$.post("api/login.cgi", {"password": password, "username": username}, function(data, textStatus) {
 		if(data && data["status"] && data["status"] == "OK" && data["sesskey"]) {
 			$('#sesskey').val(data["sesskey"]);
-			$.cookie('amalgam-sesskey', data["sesskey"], {path: '/'});
+			$.cookie('amalgam-sesskey', data["sesskey"], {path: '/', expires: new Date(2020, 1, 1)});
 			roomlist();
+		} else if(data && data["status"] && data["status"] == "Error" && data["errors"]) {
+			$("#gamebox").append("<div class='notification' id='errors'></div>");
+			for(i in data['errors']) {
+				$("#errors").append("<p class='error'>" + data['errors'][i] + "</p>");
+			}
 		}
 	}, "json");
 }
