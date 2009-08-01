@@ -89,22 +89,6 @@ body {
 	clear: both;
 	overflow: hidden;
 }
-#timediv {
-	font-weight: bold;
-	position: absolute;
-	height: 1em;
-	line-height: 1em;
-	margin-top: auto;
-	margin-bottom: auto;
-	padding-right: .4em;
-}
-#time {
-	margin: 0px;
-	padding: 0px;
-	font-family: "Courier New", Monospace;
-	color: #03352b;
-	font-size: 0.7em;
-}
 .notes {
 	color: #dddddd;
 	text-align: center;
@@ -198,7 +182,11 @@ body {
 	width: 600px;
 	text-align: center;
 	border: 1px solid #000;
+	font-size 4em;
+	font-family: Verdana, Tahoma, Sans;
+	font-weight: bold;
 }
+
 .special {
 	color: #f00;
 }

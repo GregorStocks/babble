@@ -240,7 +240,7 @@ function shouldInsertBefore(target, dropX, dropY, insertee) {
 var cureventid = 0
 
 function start() {
-	$.post("api/join.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()}, stateLoop);
+	$.get("api/join.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()}, stateLoop);
 	$(window).bind("beforeunload", function() {
 		$.post('api/part.cgi', {'sesskey': get_sess_key(), 'roomid': get_room_id()});
 	});
@@ -262,7 +262,7 @@ function stateLoop() {
 	$.getJSON("api/getstate.cgi", {"roomid": get_room_id()}, function(state) {
 		processEvent(state["event"]);
 		cureventid = state["eventid"];
-		addPlayers(state["players"], state["scores"]);
+		setPlayers(state["players"]);
 		setTimeout(eventLoop, 1000);
 	});
 }
@@ -316,19 +316,15 @@ function timeLoop() {
 	if(showTime) {
 		var fullWidth = (timeLeft/totalTime)*$("#timer").width();
 		$("#timerfull").stop(true, true).css({width: fullWidth + 'px'});
-		$("#time").text(Math.floor(timeLeft / 1000));
-		$("#timediv").stop(true, true).css({left : fullWidth - $("#timediv").width() + 'px'});
 	}
 	setTimeout(timeLoop, 100);
 }
 
-function addPlayers(players, scores) {
+function setPlayers(players) {
+	$("#members").empty();
 	for(player in players) {
 		var name = players[player];
-		if(!(name in scores)) {
-			scores[name] = 0;
-		}
-		$("#membertable").append("<tr id='user_" + name + "' class='username'><td class='username'>" + name + "</td><td class='score'>" + scores[name] + "</td></tr>");
+		$("#members").append("<p id='user_" + name + "' class='username'>" + name + "</p>");
 	}
 }
 
@@ -352,12 +348,12 @@ function processEvent(ev) {
 		startVoting(ev["sentences"]);
 	} else if(evtype == "voting over") {
 		startCollectingVotes();
-	} else if(evtype == "winner" && ev["data"]) {
+	} else if(evtype == "winner" && ev["scores"] && ev["data"]) {
 		showWinners(ev["data"]);
-	} else if(evtype == "game over") {
-		showGameWinners();
+	} else if(evtype == "game over" && ev["scores"]) {
+		showGameWinners(ev["scores"]);
 	} else if(evtype == "join" && ev["name"]) {
-		playerJoined(ev["name"], ev["score"]);
+		playerJoined(ev["name"]);
 	} else if(evtype == "part" && ev["name"]) {
 		playerParted(ev["name"]);
 	} else if(evtype == "chat" && ev["text"] && ev["username"]) {
@@ -487,37 +483,30 @@ function startCollectingVotes() {
 function showWinners(data) {
 	// TODO: make this massively more sophisticated
 	resetUi();
-	$("#gamebox").append("<table class='winners' id='winners'><tr><th>Sentence</th><th>Name</th><th>Votes</th><th>Points</th></table>");
+	$("#gamebox").append("<table class='winners' id='winners'></table>");
 	for(name in data) {
 		if(data[name]["iswinner"]) {
 			$("#gamebox").append("<p>Winner: " + name + "</p>");
 		}
-		$("#winners").append("<tr><td>" + makeSentence(data[name]["sentence"]) + "</td><td>" + name + "</td><td>" + data[name]["votes"] + "</td><td>" + data[name]["points"]);
-		scorebox = $("#user_" + name + " > .score");
-		var points = parseInt(scorebox.text());
-		scorebox.text(points + data[name]["points"]);
+		$("#winners").append("<tr><td>" + makeSentence(data[name]["sentence"]) + "</td><td>" + name + "</td><td>" + data[name]["score"] + "</td><td>" + data[name]["votes"]);
 	}
 }
 
-function showGameWinners() {
+function showGameWinners(scores) {
 	resetUi();
 	$("#gamebox").append("<p>GAME OVER!!!</p>");
-/*	for(person in scores) {
+	for(person in scores) {
 		$("#gamebox").append("<p>" + person + " had " + scores[person] + " points.</p>");
-	}*/
-	$(".score").text(0)
+	}
 }
 
-function playerJoined(name, score) {
+function playerJoined(name) {
 	$("#chatmsgs").append(
 		$("<p />").append(
 			$("<span />").addClass("chat_action").text(name + " joined.")
 		)
 	);
-	if(!score) {
-		score = 0;
-	}
-	$("#membertable").append("<tr id='user_" + name + "' class='username'><td class='username'>" + name + "</td><td class='score'>" + score + "</td></tr>");
+	$("#members").append("<p id='user_" + name + "' class='username'>" + name + "</p>");
 	scrollChat();
 }
 
@@ -543,7 +532,7 @@ function chatMessage(message, username) {
 }
 
 function sendChat() {
-	$.post("api/chat.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key(), 'text': get_chat_text()});
+	$.get("api/chat.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key(), 'text': get_chat_text()});
 	$("#chatmessage").val("");
 }
 
