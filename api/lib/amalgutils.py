@@ -104,15 +104,15 @@ def get_winner_data(cursor, roundid):
 		
 		if username in votes:
 			dat['vote'] = votes[username]
-			score = dat['votes']
+			points = dat['votes']
 			if winner == username:
-				score += config.POINTS_FOR_WINNING_ROUND
+				points += config.POINTS_FOR_WINNING_ROUND
 			if dat['vote'] == winner:
-				score += config.POINTS_FOR_VOTING_WINNER
-			dat['score'] = score
+				points += config.POINTS_FOR_VOTING_WINNER
+			dat['points'] = points
 		else:
 			dat['vote'] = None
-			dat['score'] = 0
+			dat['points'] = 0
 		
 		if username == winner:
 			dat['iswinner'] = True
@@ -143,7 +143,7 @@ def get_scores(cursor, roomid):
 		data = get_winner_data(cursor, roundid)
 		for username in data:
 			if username in points:
-				points[username] = data[username]['score']
+				points[username] = data[username]['points']
 	return points
 
 def username_from_userid(cursor, userid):
@@ -206,13 +206,13 @@ def get_event(cursor, roundid, roomid, row):
 	elif eventtype == event.VOTE_COLLECTING_OVER:
 		ev['type'] = 'winner'
 		ev['data'] = get_winner_data(cursor, roundid)
-		ev['scores'] = get_scores(cursor, roomid)
 	elif eventtype == event.GAME_OVER:
 		ev['type'] = 'game over'
-		ev['scores'] = get_scores(cursor, roomid)
 	elif eventtype == event.JOIN:
 		ev['type'] = 'join'
-		ev['name'] = username_from_userid(cursor, row['value']) 
+		username = username_from_userid(cursor, row['value']) 
+		ev['score'] = get_scores(cursor, roomid)[username]
+		ev['name'] = username
 	elif eventtype == event.PART:
 		ev['type'] = 'part'
 		ev['name'] = username_from_userid(cursor, row['value']) 
