@@ -19,8 +19,8 @@ def get_events_since(cursor, eventid, roomid):
 	events = []
 	cursor.execute(
 		'''SELECT eventtype, value, id, CURRENT_TIMESTAMP - time AS timespent
-		FROM events WHERE roundid = %s AND id > %s''',
-		(roundid, eventid))
+		FROM events WHERE (roundid = %s OR eventtype > %s) AND id > %s LIMIT 100''',
+		(roundid, event.GAME_OVER, eventid))
 	for row in cursor.fetchall():
 		events.append(amalgutils.get_event(cursor, roundid, roomid, row))
 	return events
