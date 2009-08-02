@@ -34,18 +34,16 @@ if not errors:
 		"SELECT userid FROM roommembers WHERE userid = %s AND roomid = %s",
 		(userid, roomid))
 	if cursor.fetchone():
-		errors.append(error.ALREADY_IN_ROOM)
 		# ping
 		cursor.execute('''UPDATE roommembers SET lastping = CURRENT_TIMESTAMP
 			WHERE userid = %s AND roomid = %s''',
 			(userid, roomid))
-
-if not errors:
-	cursor.execute("INSERT INTO roommembers (userid, roomid) VALUES (%s, %s)",
-		(userid, roomid))
-	roundid = amalgutils.get_current_round_id(cursor, roomid)
-	if roundid:
-		amalgutils.add_event(cursor, roundid, event.JOIN, userid)
+	else:
+		cursor.execute("INSERT INTO roommembers (userid, roomid) VALUES (%s, %s)",
+			(userid, roomid))
+		roundid = amalgutils.get_current_round_id(cursor, roomid)
+		if roundid:
+			amalgutils.add_event(cursor, roundid, event.JOIN, userid)
 
 result = {}
 if errors:

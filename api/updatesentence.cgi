@@ -7,6 +7,7 @@ cgitb.enable()
 import lib.template as template, lib.SQL as SQL, lib.amalgutils as amalgutils
 import lib.const.event as event
 import lib.auth as auth
+import lib.const.error as error
 
 form = cgi.FieldStorage()
 

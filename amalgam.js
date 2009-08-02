@@ -89,27 +89,27 @@ function add_to_sentence(sentence, phrase, sentence_start, prefixes) {
 	} else {
 		sentence = phrase;
 	}
-	return sentence
+	return sentence;
 }
 
 function updateSentence() {
 	$('#sentence').empty();
-	var words = []
+	var words = [];
 	$.each($('#dropbox > .wordbox'), function(idx, box) {
 		var idstr = $(box).attr('id');
 		var i = idstr.match(/\d+/);
 		if(i) {
-			var idnum = parseInt(i);
+			var idnum = parseInt(i, 10);
 			var word = wordlist[idnum];
 			if(word == "==") {
 				wordtext = $(box).text();
 				i = 0;
-				b = $(".wordbox:not(.copy):contains('" + wordtext + "')")
+				b = $(".wordbox:not(.copy):contains('" + wordtext + "')");
 				if(b && b.attr('id')) {
 					i = b.attr('id').match(/\d+/);
 				}
 				if(i) {
-					idnum = parseInt(i);
+					idnum = parseInt(i, 10);
 					word = wordlist[idnum];
 				} else {
 					word = "==";
@@ -158,7 +158,7 @@ function makeSentence(words) {
 			// if there's a phrase ready to add to the sentence, add it (empties prefix stack)
 			if(curphrase && !connecting) {
 				sentence = add_to_sentence(sentence, curphrase, sentence_start, prefixstack);
-				curphrase = ""
+				curphrase = "";
 			}
 
 			connecting = false;
@@ -183,7 +183,7 @@ function makeSentence(words) {
 }
 
 function sendSentence(words) {
-	$.post("api/updatesentence.cgi", {"sesskey": get_sess_key(), "words": words, "roomid": get_room_id()}); 
+	$.post("api/updatesentence.cgi", {"sesskey": get_sess_key(), "words": words, "roomid": get_room_id()}, make_error_handler(), "json"); 
 }
 
 function get_sess_key() {
@@ -195,7 +195,7 @@ function get_room_id() {
 }
 
 function shouldInsertBefore(target, dropX, dropY, insertee) {
-	var db = $('#dropbox')
+	var db = $('#dropbox');
 	var dragCenterX = insertee.position()['left'] + insertee.width() / 2;
 	var dragCenterY = insertee.position()['top'] + insertee.height() / 2;
 	if (dragCenterX < db.position()['left'] || dragCenterX > db.position()['left'] + db.width()) {
@@ -216,7 +216,7 @@ function shouldInsertBefore(target, dropX, dropY, insertee) {
 			}
 		}
 
-		return false
+		return false;
 	}
 	
 	if (dropX < target.position()['left'] + target.width() / 2) {
@@ -241,12 +241,12 @@ function shouldInsertBefore(target, dropX, dropY, insertee) {
 	return false;*/
 }
 
-var cureventid = 0
+var cureventid = 0;
 
 function start() {
-	$.post("api/join.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()}, stateLoop);
+	$.post("api/join.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()}, make_error_handler(stateLoop), "json");
 	$(window).bind("beforeunload", function() {
-		$.post('api/part.cgi', {'sesskey': get_sess_key(), 'roomid': get_room_id()});
+		$.post('api/part.cgi', {'sesskey': get_sess_key(), 'roomid': get_room_id()}, make_error_handler(), "json");
 	});
 	setTimeout(pingLoop, 5000);
 }
@@ -258,39 +258,46 @@ function scrollChat() {
 }
 
 function pingLoop() {
-	$.post("api/ping.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()});
+	$.post("api/ping.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()}, make_error_handler(), "json");
 	setTimeout(pingLoop, 5000);
 }
 
 function stateLoop() {
-	$.getJSON("api/getstate.cgi", {"roomid": get_room_id()}, function(state) {
+	$.getJSON("api/getstate.cgi", {"roomid": get_room_id()}, make_error_handler(function(state) {
 		processEvent(state["event"]);
 		cureventid = state["eventid"];
 		addPlayers(state["players"], state["scores"]);
+		eventsLooping = true;
 		setTimeout(eventLoop, 1000);
-	});
+	}));
 }
 
+var eventsLooping = false;
 function eventLoop() {
 	// TODO: find out whether TCP guarantees that the events will arrive in order
 	// when you do it asynchronously like this
 	// also, ensure that only one event is being applied at any given time
-	$.getJSON("api/geteventssince.cgi", {"eventid": cureventid, "roomid": get_room_id()}, function(events) {
+	if(!eventsLooping) {
+		return;
+	}
+	$.getJSON("api/geteventssince.cgi", {"eventid": cureventid, "roomid": get_room_id()}, make_error_handler(function(events) {
 		for(var i in events) {
-			processEvent(events[i]);
+			if(eventsLooping) {
+				processEvent(events[i]);
+			}
 		}
-	});
+	}));
 	setTimeout(eventLoop, 1000);
 }
 
-function roomlist() {
+function showRooms() {
 	resetUi();
-	$.getJSON("api/getroomlist.cgi", function(rooms) {
+	$.getJSON("api/getroomlist.cgi", make_error_handler(function(rooms) {
 		$("#gamebox").append("<div class='notification' id='rooms'><h3>Choose a room to join:</h3></div>");
 		for(var roomid in rooms) {
 			$("#rooms").append("<p><button name='room" + roomid + "' onclick='selectroom(" + roomid + ")'>" + rooms[roomid] + "</button></p>");
 		}
-	});
+	}));
 }
 
 function selectroom(roomid) {
@@ -300,10 +307,9 @@ function selectroom(roomid) {
 	$("#chat").append(
 		$('<div id="chatinput">').append(
 			$('<input type="text" id="chatmessage" />').keypress(function(e) {
-					if (e.which == 13) sendChat();
+				if (e.which == 13) sendChat();
 			})
-		)
-	);
+		));
 	start();
 }
 
@@ -336,7 +342,7 @@ function addPlayers(players, scores) {
 }
 
 function processEvent(ev) {
-	var eventid = ev["eventid"]
+	var eventid = ev["eventid"];
 	if(eventid <= cureventid) { // likely with lag of > 1 second
 		return;
 	}
@@ -402,25 +408,20 @@ function busyIndicator(show) {
 function login() {
 	var username = $("#username").val();
 	var password = $("#password").val();
-	$.post("api/login.cgi", {"password": password, "username": username}, function(data, textStatus) {
+	$.post("api/login.cgi", {"password": password, "username": username}, make_error_handler(function(data, textStatus) {
 		if(data && data["status"] && data["status"] == "OK" && data["sesskey"]) {
 			$('#sesskey').val(data["sesskey"]);
 			$.cookie('amalgam-sesskey', data["sesskey"], {path: '/', expires: new Date(2020, 1, 1)});
-			roomlist();
-		} else if(data && data["status"] && data["status"] == "Error" && data["errors"]) {
-			$("#gamebox").append("<div class='notification' id='errors'></div>");
-			for(i in data['errors']) {
-				$("#errors").append("<p class='error'>" + data['errors'][i] + "</p>");
-			}
+			showRooms();
 		}
-	}, "json");
+	}), "json");
 }
 
 function showLogin() {
 	resetUi();
 	if($.cookie('amalgam-sesskey')) {
 		$('#sesskey').val($.cookie('amalgam-sesskey'));
-		roomlist();
+		showRooms();
 	} else {
 		$("#gamebox").append('<form action="index.cgi" method="post"><p>Username: <input type="text" name="username" id="username" /></p><p>Password: <input type="password" name="password" id="password" /></p><input type="submit" value="Log In" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"><a href="register.cgi">Register</a></p><p class="notes"><a href="forgot.cgi">Forgot your password?</a></p></form>');
 	}
@@ -453,7 +454,7 @@ function startRound() {
 				}
 			});
 			if(!done) {
-				$(event.dragTarget).insertBefore($('#clear'))
+				$(event.dragTarget).insertBefore($('#clear'));
 			}
 			$(event.dragTarget).css({
 				position: 'static',
@@ -481,14 +482,14 @@ function hashesTo(key, hash) {
 	var salt = hash.slice(saltstart + 1, saltend);
 	var hashpart = hash.slice(saltend + 1);
 	if(hex_sha1(salt + key) == hashpart) {
-		return true
+		return true;
 	}
 	return false;
 }
 
 function votefor(sentenceid) {
 	$(".sentence").removeClass("voted");
-	$.post('api/vote.cgi', {sentenceid: sentenceid, sesskey: get_sess_key()});
+	$.post('api/vote.cgi', {sentenceid: sentenceid, sesskey: get_sess_key()}, make_error_handler(), "json");
 	$("#" + sentenceid.replace(/\$/g, "")).addClass("voted");
 }
 
@@ -525,7 +526,7 @@ function showWinners(data) {
 
 		$("#winners").append("<tr><td>" + makeSentence(data[name]["sentence"]) + "</td><td>" + name + "</td><td>" + data[name]["votes"] + "</td><td>" + data[name]["points"]);
 		scorebox = $("#user_" + name + " > .score");
-		var points = parseInt(scorebox.text());
+		var points = parseInt(scorebox.text(), 10);
 		scorebox.text(points + data[name]["points"]);
 	}
 }
@@ -536,7 +537,7 @@ function showGameWinners() {
 /*	for(person in scores) {
 		$("#gamebox").append("<p>" + person + " had " + scores[person] + " points.</p>");
 	}*/
-	$(".score").text(0)
+	$(".score").text(0);
 }
 
 function playerJoined(name, score) {
@@ -569,12 +570,12 @@ function chatMessage(message, username) {
 		).append(
 			$("<span />").addClass("chat_text").text(message)
 		)
-	)
+	);
 	scrollChat();
 }
 
 function sendChat() {
-	$.post("api/chat.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key(), 'text': get_chat_text()});
+	$.post("api/chat.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key(), 'text': get_chat_text()}, make_error_handler(), "json");
 	$("#chatmessage").val("");
 }
 
@@ -605,7 +606,7 @@ function insertWords(words) {
 	}
 
 	// next, save all of their positions
-	var box_poses = []
+	var box_poses = [];
 	$.each($('.wordbox'), function(idx, box) {
 		box_poses[$(box).attr('id')] = $(box).position(); 
 	});
@@ -721,4 +722,31 @@ function killSpacers() {
 		spacers.remove();
 		$.dropManage(); // might have resized from adding a fella
 	});
+}
+
+function make_error_handler(callback) {
+	return function(data, textStatus) {
+		if(data["status"] && data["status"] == "Error" && data["errors"]) {
+			for(var i in data["errors"]) {
+				error = data["errors"][i];
+				if(error == "You are not in this room." || error == "Invalid room.") {
+					eventsLooping = false;
+					showRooms();
+				} else if(error == "Invalid session key." || "No session key.") {
+					$.cookie('amalgam-sesskey', null, {});
+					eventsLooping = false;
+					showLogin();
+				}
+			}
+			if($("#errors").length == 0) {
+				$("#gamebox").append("<div class='notification' id='errors'></div>");
+			}
+			for(var i in data["errors"]) {
+				error = data["errors"][i];
+				$("#errors").append($("<p class='error'></p>").text(error));
+			}
+		} else if(callback) {
+			callback(data, textStatus);
+		}
+	};
 }
