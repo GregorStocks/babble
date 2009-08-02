@@ -6,7 +6,6 @@ cgitb.enable()
 
 import lib.template as template, lib.SQL as SQL, lib.amalgutils as amalgutils
 
-errors = []
 conn = SQL.get_conn()
 cursor = SQL.get_cursor(conn)
 

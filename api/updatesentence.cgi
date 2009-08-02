@@ -17,18 +17,18 @@ errors = []
 conn = SQL.get_conn()
 cursor = SQL.get_cursor(conn)
 
-if len(words) > 50:
-	errors.append("This sentence is too long!")
+if len(words) > 50: # seems reasonable
+	errors.append(error.TOO_LONG)
 if not sesskey:
-	errors.append("No session key.")
+	errors.append(error.NO_SESSKEY)
 if not amalgutils.is_valid_room(cursor, roomid):
-	errors.append("Invalid room.")
+	errors.append(error.INVALID_ROOM)
 
 if not errors:
 	cursor.execute("SELECT id FROM users WHERE sesskey = %s LIMIT 1", sesskey)
 	row = cursor.fetchone()
 	if not row:
-		errors.append("Invalid session key.")
+		errors.append(error.INVALID_SESSKEY)
 	else:
 		userid = row['id']
 
@@ -36,12 +36,12 @@ roundid = 0
 if not errors:
 	roundid = amalgutils.get_current_round_id(cursor, roomid)
 	if not roundid:
-		errors.append("There does not appear to be a round.")
+		errors.append(error.NO_ROUND)
 
 if not errors:
 	state = amalgutils.get_current_state(cursor, roundid)
 	if state != event.ROUND_START and state != event.SENTENCE_MAKING_OVER:
-		errors.append("Making sentences is not allowed at this time.")
+		errors.append(error.NO_MAKING)
 
 wordids = []
 if not errors:
@@ -73,7 +73,7 @@ if not errors:
 							found = True
 							break
 		if not found:
-			errors.append("Invalid word: %s" % word)
+			errors.append(error.INVALID_WORD % word)
 			break
 
 if not errors:

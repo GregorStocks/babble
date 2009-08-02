@@ -7,6 +7,7 @@ cgitb.enable()
 import lib.template as template, lib.SQL as SQL, lib.amalgutils as amalgutils
 import lib.auth as auth
 import random
+import lib.const.error as error
 
 form = cgi.FieldStorage()
 
@@ -17,10 +18,10 @@ password = form.getfirst('password')
 errors = []
 
 if not username:
-	errors.append('No username!')
+	errors.append(error.NO_USERNAME)
 
 if not password:
-	errors.append('No password!')
+	errors.append(error.NO_PASSWORD)
 
 sesskey = None
 if not errors:
@@ -35,7 +36,7 @@ if not errors:
 			sesskey = hex(random.randint(0, 16 ** 10))
 			cursor.execute('UPDATE users SET sesskey = %s WHERE id = %s', (sesskey, row['id']))
 	if not sesskey:
-		errors.append('Invalid username/password combination!')
+		errors.append(error.INVALID_LOGIN)
 
 result = {}
 if errors:

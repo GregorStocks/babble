@@ -20,15 +20,15 @@ cursor = SQL.get_cursor(conn)
 userid = None
 
 if not sesskey:
-	errors.append("No session key.")
+	errors.append(error.NO_SESSKEY)
 if not sentenceid:
-	errors.append("No sentence chosen to vote for.")
+	errors.append(error.NO_SENTENCE)
 
 if not errors:
 	cursor.execute("SELECT id FROM users WHERE sesskey = %s LIMIT 1", sesskey)
 	row = cursor.fetchone()
 	if not row:
-		errors.append("Invalid session key.")
+		errors.append(error.INVALID_SESSKEY)
 	else:
 		userid = row['id']
 
@@ -38,22 +38,22 @@ if not errors:
 	cursor.execute("SELECT userid, roundid FROM sentences WHERE hashedid = %s", sentenceid)
 	row = cursor.fetchone()
 	if not row:
-		errors.append("Invalid sentence ID.")
+		errors.append(error.INVALID_SENTENCE)
 	else:
 		voteid = row["userid"]
 		roundid = row['roundid']
 		if voteid == userid:
-			errors.append("You can't vote for yourself!")
+			errors.append(error.NO_VOTE_SELF)
 
 if not errors:
 	cursor.execute("SELECT userid FROM sentences WHERE userid = %s AND roundid = %s", (userid, roundid))
 	if not cursor.fetchone():
-		errors.append("You didn't submit a sentence!")
+		errors.append(error.NO_SENTENCE_SUBMITTED)
 
 if not errors:
 	state = amalgutils.get_current_state(cursor, roundid)
 	if state != event.COLLECTING_OVER and state != event.VOTING_OVER:
-		errors.append("Voting is not allowed at this time. State is " + str(state))
+		errors.append(error.NO_VOTING)
 
 if not errors:
 	cursor.execute('DELETE FROM votes WHERE userid = %s AND roundid = %s',
