@@ -438,7 +438,7 @@ function startRound() {
 			);
 	$("#dropbox")
 		.append("<div class='prop' id='prop'></div>")
-		.append("<div class='clear' id='clear'></div></div>")
+		.append("<div class='clear' id='clear'></div>")
 		.disableTextSelect()
 		.bind('drop', function(event) {
 			// find the farthest-left wordbox with a center to the right of the mouse pointer.
