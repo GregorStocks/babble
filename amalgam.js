@@ -19,7 +19,7 @@ function add_suffix(phrase, suffix) {
 			suff = 'es';
 		}
 	} else if(suff == 'y') {
-		if(phrase.match(/t$/)) {
+		if(phrase.match(/it$/)) {
 			suff = 'ty';
 		}
 	} else if(suff == 'ly') {
