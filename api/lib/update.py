@@ -38,18 +38,20 @@ def collected(cursor, roomid):
 		round_end(cursor, roomid)
 
 def start_new_round(cursor, roomid):
-	cursor.execute('SELECT word, minnum, id FROM words WHERE minnum > 0')
+	cursor.execute('SELECT word, minnum, id, wordtype FROM words WHERE minnum > 0')
 	# TODO: do this without having to fetch every single word from the database
-	rows = cursor.fetchall()
+	mandrows = cursor.fetchall()
 	wordrows = []
-	for row in rows:
-		for i in range(row["minnum"]):
-			wordrows.append(row)
 	
 	for x in xrange(len(wordtype.TYPES)):
+		for row in mandrows:
+			if row['wordtype'] == wordtype.TYPES[x]:
+				for i in range(row['minnum']):
+					wordrows.append(row)
 		# I'm pretty confident there's a better way to do this but I'm also pretty confident that this works well enough
+		template.debug("okay well right now there are %s wordrows and %s types and x is %s so we're going to get %s" % (len(wordrows), len(wordtype.TYPES), x, round((config.WORDS_PER_ROUND - len(wordrows)) / (len(wordtype.TYPES) - x))))
 		cursor.execute('SELECT word, minnum, id FROM words WHERE wordtype = %s ORDER BY RAND() LIMIT %s',
-			(x, round((config.WORDS_PER_ROUND - len(wordrows)) / (len(wordtype.TYPES) - x))))
+			(x, round((config.WORDS_PER_ROUND / len(wordtype.TYPES) * (x + 1)) - len(wordrows))))
 		rows = cursor.fetchall()
 		for row in rows:
 			wordrows.append(row)

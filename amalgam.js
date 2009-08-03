@@ -442,9 +442,15 @@ function startRound() {
 	$("#gamebox")
 		.append(
 			$("<div class='wordsouter' />")
-				.append("<div class='wordsbox wordscontainer' id='wordsbox'></div>")
+				.append("<div class='wordsbox wordscontainer' id='wordsbox0'></div>")
+				.append("<div class='wordsbox wordscontainer' id='wordsbox1'></div>")
+				.append("<div class='clear'></div>")
 				.append("<div class='dropbox wordscontainer' id='dropbox'></div>")
 				.append("<p class='sentence' id='sentence'>&nbsp;</p>")
+				.append("<div class='clear'></div>")
+				.append("<div class='wordsbox wordscontainer' id='wordsbox2'></div>")
+				.append("<div class='wordsbox wordscontainer' id='wordsbox3'></div>")
+				.append("<div class='clear'></div>")
 			);
 	$("#dropbox")
 		.append("<div class='prop' id='prop'></div>")
@@ -473,7 +479,7 @@ function startRound() {
 			$.dropManage(); // might have resized from adding a fella
 			updateSentence();
 		});
-	$("#wordsbox").disableTextSelect();
+	$(".wordsbox").disableTextSelect();
 }
 
 function startCollecting() {
@@ -610,7 +616,7 @@ function insertWords(words) {
 		if(word === "==" || word === "^" || word === "++") {
 			box.addClass('special');
 		}
-		$('#wordsbox').append(box);
+		$('#wordsbox' + Math.floor(4 * i / words.length)).append(box);
 	}
 
 	// next, save all of their positions
@@ -697,7 +703,7 @@ function insertWords(words) {
 					width: $(event.dragTarget).width() + 'px'
 			});
 		}
-		$('#wordsbox').append(this); // remove from the sentence
+		$('#wordsbox0').append(this); // remove from the sentence
 		$.dropManage(); // drop area might have resized from removing it
 		updateSentence();
 	})

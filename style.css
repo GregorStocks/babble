@@ -32,9 +32,9 @@ body {
 }
 .wordscontainer {
 	padding: .3em .15em .3em .15em;
-	clear: both;
 	margin-left: auto;
 	margin-right: auto;
+	float: left;
 }
 
 .wordsouter {
@@ -46,8 +46,8 @@ body {
 }
 
 .wordsbox {
-	height: 20.6em;
-	width: 100%;
+	width: 45%;
+	height: 10em;
 }
 .gamebox {
 	height: 27em;
