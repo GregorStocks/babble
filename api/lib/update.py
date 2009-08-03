@@ -48,8 +48,6 @@ def start_new_round(cursor, roomid):
 			if row['wordtype'] == wordtype.TYPES[x]:
 				for i in range(row['minnum']):
 					wordrows.append(row)
-		# I'm pretty confident there's a better way to do this but I'm also pretty confident that this works well enough
-		template.debug("okay well right now there are %s wordrows and %s types and x is %s so we're going to get %s" % (len(wordrows), len(wordtype.TYPES), x, round((config.WORDS_PER_ROUND - len(wordrows)) / (len(wordtype.TYPES) - x))))
 		cursor.execute('SELECT word, minnum, id FROM words WHERE wordtype = %s ORDER BY RAND() LIMIT %s',
 			(x, round((config.WORDS_PER_ROUND / len(wordtype.TYPES) * (x + 1)) - len(wordrows))))
 		rows = cursor.fetchall()

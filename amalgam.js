@@ -15,11 +15,10 @@ function make_error_handler(callback) {
 				var error = data["errors"][i];
 				if(error === "You are not in this room." || error === "Invalid room.") {
 					eventsLooping = false;
+					timeLeft = 0;
 					showRooms();
 				} else if(error === "Invalid session key." || error === "No session key.") {
-					$.cookie('amalgam-sesskey', null, {});
-					eventsLooping = false;
-					showLogin();
+					logout();
 				}
 			}
 			if($("#errors").length === 0) {
@@ -290,6 +289,9 @@ function scrollChat() {
 }
 
 function pingLoop() {
+	if(!eventsLooping) {
+		return;
+	}
 	$.post("api/ping.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()}, make_error_handler(), "json");
 	setTimeout(pingLoop, 5000);
 }
@@ -332,6 +334,7 @@ function start() {
 
 function showRooms() {
 	resetUi();
+	$("#membertable").empty();
 	$.getJSON("api/getroomlist.cgi", make_error_handler(function(rooms) {
 		$("#gamebox").append("<div class='notification' id='rooms'><h3>Choose a room to join:</h3></div>");
 		for(var roomid in rooms) {
@@ -414,6 +417,18 @@ function busyIndicator(show) {
 	}
 }
 
+function logout() {
+	$('#sesskey').val("");
+	$('#logout').remove();
+	$('#loggedin').remove();
+	$("#membertable").empty();
+	$.cookie('amalgam-sesskey', null, {});
+	$.cookie('amalgam-username', null, {});
+	eventsLooping = false;
+	timeLeft = 0;
+	showLogin();
+}
+
 function login() {
 	var username = $("#username").val();
 	var password = $("#password").val();
@@ -421,6 +436,9 @@ function login() {
 		if(data && data["status"] && data["status"] === "OK" && data["sesskey"]) {
 			$('#sesskey').val(data["sesskey"]);
 			$.cookie('amalgam-sesskey', data["sesskey"], {path: '/', expires: new Date(2020, 1, 1)});
+			$.cookie('amalgam-username', username, {path: '/', expires: new Date(2020, 1, 1)});
+			$("#footer").prepend("<p class='notes' id='loggedin'>You are currently logged in as " + username + ".</p>")
+				.prepend("<p class='notes' id='logout'><a href='logout()'>Log out/a></p>");
 			showRooms();
 		}
 	}), "json");
@@ -428,8 +446,10 @@ function login() {
 
 function showLogin() {
 	resetUi();
-	if($.cookie('amalgam-sesskey')) {
+	if($.cookie('amalgam-sesskey') && $.cookie('amalgam-username')) {
 		$('#sesskey').val($.cookie('amalgam-sesskey'));
+		$("#footer").prepend("<p class='notes' id='logout'><a href='javascript:logout()'>Log out</a></p>")
+			.prepend("<p class='notes' id='loggedin'>You are currently logged in as "+ $.cookie('amalgam-username') + ".</p>");
 		showRooms();
 	} else {
 		$("#gamebox").append('<form action="index.cgi" method="post"><p>Username: <input type="text" name="username" id="username" /></p><p>Password: <input type="password" name="password" id="password" /></p><input type="submit" value="Log In" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"><a href="register.cgi">Register</a></p><p class="notes"><a href="forgot.cgi">Forgot your password?</a></p></form>');
