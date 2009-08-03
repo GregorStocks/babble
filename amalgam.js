@@ -313,19 +313,18 @@ function eventLoop() {
 	setTimeout(eventLoop, 1000);
 }
 
-function stateLoop() {
-	$.getJSON("api/getstate.cgi", {"roomid": get_room_id()}, make_error_handler(function(state) {
-		processEvent(state["event"]);
-		cureventid = state["eventid"];
-		addPlayers(state["players"], state["scores"]);
-		eventsLooping = true;
-		setTimeout(eventLoop, 1000);
-	}));
-}
-
-
 function start() {
-	$.post("api/join.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()}, make_error_handler(stateLoop), "json");
+	$.post("api/join.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()}, make_error_handler(function() {
+		$.getJSON("api/getstate.cgi", {"roomid": get_room_id()}, make_error_handler(function(state) {
+			processEvent(state["event"]);
+			cureventid = state["eventid"];
+			addPlayers(state["players"], state["scores"]);
+			eventsLooping = true;
+			setTimeout(eventLoop, 1000);
+			setTimeout(pingLoop, 5000);
+		}));
+	}), "json");
+
 	$(window).bind("beforeunload", function() {
 		$.post('api/part.cgi', {'sesskey': get_sess_key(), 'roomid': get_room_id()}, make_error_handler(), "json");
 	});
