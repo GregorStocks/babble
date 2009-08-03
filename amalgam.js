@@ -533,7 +533,7 @@ function startCollectingVotes() {
 function showWinners(data) {
 	// TODO: make this massively more sophisticated
 	resetUi();
-	$("#gamebox").append("<table class='winners' id='winners'></table>");
+	$("#gamebox").append("<table class='winners' id='winners'><tr><th>Sentence</th><th>Player</th><th>Votes</th><th>Points</th></table>");
 	for(var name in data) {
 		if(data[name]["iswinner"]) {
 			$("#gamebox").append("<p>Winner: " + name + "</p>");
