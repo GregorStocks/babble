@@ -437,7 +437,7 @@ function login() {
 			$.cookie('amalgam-sesskey', data["sesskey"], {path: '/', expires: new Date(2020, 1, 1)});
 			$.cookie('amalgam-username', username, {path: '/', expires: new Date(2020, 1, 1)});
 			$("#footer").prepend("<p class='notes' id='loggedin'>You are currently logged in as " + username + ".</p>")
-				.prepend("<p class='notes' id='logout'><a href='logout()'>Log out/a></p>");
+				.prepend("<p class='notes' id='logout'><a href='javascript:logout()'>Log out</a></p>");
 			showRooms();
 		}
 	}), "json");
@@ -451,7 +451,7 @@ function showLogin() {
 			.prepend("<p class='notes' id='loggedin'>You are currently logged in as "+ $.cookie('amalgam-username') + ".</p>");
 		showRooms();
 	} else {
-		$("#gamebox").append('<form action="index.cgi" method="post"><p>Username: <input type="text" name="username" id="username" /></p><p>Password: <input type="password" name="password" id="password" /></p><input type="submit" value="Log In" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"><a href="register.cgi">Register</a></p><p class="notes"><a href="forgot.cgi">Forgot your password?</a></p></form>');
+		$("#gamebox").append('<div class="notification"><form action="index.cgi" method="post"><p>Username: <input type="text" name="username" id="username" /></p><p>Password: <input type="password" name="password" id="password" /></p><input type="submit" value="Log In" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"><a href="register.cgi">Register</a></p><p class="notes"><a href="forgot.cgi">Forgot your password?</a></p></form></div>');
 	}
 }
 
@@ -530,8 +530,7 @@ function votefor(sentenceid) {
 
 function startVoting(sentences) {
 	resetUi();
-	$("#gamebox").append("<p>voting!</p");
-	$("#gamebox").append("<table class='votetable' id='votetable' border=1></table");
+	$("#gamebox").append("<div class='notification'><p>voting!</p<table class='votetable' id='votetable' border=1></table></div>");
 	for(var sentenceid in sentences) {
 		var sentence = makeSentence(sentences[sentenceid]);
 		var niceid = sentenceid.replace(/\$/g, "");
@@ -552,7 +551,7 @@ function startCollectingVotes() {
 function showWinners(data) {
 	// TODO: make this massively more sophisticated
 	resetUi();
-	$("#gamebox").append("<table class='winners' id='winners'><tr><th>Sentence</th><th>Player</th><th>Votes</th><th>Points</th></table>");
+	$("#gamebox").append("<div class='notification'><table class='winners' id='winners'><tr><th>Sentence</th><th>Player</th><th>Votes</th><th>Points</th></table></div>");
 	for(var name in data) {
 		if(data[name]["iswinner"]) {
 			$("#gamebox").append("<p>Winner: " + name + "</p>");
@@ -567,7 +566,7 @@ function showWinners(data) {
 
 function showGameWinners() {
 	resetUi();
-	$("#gamebox").append("<p>GAME OVER!!!</p>");
+	$("#gamebox").append("<div class='notification'><p>GAME OVER!!!</p></div>");
 /*	for(person in scores) {
 		$("#gamebox").append("<p>" + person + " had " + scores[person] + " points.</p>");
 	}*/
