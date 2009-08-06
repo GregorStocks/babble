@@ -89,14 +89,6 @@ function add_prefix(phrase, prefix) {
 }
 
 function capitalize(word) {
-	if(word === "!") {
-		return "I";
-	 }else {
-		return word.substring(0, 1).toUpperCase() + word.substring(1, word.length);
-	}
-}
-
-function capitalize_display(word) {
 	return word.substring(0, 1).toUpperCase() + word.substring(1, word.length);
 }
 
@@ -129,7 +121,24 @@ function add_to_sentence(sentence, phrase, sentence_start, prefixes) {
 
 var wordlist = [];
 
+function preprocess_words(words) {
+	var newwords = [];
+	var prevword = null;
+	for(i in words) {
+		var word = words[i];
+		if(word== "!") {
+			if(prevword === null || prevword === "^" || prevword === "." || prevword === "," || prevword === ";") {
+				word = "I";
+			}
+		}
+		newwords[i] = word;
+		prevword = word;
+	}
+	return newwords;
+}
+
 function makeSentence(words) {
+	words = preprocess_words(words);
 	var prefixstack = [];
 	var sentence = "";
 	var curphrase = "";
@@ -626,7 +635,7 @@ function insertWords(words) {
 	// first, insert all the boxes with static positioning
 	for(var i = 0; i < words.length; i++) {
 		word = words[i];
-		var box = $('<span id="wordbox' + i + '" class="wordbox">' + capitalize_display(word) + '</span>');
+		var box = $('<span id="wordbox' + i + '" class="wordbox">' + capitalize(word) + '</span>');
 		box.disableTextSelect();
 		if(word === "==") {
 			box.addClass('copy');
