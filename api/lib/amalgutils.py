@@ -54,11 +54,6 @@ def get_winner_data(cursor, roundid):
 	votes = {}
 	votecounts = {}
 	mostvotes = 0
-	winner = None
-	# TODO: a better winning algorithm than "whoever was first to get more 
-	# votes than everyone else"
-	# TODO: make it work with the people who got no votes too
-	# TODO: make it return the sentences too
 	for row in rows:
 		voter = row['votername']
 		votee = row['voteename']
@@ -73,7 +68,6 @@ def get_winner_data(cursor, roundid):
 				votecounts[votee] = 1
 			if votecounts[votee] > mostvotes:
 				mostvotes = votecounts[votee]
-				winner = votee
 	
 	# got the votes, now get the sentences
 	cursor.execute('''
@@ -104,22 +98,28 @@ def get_winner_data(cursor, roundid):
 		
 		if username in votes:
 			dat['vote'] = votes[username]
-			points = dat['votes']
-			if winner == username:
-				points += config.POINTS_FOR_WINNING_ROUND
-			if dat['vote'] == winner:
-				points += config.POINTS_FOR_VOTING_WINNER
-			dat['points'] = points
+			dat['points'] = dat['votes']
 		else:
 			dat['vote'] = None
 			dat['points'] = 0
 		
-		if username == winner:
-			dat['iswinner'] = True
-		else:
-			dat['iswinner'] = False
+		dat['iswinner'] = False
 		
 		data[username] = dat
+	
+	longestlength = 0
+	winner = None
+	for username in votes:
+		if votes[username] == mostvotes && len(sentences_by_user[username]) > longestlength:
+			winner = username
+			longestlength = len(sentences_by_user[username])
+	
+	if winner:
+		data[winner]['iswinner'] = True
+		data[winner]['points'] += config.POINTS_FOR_WINNING_ROUND
+		for username in data:
+			if data[username]['vote'] == winner:
+				data[username]['points'] += POINTS_FOR_VOTING_WINNER
 
 	# Note that currently usernames can only be alphanumeric + _, so there's no
 	# need to sanitize, either here or clientside.
