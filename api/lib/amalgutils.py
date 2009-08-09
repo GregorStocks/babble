@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-import lib.template as template
 import lib.const.config as config
 import lib.const.event as event
 
@@ -110,7 +109,7 @@ def get_winner_data(cursor, roundid):
 	longestlength = 0
 	winner = None
 	for username in votes:
-		if votes[username] == mostvotes && len(sentences_by_user[username]) > longestlength:
+		if votes[username] == mostvotes and len(sentences_by_user[username]) > longestlength:
 			winner = username
 			longestlength = len(sentences_by_user[username])
 	
@@ -119,7 +118,7 @@ def get_winner_data(cursor, roundid):
 		data[winner]['points'] += config.POINTS_FOR_WINNING_ROUND
 		for username in data:
 			if data[username]['vote'] == winner:
-				data[username]['points'] += POINTS_FOR_VOTING_WINNER
+				data[username]['points'] += config.POINTS_FOR_VOTING_WINNER
 
 	# Note that currently usernames can only be alphanumeric + _, so there's no
 	# need to sanitize, either here or clientside.

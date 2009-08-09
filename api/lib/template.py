@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-import cgitb, cgi
+import cgitb
 cgitb.enable()
 
 import cjson as json

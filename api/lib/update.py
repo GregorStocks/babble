@@ -1,14 +1,10 @@
 #!/usr/bin/env python
 from __future__ import absolute_import
 
-import lib.SQL as SQL 
 import lib.amalgutils as amalgutils
 import lib.const.event as event
 import lib.const.config as config
-import lib.template as template
-import lib.const.event as event
 import lib.const.wordtype as wordtype
-import random
 import datetime
 
 def start_new_game(cursor, roomid):
