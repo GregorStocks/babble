@@ -1,16 +1,14 @@
 #!/usr/bin/env python
 from __future__ import absolute_import
 
-import cgitb, cgi
-cgitb.enable()
+import lib.amalgutils as amalgutils
+amalgutils.enabletb()
 
-import random
 import lib.SQL as SQL
 import lib.template as template
-import lib.amalgutils as amalgutils
 import lib.const.event as event
-import lib.const.config as config
 import lib.update as update
+import cgi
 
 def last_event_id(cursor, roomid):
 	roundid = amalgutils.get_current_round_id(cursor, roomid)
@@ -49,4 +47,8 @@ state = {
 	"players": amalgutils.get_room_member_names(cursor, roomid)
 }
 
-template.output_json(state)
+result = {}
+result['status'] = 'OK'
+result['state'] = state
+
+template.output_json(result)

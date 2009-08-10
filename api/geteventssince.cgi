@@ -1,15 +1,13 @@
 #!/usr/bin/env python
 from __future__ import absolute_import
 
-import cgitb, cgi
-cgitb.enable()
+import lib.amalgutils as amalgutils
+amalgutils.enabletb()
 
-import random
+import cgi
 import lib.SQL as SQL
 import lib.template as template
-import lib.amalgutils as amalgutils
 import lib.const.event as event
-import lib.const.config as config
 import lib.update as update
 
 def get_events_since(cursor, eventid, roomid):
@@ -39,4 +37,8 @@ if form.has_key("roomid"):
 update.update_room(cursor, roomid)
 events = get_events_since(cursor, eventid, roomid)
 
-template.output_json(events)
+result = {}
+result['status'] = 'OK'
+result['events'] = events
+
+template.output_json(result)

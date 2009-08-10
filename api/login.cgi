@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 from __future__ import absolute_import
 
-import cgitb, cgi
-cgitb.enable()
+import lib.amalgutils as amalgutils
+amalgutils.enabletb()
 
-import lib.template as template, lib.SQL as SQL, lib.amalgutils as amalgutils
+import cgi
+import lib.template as template, lib.SQL as SQL
 import lib.auth as auth
 import random
 import lib.const.error as error

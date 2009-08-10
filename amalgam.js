@@ -8,6 +8,15 @@ function get_room_id() {
 
 var eventsLooping = false;
 
+$(function() {
+	$("body").ajaxError(function(event, request, settings, error) {
+		console.debug(settings);
+		console.debug(request);
+		console.debug(event);
+		$('body').append(request.responseText);
+	});
+});
+
 function make_error_handler(callback) {
 	return function(data, textStatus) {
 		if(data["status"] && data["status"] === "Error" && data["errors"]) {
@@ -312,10 +321,13 @@ function eventLoop() {
 	if(!eventsLooping) {
 		return;
 	}
-	$.getJSON("api/geteventssince.cgi", {"eventid": cureventid, "roomid": get_room_id()}, make_error_handler(function(events) {
-		for(var i in events) {
-			if(eventsLooping) {
-				processEvent(events[i]);
+	$.getJSON("api/geteventssince.cgi", {"eventid": cureventid, "roomid": get_room_id()}, make_error_handler(function(data) {
+		if(data && data["status"] && data["status"] === "OK" && data["events"]) {
+			events = data["events"]
+			for(var i in events) {
+				if(eventsLooping) {
+					processEvent(events[i]);
+				}
 			}
 		}
 	}));
@@ -324,13 +336,16 @@ function eventLoop() {
 
 function start() {
 	$.post("api/join.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()}, make_error_handler(function() {
-		$.getJSON("api/getstate.cgi", {"roomid": get_room_id()}, make_error_handler(function(state) {
-			processEvent(state["event"]);
-			cureventid = state["eventid"];
-			addPlayers(state["players"], state["scores"]);
-			eventsLooping = true;
-			setTimeout(eventLoop, 1000);
-			setTimeout(pingLoop, 5000);
+		$.getJSON("api/getstate.cgi", {"roomid": get_room_id()}, make_error_handler(function(data) {
+			if(data && data["status"] && data["status"] === "OK" && data["state"]) {
+				state = data["state"];
+				processEvent(state["event"]);
+				cureventid = state["eventid"];
+				addPlayers(state["players"], state["scores"]);
+				eventsLooping = true;
+				setTimeout(eventLoop, 1000);
+				setTimeout(pingLoop, 5000);
+			}
 		}));
 	}), "json");
 
@@ -343,10 +358,13 @@ function start() {
 function showRooms() {
 	resetUi();
 	$("#membertable").empty();
-	$.getJSON("api/getroomlist.cgi", make_error_handler(function(rooms) {
-		$("#gamebox").append("<div class='notification' id='rooms'><h3>Choose a room to join:</h3></div>");
-		for(var roomid in rooms) {
-			$("#rooms").append("<p><button name='room" + roomid + "' onclick='selectroom(" + roomid + ")'>" + rooms[roomid] + "</button></p>");
+	$.getJSON("api/getroomlist.cgi", make_error_handler(function(data) {
+		if(data && data["status"] && data["status"] === "OK" && data["rooms"]) {
+			$("#gamebox").append("<div class='notification' id='rooms'><h3>Choose a room to join:</h3></div>");
+			rooms = data["rooms"]
+			for(var roomid in rooms) {
+				$("#rooms").append("<p><button name='room" + roomid + "' onclick='selectroom(" + roomid + ")'>" + rooms[roomid] + "</button></p>");
+			}
 		}
 	}));
 }
@@ -440,7 +458,7 @@ function logout() {
 function login() {
 	var username = $("#username").val();
 	var password = $("#password").val();
-	$.post("api/login.cgi", {"password": password, "username": username}, make_error_handler(function(data, textStatus) {
+	$.post("api/login.cgi", {"password": password, "username": username}, make_error_handler(function(data) {
 		if(data && data["status"] && data["status"] === "OK" && data["sesskey"]) {
 			$('#sesskey').val(data["sesskey"]);
 			$.cookie('amalgam-sesskey', data["sesskey"], {path: '/', expires: new Date(2020, 1, 1)});

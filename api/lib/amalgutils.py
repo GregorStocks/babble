@@ -1,6 +1,10 @@
 from __future__ import absolute_import
 import lib.const.config as config
 import lib.const.event as event
+import cgitb
+
+def enabletb():
+	cgitb.enable(format = "text")
 
 def get_current_game_id(cursor, roomid):
 	cursor.execute('''SELECT id FROM games
