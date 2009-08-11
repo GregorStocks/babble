@@ -241,6 +241,7 @@ function updateSentence() {
 	sendSentence(words);
 }
 
+// TODO: remove, THIS IS DEBUGGING STUFF
 function submitSentenceAs(sesskey) {
 	$('#sentence').empty();
 	var words = [];
@@ -593,7 +594,12 @@ function hashesTo(key, hash) {
 function votefor(sentenceid) {
 	$(".sentence").removeClass("voted");
 	$.post('api/vote.cgi', {sentenceid: sentenceid, sesskey: get_sess_key()}, make_error_handler(), "json");
-	$("#" + sentenceid.replace(/\$/g, "")).addClass("voted");
+	$("#sent" + sentenceid.replace(/\$/g, "")).addClass("voted");
+}
+
+// TODO: remove, THIS IS DEBUGGING STUFF
+function voteforas(sentenceid, sesskey) {
+	$.post('api/vote.cgi', {sentenceid: sentenceid, sesskey: sesskey}, make_error_handler(), "json");
 }
 
 
@@ -603,10 +609,20 @@ function startVoting(sentences) {
 	for(var sentenceid in sentences) {
 		var sentence = makeSentence(sentences[sentenceid]);
 		var niceid = sentenceid.replace(/\$/g, "");
+		$("#votetable").append("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td></tr>");
 		if(hashesTo(get_sess_key(), sentenceid)) {
-			$("#votetable").append("<tr class='sentence' id='" + niceid + "'><td>" + sentence + "</td><td>YOUR SENTENCE</td></tr>");
+			$("#sent" + niceid).append("<td>YOUR SENTENCE</td>");
 		} else {
-			$("#votetable").append("<tr class='sentence' id='" + niceid + "'><td>" + sentence + "</td><td><button onclick=\"votefor('" + sentenceid + "')\">Vote</button></td></tr>");
+			$("#sent" + niceid).append("<td><button onclick=\"votefor('" + sentenceid + "')\">Vote</button></td></tr>");
+		}
+		// TODO: remove, THIS IS DEBUGGING STUFF
+		keys = ["fake1", "fake2", "fake3", "fake4", "fake5", "fake6", "fake7", "fake8", "fake9"];
+		for(i in keys) {
+			if(hashesTo(keys[i], sentenceid)) {
+				$("#sent" + niceid).append("<td>" + keys[i] + "'s sentence</td>");
+			} else {
+				$("#sent" + niceid).append("<td><button onclick=\"voteforas('" + sentenceid + "', '" + keys[i] + "')\">Vote as " + keys[i] + "</button></td></tr>");
+			}
 		}
 	}
 }
