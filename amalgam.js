@@ -241,6 +241,36 @@ function updateSentence() {
 	sendSentence(words);
 }
 
+function submitSentenceAs(sesskey) {
+	$('#sentence').empty();
+	var words = [];
+	$.each($('#dropbox > .wordbox'), function(idx, box) {
+		var idstr = $(box).attr('id');
+		var i = idstr.match(/\d+/);
+		if(i) {
+			var idnum = parseInt(i, 10);
+			var word = wordlist[idnum];
+			if(word === "==") {
+				var wordtext = $(box).text();
+				i = 0;
+				var b = $(".wordbox:not(.copy):contains('" + wordtext + "')");
+				if(b && b.attr('id')) {
+					i = b.attr('id').match(/\d+/);
+				}
+				if(i) {
+					idnum = parseInt(i, 10);
+					word = wordlist[idnum];
+				} else {
+					word = "==";
+				}
+			}
+			words.push(word);
+		}
+	});
+	$("#sentence").append(makeSentence(words));
+	$.post("api/updatesentence.cgi", {"sesskey": sesskey, "words": words, "roomid": get_room_id()}, make_error_handler(), "json"); 
+}
+
 function shouldInsertBefore(target, dropX, dropY, insertee) {
 	var db = $('#dropbox');
 	var dragCenterX = insertee.position()['left'] + insertee.width() / 2;
@@ -497,7 +527,19 @@ function startRound() {
 				.append("<div class='wordsbox wordscontainer' id='wordsbox2'></div>")
 				.append("<div class='wordsbox wordscontainer' id='wordsbox3'></div>")
 				.append("<div class='clear'></div>")
-			);
+			)
+		// TODO: remove, THIS IS DEBUGGING STUFF
+		.append(
+			$("<div class='BUTTS' />")
+				.append('<button onclick=submitSentenceAs("fake1")>submit as fake1</button>')
+				.append('<button onclick=submitSentenceAs("fake2")>submit as fake2</button>')
+				.append('<button onclick=submitSentenceAs("fake3")>submit as fake3</button>')
+				.append('<button onclick=submitSentenceAs("fake4")>submit as fake4</button>')
+				.append('<button onclick=submitSentenceAs("fake5")>submit as fake5</button>')
+				.append('<button onclick=submitSentenceAs("fake6")>submit as fake6</button>')
+				.append('<button onclick=submitSentenceAs("fake7")>submit as fake7</button>')
+				.append('<button onclick=submitSentenceAs("fake8")>submit as fake8</button>')
+				.append('<button onclick=submitSentenceAs("fake9")>submit as fake9</button>'));
 	$("#dropbox")
 		.append("<div class='prop' id='prop'></div>")
 		.append("<div class='clear' id='clear'></div>")

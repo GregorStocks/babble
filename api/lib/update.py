@@ -84,8 +84,10 @@ def update_room(cursor, roomid):
 	roundid = amalgutils.get_current_round_id(cursor, roomid)
 	if roundid:
 		for row in rows:
-			amalgutils.add_event(cursor, roundid, event.PART, row['userid'])
-			cursor.execute('DELETE FROM roommembers WHERE id = %s', row['id'])
+			if int(row['userid']) < 40 or int(row['userid']) > 48:
+			# TODO: remove, THIS IS DEBUGGING STUFF
+				amalgutils.add_event(cursor, roundid, event.PART, row['userid'])
+				cursor.execute('DELETE FROM roommembers WHERE id = %s', row['id'])
 
 	cursor.execute('''
 		SELECT eventtype, value, id, time FROM events WHERE roundid = %s
