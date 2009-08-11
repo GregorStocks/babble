@@ -56,7 +56,6 @@ def get_winner_data(cursor, roundid):
 	rows = cursor.fetchall()
 	votes = {}
 	votecounts = {}
-	mostvotes = 0
 	for row in rows:
 		voter = row['votername']
 		votee = row['voteename']
@@ -69,8 +68,6 @@ def get_winner_data(cursor, roundid):
 				votecounts[votee] += 1
 			else:
 				votecounts[votee] = 1
-			if votecounts[votee] > mostvotes:
-				mostvotes = votecounts[votee]
 	
 	# got the votes, now get the sentences
 	cursor.execute('''
@@ -111,11 +108,19 @@ def get_winner_data(cursor, roundid):
 		data[username] = dat
 	
 	longestlength = 0
+	mostvotes = 0
 	winner = None
-	for username in votes:
-		if votes[username] == mostvotes and len(sentences_by_user[username]) > longestlength:
+	for username in votecounts:
+		if username not in votes: # didn't vote, can't win
+			continue
+		if username not in sentences_by_user: # shouldn't happen
+			continue
+		if votecounts[username] > mostvotes:
 			winner = username
 			longestlength = len(sentences_by_user[username])
+			mostvotes = votecounts[username]
+		elif votecounts[username] == mostvotes and len(sentences_by_user[username]) > longestlength:
+			winner = username
 	
 	if winner:
 		data[winner]['iswinner'] = True
