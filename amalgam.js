@@ -1,3 +1,5 @@
+/* -*- tab-width: 4; indent-tabs-mode: t; -*- */
+
 function get_sess_key() {
 	return $('#sesskey').val();
 }
@@ -599,15 +601,25 @@ function votefor(sentenceid) {
 
 function startVoting(sentences) {
 	resetUi();
-	$("#gamebox").append("<div class='notification'><p>voting!</p<table class='votetable' id='votetable' border=1></table></div>");
+	$("#gamebox").append("<div class='notification'><p>Vote for a sentence:</p<table class='votetable' id='votetable' border=1></table></div>");
+	var i = 0;
+
 	for(var sentenceid in sentences) {
-		var sentence = makeSentence(sentences[sentenceid]);
-		var niceid = sentenceid.replace(/\$/g, "");
-		if(hashesTo(get_sess_key(), sentenceid)) {
-			$("#votetable").append("<tr class='sentence' id='" + niceid + "'><td>" + sentence + "</td><td>YOUR SENTENCE</td></tr>");
-		} else {
-			$("#votetable").append("<tr class='sentence' id='" + niceid + "'><td>" + sentence + "</td><td><button onclick=\"votefor('" + sentenceid + "')\">Vote</button></td></tr>");
-		}
+		++i;
+
+	   	var showfunc = function() {		
+			var sentence = makeSentence(sentences[arguments.callee.sentenceid]);
+			var niceid = arguments.callee.sentenceid.replace(/\$/g, "");
+
+			if(hashesTo(get_sess_key(), arguments.callee.sentenceid)) {
+				$("<tr class='sentence' id='" + niceid + "'><td>" + sentence + "</td><td></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
+			} else {
+				$("<tr class='sentence' id='" + niceid + "'><td>" + sentence + "</td><td><button onclick=\"votefor('" + arguments.callee.sentenceid + "')\">Vote</button></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
+			}
+		};
+		showfunc.sentenceid = sentenceid;
+
+		setTimeout(showfunc, 100*i);
 	}
 }
 
