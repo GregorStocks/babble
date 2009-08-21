@@ -243,37 +243,6 @@ function updateSentence() {
 	sendSentence(words);
 }
 
-// TODO: remove, THIS IS DEBUGGING STUFF
-function submitSentenceAs(sesskey) {
-	$('#sentence').empty();
-	var words = [];
-	$.each($('#dropbox > .wordbox'), function(idx, box) {
-		var idstr = $(box).attr('id');
-		var i = idstr.match(/\d+/);
-		if(i) {
-			var idnum = parseInt(i, 10);
-			var word = wordlist[idnum];
-			if(word === "==") {
-				var wordtext = $(box).text();
-				i = 0;
-				var b = $(".wordbox:not(.copy):contains('" + wordtext + "')");
-				if(b && b.attr('id')) {
-					i = b.attr('id').match(/\d+/);
-				}
-				if(i) {
-					idnum = parseInt(i, 10);
-					word = wordlist[idnum];
-				} else {
-					word = "==";
-				}
-			}
-			words.push(word);
-		}
-	});
-	$("#sentence").append(makeSentence(words));
-	$.post("api/updatesentence.cgi", {"sesskey": sesskey, "words": words, "roomid": get_room_id()}, make_error_handler(), "json"); 
-}
-
 function shouldInsertBefore(target, dropX, dropY, insertee) {
 	var db = $('#dropbox');
 	var dragCenterX = insertee.position()['left'] + insertee.width() / 2;
@@ -530,19 +499,7 @@ function startRound() {
 				.append("<div class='wordsbox wordscontainer' id='wordsbox2'></div>")
 				.append("<div class='wordsbox wordscontainer' id='wordsbox3'></div>")
 				.append("<div class='clear'></div>")
-			)
-		// TODO: remove, THIS IS DEBUGGING STUFF
-		.append(
-			$("<div class='BUTTS' style='clear:both'/>")
-				.append('<button onclick=submitSentenceAs("fake1")>submit as fake1</button>')
-				.append('<button onclick=submitSentenceAs("fake2")>submit as fake2</button>')
-				.append('<button onclick=submitSentenceAs("fake3")>submit as fake3</button>')
-				.append('<button onclick=submitSentenceAs("fake4")>submit as fake4</button>')
-				.append('<button onclick=submitSentenceAs("fake5")>submit as fake5</button>')
-				.append('<button onclick=submitSentenceAs("fake6")>submit as fake6</button>')
-				.append('<button onclick=submitSentenceAs("fake7")>submit as fake7</button>')
-				.append('<button onclick=submitSentenceAs("fake8")>submit as fake8</button>')
-				.append('<button onclick=submitSentenceAs("fake9")>submit as fake9</button>'));
+			);
 	$("#dropbox")
 		.append("<div class='prop' id='prop'></div>")
 		.append("<div class='clear' id='clear'></div>")
@@ -599,12 +556,6 @@ function votefor(sentenceid) {
 	$("#sent" + sentenceid.replace(/\$/g, "")).addClass("voted");
 }
 
-// TODO: remove, THIS IS DEBUGGING STUFF
-function voteforas(sentenceid, sesskey) {
-	$.post('api/vote.cgi', {sentenceid: sentenceid, sesskey: sesskey}, make_error_handler(), "json");
-}
-
-
 function startVoting(sentences) {
 	resetUi();
 	$("#gamebox").append("<div class='notification'><p>Vote for a sentence:</p<table class='votetable' id='votetable' border=1></table></div>");
@@ -622,15 +573,6 @@ function startVoting(sentences) {
 			} else {
 				$("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td><td><button onclick=\"votefor('" + arguments.callee.sentenceid + "')\">Vote</button></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
 			}
-            // TODO: remove, THIS IS DEBUGGING STUFF
-            keys = ["fake1", "fake2", "fake3", "fake4", "fake5", "fake6", "fake7", "fake8", "fake9"];
-			for (key in keys) {
-				if(!hashesTo(keys[key], arguments.callee.sentenceid)) {
-					$("#sent" + niceid).append("<td><button onclick=\"voteforas('" + sentenceid + "', '" + keys[key] + "')\">Vote as " + keys[key] + "</button></td></tr>");
-				} else  {
-					$("#sent" + niceid).append("<td></td>");
-				}
-			}
 		};
 		showfunc.sentenceid = sentenceid;
 
@@ -645,7 +587,6 @@ function startCollectingVotes() {
 }
 
 function showWinners(data) {
-	// TODO: make this massively more sophisticated
 	resetUi();
 	$("#gamebox").append("<div class='notification'><table class='winners' id='winners'><tr><th>Sentence</th><th>Player</th><th>Votes</th><th>Points</th></table></div>");
 	var morePoints = function(a, b) {
