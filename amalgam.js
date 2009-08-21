@@ -206,6 +206,9 @@ function makeSentence(words) {
 		}
 	}
 	sentence = add_to_sentence(sentence, curphrase, sentence_start, prefixstack);
+	if(sentence == "") {
+		sentence = "&nbsp;";
+	}
 	return sentence;
 }
 
