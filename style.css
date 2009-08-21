@@ -42,29 +42,32 @@ body {
 .wordsouter {
 	background: #333333;
 	border: .2em inset #751919;
-	width: 40em;
+	width: 600px;
 	margin-left: auto;
 	margin-right: auto;
 }
 
 .wordsbox {
-	width: 45%;
-	height: 10em;
+	width: 48%;
+	min-height: 10em;
 }
 .gamebox {
 	height: 27em;
 }
 .dropbox {
 	border-top: 1px dotted #aaaaaa;
+	border-bottom: 1px dotted #aaaaaa;
 	background: #444444;
 	height: auto;
-	width: 39.65em;
+	margin-left: auto;
+	margin-right: auto;
+	float: none;
+	width: 596px;
 }
 .sentence {
 	margin: 0;
 	text-align: center;
 	padding: 4px;
-	border-top: 1px dotted #aaaaaa;
 	color: white;
 	font-size: 0.7em;
 	font-family: Tahoma, Verdana, Sans;

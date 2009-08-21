@@ -533,7 +533,7 @@ function startRound() {
 			)
 		// TODO: remove, THIS IS DEBUGGING STUFF
 		.append(
-			$("<div class='BUTTS' />")
+			$("<div class='BUTTS' style='clear:both'/>")
 				.append('<button onclick=submitSentenceAs("fake1")>submit as fake1</button>')
 				.append('<button onclick=submitSentenceAs("fake2")>submit as fake2</button>')
 				.append('<button onclick=submitSentenceAs("fake3")>submit as fake3</button>')
@@ -742,6 +742,13 @@ function insertWords(words) {
 		}
 		$('#wordsbox' + Math.floor(4 * i / words.length)).append(box);
 	}
+
+	$.each($('.wordsbox'), function(idx, box) {
+		console.debug($(box).height());
+		$(box).css({
+			height: $(box).height()
+		});
+	});
 
 	// next, save all of their positions
 	var box_poses = [];
