@@ -685,7 +685,6 @@ function insertWords(words) {
 	}
 
 	$.each($('.wordsbox'), function(idx, box) {
-		console.debug($(box).height());
 		$(box).css({
 			height: $(box).height()
 		});
