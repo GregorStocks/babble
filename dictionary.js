@@ -517,4 +517,655 @@ var dictionary = {
 			'!': 'I'
 		}
 	}
+
+	"are": {
+		combos: {
+			'-ed': "were"
+		}
+	}
+	"am": {
+		combos: {
+			'-ed': "was"
+		}
+	}
+	"as": {
+		combos: {
+			'-ed': "assed"
+		}
+	}
+	"awake": {
+		combos: {
+			'-ed': "awoke"
+		}
+	}
+	"babysit": {
+		combos: {
+			'-ed': "babysat"
+		}
+	}
+	"bite": {
+		combos: {
+			'-ed': "bit"
+		}
+	}
+	"bend": {
+		combos: {
+			'-ed': "bent"
+		}
+	}
+	"bleed": {
+		combos: {
+			'-ed': "bled"
+		}
+	}
+	"breed": {
+		combos: {
+			'-ed': "bred"
+		}
+	}
+	"blow": {
+		combos: {
+			'-ed': "blew"
+		}
+	}
+	"buy": {
+		combos: {
+			'-ed': "bought"
+		}
+	}
+	"break": {
+		combos: {
+			'-ed': "broke"
+		}
+	}
+	"begin": {
+		combos: {
+			'-ed': "began"
+		}
+	}
+	"become": {
+		combos: {
+			'-ed': "became"
+		}
+	}
+	"bring": {
+		combos: {
+			'-ed': "brought"
+		}
+	}
+	"build": {
+		combos: {
+			'-ed': "built"
+		}
+	}
+	"catch": {
+		combos: {
+			'-ed': "caught"
+		}
+	}
+	"cut": {
+		combos: {
+			'-ed': "cut"
+		}
+	}
+	"choose": {
+		combos: {
+			'-ed': "chose"
+		}
+	}
+	"come": {
+		combos: {
+			'-ed': "came"
+		}
+	}
+	"can't": {
+		combos: {
+			'-ed': "couldn't"
+		}
+	}
+	"doesn't": {
+		combos: {
+			'-ed': "didn't"
+		}
+	}
+	"don't": {
+		combos: {
+			'-ed': "didn't"
+		}
+	}
+	"do": {
+		combos: {
+			'-ed': "did"
+		}
+	}
+	"deal": {
+		combos: {
+			'-ed': "dealt"
+		}
+	}
+	"draw": {
+		combos: {
+			'-ed': "drew"
+		}
+	}
+	"drink": {
+		combos: {
+			'-ed': "drank"
+		}
+	}
+	"drive": {
+		combos: {
+			'-ed': "drove"
+		}
+	}
+	"eat": {
+		combos: {
+			'-ed': "ate"
+		}
+	}
+	"equip": {
+		combos: {
+			'-ed': "equipped"
+		}
+	}
+	"forget": {
+		combos: {
+			'-ed': "forgot"
+		}
+	}
+	"forgive": {
+		combos: {
+			'-ed': "forgave"
+		}
+	}
+	"fly": {
+		combos: {
+			'-ed': "flew"
+		}
+	}
+	"fall": {
+		combos: {
+			'-ed': "fell"
+		}
+	}
+	"feel": {
+		combos: {
+			'-ed': "felt"
+		}
+	}
+	"feed": {
+		combos: {
+			'-ed': "fed"
+		}
+	}
+	"find": {
+		combos: {
+			'-ed': "found"
+		}
+	}
+	"fight": {
+		combos: {
+			'-ed': "fought"
+		}
+	}
+	"fling": {
+		combos: {
+			'-ed': "flung"
+		}
+	}
+	"freeze": {
+		combos: {
+			'-ed': "froze"
+		}
+	}
+	"get": {
+		combos: {
+			'-ed': "got"
+		}
+	}
+	"go": {
+		combos: {
+			'-ed': "went"
+		}
+	}
+	"give": {
+		combos: {
+			'-ed': "gave"
+		}
+	}
+	"grow": {
+		combos: {
+			'-ed': "grew"
+		}
+	}
+	"he": {
+		combos: {
+			'-ed': "he'd"
+		}
+	}
+	"hear": {
+		combos: {
+			'-ed': "heard"
+		}
+	}
+	"have": {
+		combos: {
+			'-ed': "had"
+		}
+	}
+	"has": {
+		combos: {
+			'-ed': "had"
+		}
+	}
+	"hang": {
+		combos: {
+			'-ed': "hung"
+		}
+	}
+	"hold": {
+		combos: {
+			'-ed': "held"
+		}
+	}
+	"hurt": {
+		combos: {
+			'-ed': "hurt"
+		}
+	}
+	"hide": {
+		combos: {
+			'-ed': "hid"
+		}
+	}
+	"how": {
+		combos: {
+			'-ed': "how'd"
+		}
+	}
+	"i": {
+		combos: {
+			'-ed': "i'd"
+		}
+	}
+	"i'm": {
+		combos: {
+			'-ed': "i was"
+		}
+	}
+	"is": {
+		combos: {
+			'-ed': "was"
+		}
+	}
+	"it": {
+		combos: {
+			'-ed': "it'd"
+		}
+	}
+	"know": {
+		combos: {
+			'-ed': "knew"
+		}
+	}
+	"keep": {
+		combos: {
+			'-ed': "kept"
+		}
+	}
+	"lose": {
+		combos: {
+			'-ed': "lost"
+		}
+	}
+	"leave": {
+		combos: {
+			'-ed': "left"
+		}
+	}
+	"let": {
+		combos: {
+			'-ed': "let"
+		}
+	}
+	"lead": {
+		combos: {
+			'-ed': "led"
+		}
+	}
+	"lay": {
+		combos: {
+			'-ed': "laid"
+		}
+	}
+	"light": {
+		combos: {
+			'-ed': "lit"
+		}
+	}
+	"limit": {
+		combos: {
+			'-ed': "limited"
+		}
+	}
+	"make": {
+		combos: {
+			'-ed': "made"
+		}
+	}
+	"meet": {
+		combos: {
+			'-ed': "met"
+		}
+	}
+	"mean": {
+		combos: {
+			'-ed': "meant"
+		}
+	}
+	"pay": {
+		combos: {
+			'-ed': "paid"
+		}
+	}
+	"quiver": {
+		combos: {
+			'-ed': "quivered"
+		}
+	}
+	"quit": {
+		combos: {
+			'-ed': "quit"
+		}
+	}
+	"quip": {
+		combos: {
+			'-ed': "quipped"
+		}
+	}
+	"read": {
+		combos: {
+			'-ed': "read"
+		}
+	}
+	"ride": {
+		combos: {
+			'-ed': "rode"
+		}
+	}
+	"run": {
+		combos: {
+			'-ed': "ran"
+		}
+	}
+	"ring": {
+		combos: {
+			'-ed': "rang"
+		}
+	}
+	"rise": {
+		combos: {
+			'-ed': "rose"
+		}
+	}
+	"refer": {
+		combos: {
+			'-ed': "referred"
+		}
+	}
+	"she": {
+		combos: {
+			'-ed': "she'd"
+		}
+	}
+	"sit": {
+		combos: {
+			'-ed': "sat"
+		}
+	}
+	"set": {
+		combos: {
+			'-ed': "set"
+		}
+	}
+	"steal": {
+		combos: {
+			'-ed': "stole"
+		}
+	}
+	"stink": {
+		combos: {
+			'-ed': "stunk"
+		}
+	}
+	"say": {
+		combos: {
+			'-ed': "said"
+		}
+	}
+	"spin": {
+		combos: {
+			'-ed': "spun"
+		}
+	}
+	"sell": {
+		combos: {
+			'-ed': "sold"
+		}
+	}
+	"shake": {
+		combos: {
+			'-ed': "shook"
+		}
+	}
+	"sling": {
+		combos: {
+			'-ed': "slung"
+		}
+	}
+	"sting": {
+		combos: {
+			'-ed': "stung"
+		}
+	}
+	"sleep": {
+		combos: {
+			'-ed': "slept"
+		}
+	}
+	"sweep": {
+		combos: {
+			'-ed': "swept"
+		}
+	}
+	"strike": {
+		combos: {
+			'-ed': "struck"
+		}
+	}
+	"see": {
+		combos: {
+			'-ed': "saw"
+		}
+	}
+	"seek": {
+		combos: {
+			'-ed': "sought"
+		}
+	}
+	"stand": {
+		combos: {
+			'-ed': "stood"
+		}
+	}
+	"sing": {
+		combos: {
+			'-ed': "sang"
+		}
+	}
+	"spring": {
+		combos: {
+			'-ed': "sprung"
+		}
+	}
+	"spirit": {
+		combos: {
+			'-ed': "spirited"
+		}
+	}
+	"slide": {
+		combos: {
+			'-ed': "slid"
+		}
+	}
+	"spend": {
+		combos: {
+			'-ed': "spent"
+		}
+	}
+	"send": {
+		combos: {
+			'-ed': "sent"
+		}
+	}
+	"shoot": {
+		combos: {
+			'-ed': "shot"
+		}
+	}
+	"stick": {
+		combos: {
+			'-ed': "stuck"
+		}
+	}
+	"sink": {
+		combos: {
+			'-ed': "sank"
+		}
+	}
+	"swim": {
+		combos: {
+			'-ed': "swam"
+		}
+	}
+	"spit": {
+		combos: {
+			'-ed': "spat"
+		}
+	}
+	"speak": {
+		combos: {
+			'-ed': "spoke"
+		}
+	}
+	"swing": {
+		combos: {
+			'-ed': "swung"
+		}
+	}
+	"shrink": {
+		combos: {
+			'-ed': "shrunk"
+		}
+	}
+	"throw": {
+		combos: {
+			'-ed': "threw"
+		}
+	}
+	"think": {
+		combos: {
+			'-ed': "thought"
+		}
+	}
+	"they": {
+		combos: {
+			'-ed': "they'd"
+		}
+	}
+	"take": {
+		combos: {
+			'-ed': "took"
+		}
+	}
+	"tear": {
+		combos: {
+			'-ed': "tore"
+		}
+	}
+	"tell": {
+		combos: {
+			'-ed': "told"
+		}
+	}
+	"teach": {
+		combos: {
+			'-ed': "taught"
+		}
+	}
+	"understand": {
+		combos: {
+			'-ed': "understood"
+		}
+	}
+	"we": {
+		combos: {
+			'-ed': "we'd"
+		}
+	}
+	"wear": {
+		combos: {
+			'-ed': "wore"
+		}
+	}
+	"weave": {
+		combos: {
+			'-ed': "wove"
+		}
+	}
+	"write": {
+		combos: {
+			'-ed': "wrote"
+		}
+	}
+	"weep": {
+		combos: {
+			'-ed': "wept"
+		}
+	}
+	"who": {
+		combos: {
+			'-ed': "who'd"
+		}
+	}
+	"win": {
+		combos: {
+			'-ed': "won"
+		}
+	}
+	"withhold": {
+		combos: {
+			'-ed': "withheld"
+		}
+	}
+	"withdraw": {
+		combos: {
+			'-ed': "withdrew"
+		}
+	}
+	"wake": {
+		combos: {
+			'-ed': "woke"
+		}
+	}
+	"won't": {
+		combos: {
+			'-ed': "wouldn't"
+		}
+	}
+	"you": {
+		combos: {
+			'-ed': "you'd"
+		}
+	}
 }
