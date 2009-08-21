@@ -1,3 +1,5 @@
+/* -*- tab-width: 4; indent-tabs-mode: t; -*- */
+
 function get_sess_key() {
 	return $('#sesskey').val();
 }
@@ -605,25 +607,34 @@ function voteforas(sentenceid, sesskey) {
 
 function startVoting(sentences) {
 	resetUi();
-	$("#gamebox").append("<div class='notification'><p>voting!</p<table class='votetable' id='votetable' border=1></table></div>");
+	$("#gamebox").append("<div class='notification'><p>Vote for a sentence:</p<table class='votetable' id='votetable' border=1></table></div>");
+	var i = 0;
+
 	for(var sentenceid in sentences) {
-		var sentence = makeSentence(sentences[sentenceid]);
-		var niceid = sentenceid.replace(/\$/g, "");
-		$("#votetable").append("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td></tr>");
-		if(hashesTo(get_sess_key(), sentenceid)) {
-			$("#sent" + niceid).append("<td>YOUR SENTENCE</td>");
-		} else {
-			$("#sent" + niceid).append("<td><button onclick=\"votefor('" + sentenceid + "')\">Vote</button></td></tr>");
-		}
-		// TODO: remove, THIS IS DEBUGGING STUFF
-		keys = ["fake1", "fake2", "fake3", "fake4", "fake5", "fake6", "fake7", "fake8", "fake9"];
-		for(i in keys) {
-			if(hashesTo(keys[i], sentenceid)) {
-				$("#sent" + niceid).append("<td>" + keys[i] + "'s sentence</td>");
+		++i;
+
+	   	var showfunc = function() {		
+			var sentence = makeSentence(sentences[arguments.callee.sentenceid]);
+			var niceid = arguments.callee.sentenceid.replace(/\$/g, "");
+
+			if(hashesTo(get_sess_key(), arguments.callee.sentenceid)) {
+				$("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td><td></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
 			} else {
-				$("#sent" + niceid).append("<td><button onclick=\"voteforas('" + sentenceid + "', '" + keys[i] + "')\">Vote as " + keys[i] + "</button></td></tr>");
+				$("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td><td><button onclick=\"votefor('" + arguments.callee.sentenceid + "')\">Vote</button></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
 			}
-		}
+            // TODO: remove, THIS IS DEBUGGING STUFF
+            keys = ["fake1", "fake2", "fake3", "fake4", "fake5", "fake6", "fake7", "fake8", "fake9"];
+			for (key in keys) {
+				if(!hashesTo(keys[key], arguments.callee.sentenceid)) {
+					$("#sent" + niceid).append("<td><button onclick=\"voteforas('" + sentenceid + "', '" + keys[key] + "')\">Vote as " + keys[key] + "</button></td></tr>");
+				} else  {
+					$("#sent" + niceid).append("<td></td>");
+				}
+			}
+		};
+		showfunc.sentenceid = sentenceid;
+
+		setTimeout(showfunc, 100*i);
 	}
 }
 
@@ -637,12 +648,22 @@ function showWinners(data) {
 	// TODO: make this massively more sophisticated
 	resetUi();
 	$("#gamebox").append("<div class='notification'><table class='winners' id='winners'><tr><th>Sentence</th><th>Player</th><th>Votes</th><th>Points</th></table></div>");
+	var morePoints = function(a, b) {
+		return data[b]["points"] - data[a]["points"];
+	}
+	stuff = []
 	for(var name in data) {
-		if(data[name]["iswinner"]) {
-			$("#gamebox").append("<p>Winner: " + name + "</p>");
-		}
+		stuff.push(name);
+	}
+	stuff.sort(morePoints);
 
-		$("#winners").append("<tr><td>" + makeSentence(data[name]["sentence"]) + "</td><td>" + name + "</td><td>" + data[name]["votes"] + "</td><td>" + data[name]["points"]);
+	for(var i in stuff) {
+		var name = stuff[i];
+		var cls = "";
+		if(data[name]["iswinner"]) {
+			cls = " class='winner'";
+		}
+		$("#winners").append("<tr" + cls + "><td>" + makeSentence(data[name]["sentence"]) + "</td><td>" + name + "</td><td>" + data[name]["votes"] + "</td><td>" + data[name]["points"]);
 		scorebox = $("#user_" + name + " > .score");
 		var points = parseInt(scorebox.text(), 10);
 		scorebox.text(points + data[name]["points"]);

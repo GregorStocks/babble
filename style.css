@@ -1,3 +1,5 @@
+/* -*- tab-width: 4; indent-tabs-mode: t; -*- */
+
 body {
 	background: #751919;
 	background-image: url('images/background.png');
@@ -236,4 +238,33 @@ body {
 
 #indicator img {
 	margin: 10px;
+}
+
+.votetable {
+	border: 0px;
+	border-spacing: 0px;
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 15px
+}
+
+.votetable td {
+	border: 0px;
+	border-top: 1px dotted #ffe890;
+	padding: 4px;
+	background: #550909;
+}
+
+.voted td {
+	background: #1631a4;
+}
+
+.winners {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.winner {
+	color: #ff9090;
 }
