@@ -135,9 +135,9 @@ var wordlist = [];
 function preprocess_words(words) {
 	var newwords = [];
 	var prevword = null;
-	for(i in words) {
+	for(var i in words) {
 		var word = words[i];
-		if(word== "!") {
+		if(word === "!") {
 			if(prevword === null || prevword === "^" || prevword === "." || prevword === "," || prevword === ";") {
 				word = "I";
 			}
@@ -206,7 +206,7 @@ function makeSentence(words) {
 		}
 	}
 	sentence = add_to_sentence(sentence, curphrase, sentence_start, prefixstack);
-	if(sentence == "") {
+	if(sentence === "") {
 		sentence = "&nbsp;";
 	}
 	return sentence;
@@ -328,7 +328,7 @@ function eventLoop() {
 	}
 	$.getJSON("api/geteventssince.cgi", {"eventid": cureventid, "roomid": get_room_id()}, make_error_handler(function(data) {
 		if(data && data["status"] && data["status"] === "OK" && data["events"]) {
-			events = data["events"]
+			events = data["events"];
 			for(var i in events) {
 				if(eventsLooping) {
 					processEvent(events[i]);
@@ -366,7 +366,7 @@ function showRooms() {
 	$.getJSON("api/getroomlist.cgi", make_error_handler(function(data) {
 		if(data && data["status"] && data["status"] === "OK" && data["rooms"]) {
 			$("#gamebox").append("<div class='notification' id='rooms'><h3>Choose a room to join:</h3></div>");
-			rooms = data["rooms"]
+			rooms = data["rooms"];
 			for(var roomid in rooms) {
 				$("#rooms").append("<p><button name='room" + roomid + "' onclick='selectroom(" + roomid + ")'>" + rooms[roomid] + "</button></p>");
 			}
@@ -594,15 +594,15 @@ function showWinners(data) {
 	$("#gamebox").append("<div class='notification'><table class='winners' id='winners'><tr><th>Sentence</th><th>Player</th><th>Votes</th><th>Points</th></table></div>");
 	var morePoints = function(a, b) {
 		return data[b]["points"] - data[a]["points"];
-	}
-	stuff = []
+	};
+	stuff = [];
 	for(var name in data) {
 		stuff.push(name);
 	}
 	stuff.sort(morePoints);
 
 	for(var i in stuff) {
-		var name = stuff[i];
+		name = stuff[i];
 		var cls = "";
 		if(data[name]["iswinner"]) {
 			cls = " class='winner'";
