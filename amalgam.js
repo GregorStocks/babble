@@ -1,5 +1,3 @@
-/* -*- tab-width: 4; indent-tabs-mode: t; -*- */
-
 function get_sess_key() {
 	return $('#sesskey').val();
 }
@@ -357,7 +355,6 @@ function start() {
 	$(window).bind("beforeunload", function() {
 		$.post('api/part.cgi', {'sesskey': get_sess_key(), 'roomid': get_room_id()}, make_error_handler(), "json");
 	});
-	setTimeout(pingLoop, 5000);
 }
 
 function showRooms() {
@@ -799,6 +796,15 @@ function insertWords(words) {
 		} else {
 			lastClick = $(this).text();
 		}
+	})
+	.dblclick(function() {
+		$(this).insertBefore($('#clear'));
+		$(this).css({
+			position: 'static',
+			'float': 'left'
+		});
+		$.dropManage();
+		updateSentence();
 	});
 }
 
