@@ -5007,8 +5007,8 @@ INSERT INTO words (word, minnum, wordtype) VALUES
 ('-s', 2, 3),
 ('-er', 1, 3),
 ('-y', 1, 3),
-('a', 1, 3);
-('the', 1, 3),
+('a', 1, 3),
+('the', 1, 3);
 
 -- add a room
 INSERT INTO rooms (name) VALUES ("Room 1");
