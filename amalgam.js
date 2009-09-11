@@ -501,8 +501,8 @@ function startRound() {
 				.append("<div class='clear'></div>")
 			);
 	$("#dropbox")
-		.append("<div class='prop' id='prop'></div>")
-		.append("<div class='clear' id='clear'></div>")
+		.append("<span class='clearwords' id='clear'><a href='clear()'>Clear</a></span>")
+		.append("<div class='clear' id='clearer'></div>") // well this is clear
 		.disableTextSelect()
 		.bind('drop', function(event) {
 			// find the farthest-left wordbox with a center to the right of the mouse pointer.
