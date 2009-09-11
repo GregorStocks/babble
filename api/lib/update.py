@@ -34,8 +34,7 @@ def collected(cursor, roomid):
 		round_end(cursor, roomid)
 
 def start_new_round(cursor, roomid):
-	cursor.execute('SELECT word, minnum, id, wordtype FROM words WHERE minnum > 0')
-	# TODO: do this without having to fetch every single word from the database
+	cursor.execute('SELECT word, minnum, id, wordtype FROM words WHERE minnum > 0 ORDER BY id')
 	mandrows = cursor.fetchall()
 	wordrows = []
 	

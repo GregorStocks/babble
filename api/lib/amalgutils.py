@@ -235,7 +235,7 @@ def get_word_list(cursor, roundid):
 	cursor.execute('''SELECT words.word AS word
 	FROM words JOIN roundwords ON roundwords.wordid = words.id
 	JOIN rounds ON rounds.id = roundwords.roundid
-	WHERE rounds.id = %s''', roundid)
+	WHERE rounds.id = %s ORDER BY roundwords.id''', roundid)
 	rows = cursor.fetchall()
 	return [row['word'] for row in rows]
 
