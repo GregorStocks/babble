@@ -363,11 +363,11 @@ function showRooms() {
 	$.getJSON("api/getroomlist.cgi", make_error_handler(function(data) {
 		if(data && data["status"] && data["status"] === "OK" && data["rooms"]) {
 			$("#gamebox").append("<div class='notification' id='rooms'><h3>Choose a room to join:</h3></div>");
-			rooms = data["rooms"];
+			var rooms = data["rooms"];
 			for(var roomid in rooms) {
 				var butt = "<button id='room" + roomid + "' name='room" + roomid + "' onclick='selectroom(" + roomid + ")'>" + rooms[roomid]['name'] + " (" + rooms[roomid]['users'].length + ")</button>";
-				$("#rooms").append("<p>" + butt + "</p>");
-				$("#room" + roomid).tooltip({bodyHandler: function() {
+				$("#rooms").append($("<p>" + butt + "</p>").tooltip({bodyHandler: function() {
+						console.debug("HEY");
 						var x = "";
 						for(user in rooms[roomid]['users']) {
 							x += "<p>" + user + "</p>";
@@ -377,7 +377,7 @@ function showRooms() {
 					delay: 0,
 					showURL: false,
 					opacity: 1
-				});
+				});)
 			}
 		}
 	}));
