@@ -409,7 +409,7 @@ function timeLoop() {
 	lastUpdate = curTime;
 	if(showTime) {
 		var fullWidth = (timeLeft/totalTime)*$("#timer").width();
-		$("#timerfull").stop(true, true).css({width: fullWidth + 'px'});
+		$("#timerfull").stop(true, true).css({width: Math.floor(fullWidth) + 'px'});
 	}
 	setTimeout(timeLoop, 100);
 }
