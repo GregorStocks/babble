@@ -373,7 +373,7 @@ function showRooms() {
 						var x = "HEY";
 						for(user in rooms[roomid]['users']) {
 							console.debug(rooms[roomid]['users'][user]);
-							x += "<p>" + rooms[roomid]['users']user + "</p>";
+							x += "<p>" + rooms[roomid]['users'][user] + "</p>";
 						}
 						console.debug(x);
 						return x;
