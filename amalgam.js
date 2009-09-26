@@ -370,10 +370,12 @@ function showRooms() {
 						console.debug("HEY");
 						console.debug(roomid);
 						console.debug(rooms);
-						var x = "";
+						var x = "HEY";
 						for(user in rooms[roomid]['users']) {
+							console.debug(user);
 							x += "<p>" + user + "</p>";
 						}
+						console.debug(x);
 						return x;
 					},
 					delay: 0,
