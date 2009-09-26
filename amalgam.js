@@ -365,7 +365,19 @@ function showRooms() {
 			$("#gamebox").append("<div class='notification' id='rooms'><h3>Choose a room to join:</h3></div>");
 			rooms = data["rooms"];
 			for(var roomid in rooms) {
-				$("#rooms").append("<p><button name='room" + roomid + "' onclick='selectroom(" + roomid + ")'>" + rooms[roomid] + "</button></p>");
+				var butt = "<button id='room" + roomid + "' name='room" + roomid + "' onclick='selectroom(" + roomid + ")'>" + rooms[roomid]['name'] + " (" + rooms[roomid]['users'].length + ")</button>";
+				$("#rooms").append("<p>" + butt + "</p>");
+				$("#room" + roomid).tooltip({bodyHandler: function() {
+						var x = "";
+						for(user in rooms[roomid]['users']) {
+							x += "<p>" + user + "</p>";
+						}
+						return x;
+					},
+					delay: 0,
+					showURL: false,
+					opacity: 1
+				});
 			}
 		}
 	}));
