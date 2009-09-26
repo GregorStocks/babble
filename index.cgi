@@ -19,6 +19,7 @@ template.output(head = '''<script type="text/javascript" src="http://ajax.google
 	<script src="jquery.dimension.js" type="text/javascript"></script>
 	<script src="sha1.js" type="text/javascript"></script>
 	<script src="dictionary.js" type="text/javascript"></script>
+	<link rel="stylesheet" type="text/css" href="jquery.tooltip.css" />
 	<script src="amalgam.js" type="text/javascript"></script>''', body = '''<div class="gamebox" id="gamebox"></div>
 
 
