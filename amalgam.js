@@ -377,7 +377,7 @@ function showRooms() {
 					delay: 0,
 					showURL: false,
 					opacity: 1
-				});)
+				}));
 			}
 		}
 	}));
