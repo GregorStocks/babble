@@ -367,15 +367,10 @@ function showRooms() {
 			for(var roomid in rooms) {
 				var butt = "<button id='room" + roomid + "' name='room" + roomid + "' onclick='selectroom(" + roomid + ")'>" + rooms[roomid]['name'] + " (" + rooms[roomid]['users'].length + ")</button>";
 				$("#rooms").append($("<p>" + butt + "</p>").tooltip({bodyHandler: function() {
-						console.debug("HEY");
-						console.debug(roomid);
-						console.debug(rooms);
-						var x = "HEY";
+						var x = "";
 						for(user in rooms[roomid]['users']) {
-							console.debug(rooms[roomid]['users'][user]);
-							x += "<p>" + rooms[roomid]['users'][user] + "</p>";
+							x += "<p class='names'>" + rooms[roomid]['users'][user] + "</p>";
 						}
-						console.debug(x);
 						return x;
 					},
 					delay: 0,

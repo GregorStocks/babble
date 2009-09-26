@@ -281,4 +281,6 @@ body {
 .clearwords a {
 	text-decoration: none;
 }
-
+.names {
+	margin: 0;
+}
