@@ -368,6 +368,8 @@ function showRooms() {
 				var butt = "<button id='room" + roomid + "' name='room" + roomid + "' onclick='selectroom(" + roomid + ")'>" + rooms[roomid]['name'] + " (" + rooms[roomid]['users'].length + ")</button>";
 				$("#rooms").append($("<p>" + butt + "</p>").tooltip({bodyHandler: function() {
 						console.debug("HEY");
+						console.debug(roomid);
+						console.debug(rooms);
 						var x = "";
 						for(user in rooms[roomid]['users']) {
 							x += "<p>" + user + "</p>";
