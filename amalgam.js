@@ -360,6 +360,7 @@ function start() {
 function showRooms() {
 	resetUi();
 	$("#membertable").empty();
+	$("#chatmessage").remove();
 	$.getJSON("api/getroomlist.cgi", make_error_handler(function(data) {
 		if(data && data["status"] && data["status"] === "OK" && data["rooms"]) {
 			$("#gamebox").append("<div class='notification' id='rooms'><h3>Choose a room to join:</h3></div>");
