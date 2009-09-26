@@ -373,7 +373,6 @@ function showRooms() {
 						}
 						return x;
 					},
-					delay: 0,
 					showURL: false,
 					opacity: 1
 				}));
@@ -435,6 +434,7 @@ function setTime(time) {
 function resetUi() {
 	$("#gamebox").empty();
 	$(".wordbox").remove();
+	$("#tooltip").remove();
 }
 
 function busyIndicator(show) {
