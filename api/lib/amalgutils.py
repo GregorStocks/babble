@@ -149,7 +149,7 @@ def get_scores(cursor, roomid):
 		data = get_winner_data(cursor, roundid)
 		for username in data:
 			if username in points:
-				points[username] = data[username]['points']
+				points[username] += data[username]['points']
 	return points
 
 def username_from_userid(cursor, userid):
