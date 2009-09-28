@@ -499,10 +499,7 @@ function showLogin() {
 }
 
 function clear() {
-	resetUi();
-	for(i in [0, 1, 2, 3]) {
-		$("#wordsbox" + i).empty();
-	}
+	$(".wordsbox").empty();
 	insertWords(startwordlist);
 }
 
