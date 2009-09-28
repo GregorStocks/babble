@@ -1111,7 +1111,8 @@ var dictionary = {
 	},
 	"we": {
 		combos: {
-			'-ed': "we'd"
+			'-ed': "we'd",
+			'is': "we're"
 		}
 	},
 	"wear": {
