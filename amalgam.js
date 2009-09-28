@@ -499,7 +499,7 @@ function showLogin() {
 }
 
 function clear() {
-	$(".wordsbox").empty();
+	$(".wordscontainer").empty();
 	insertWords(startwordlist);
 }
 
