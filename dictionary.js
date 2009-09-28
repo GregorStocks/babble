@@ -1137,7 +1137,8 @@ var dictionary = {
 	},
 	"who": {
 		combos: {
-			'-ed': "who'd"
+			'-ed': "who'd",
+			'-s': "whose"
 		}
 	},
 	"win": {
@@ -1168,6 +1169,11 @@ var dictionary = {
 	"you": {
 		combos: {
 			'-ed': "you'd"
+		}
+	},
+	"strip": {
+		combos: {
+			'-er': "stripper"
 		}
 	}
 }

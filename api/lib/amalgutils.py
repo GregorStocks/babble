@@ -49,8 +49,7 @@ def is_valid_room(cursor, roomid):
 def get_winner_data(cursor, roundid):
 	cursor.execute('''
 	SELECT voters.username AS votername, votees.username AS voteename
-	FROM roommembers JOIN votes ON roommembers.userid = votes.userid
-	JOIN users voters ON votes.userid = voters.id
+	FROM votes JOIN users voters ON votes.userid = voters.id
 	JOIN users votees ON votes.voteid = votees.id
 	WHERE votes.roundid = %s ORDER BY votes.id''', roundid)
 	rows = cursor.fetchall()
@@ -72,8 +71,7 @@ def get_winner_data(cursor, roundid):
 	# got the votes, now get the sentences
 	cursor.execute('''
 	SELECT words.word AS word, sentences.id AS id, users.username as username
-	FROM roommembers JOIN sentences ON roommembers.userid = sentences.userid
-	JOIN rounds ON sentences.roundid = rounds.id
+	FROM sentences JOIN rounds ON sentences.roundid = rounds.id
 	JOIN users ON roommembers.userid = users.id
 	JOIN words ON sentences.wordid = words.id
 	WHERE rounds.id = %s ORDER BY sentences.id''', roundid)
