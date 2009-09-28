@@ -513,7 +513,7 @@ function startRound() {
 				.append("<div class='clear'></div>")
 			);
 	$("#dropbox")
-		.append("<span class='clearwords' id='clear'><a href='clear()'>Clear</a></span>")
+		.append("<span class='clearwords' id='clear'><a href='javascript:clear()'>Clear</a></span>")
 		.append("<div class='clear' id='clearer'></div>") // well this is clear
 		.disableTextSelect()
 		.bind('drop', function(event) {
