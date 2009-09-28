@@ -285,7 +285,7 @@ function processEvent(ev) {
 	if(evtype === "new round" && ev["words"]) {
 		startRound();
 		startwordlist = ev["words"];
-		insertWords(wordlist);
+		insertWords(startwordlist);
 	} else if(evtype === "collecting") {
 		startCollecting();
 	} else if(evtype === "vote" && ev["sentences"]) {
