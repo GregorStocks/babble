@@ -72,7 +72,7 @@ def get_winner_data(cursor, roundid):
 	cursor.execute('''
 	SELECT words.word AS word, sentences.id AS id, users.username as username
 	FROM sentences JOIN rounds ON sentences.roundid = rounds.id
-	JOIN users ON roommembers.userid = users.id
+	JOIN users ON sentences.userid = users.id
 	JOIN words ON sentences.wordid = words.id
 	WHERE rounds.id = %s ORDER BY sentences.id''', roundid)
 
