@@ -740,7 +740,8 @@ var dictionary = {
 	},
 	"he": {
 		combos: {
-			'-ed': "he'd"
+			'-ed': "he'd",
+			'-er': "her"
 		}
 	},
 	"hear": {
