@@ -501,7 +501,7 @@ function showLogin() {
 function clear() {
 	resetUi();
 	for(i in [0, 1, 2, 3]) {
-		$("#wordsbox" + i).clear();
+		$("#wordsbox" + i).empty();
 	}
 	insertWords(startwordlist);
 }
