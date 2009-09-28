@@ -500,7 +500,7 @@ function showLogin() {
 
 function clear() {
 	resetUi();
-	for(i in [0, 1, 2, 3] {
+	for(i in [0, 1, 2, 3]) {
 		$("#wordsbox" + i).clear();
 	}
 	insertWords(startwordlist);
