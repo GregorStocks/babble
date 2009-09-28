@@ -269,6 +269,7 @@ function shouldInsertBefore(target, dropX, dropY, insertee) {
 }
 
 var cureventid = 0;
+var startwordlist = [];
 
 function processEvent(ev) {
 	var eventid = ev["eventid"];
@@ -283,7 +284,8 @@ function processEvent(ev) {
 
 	if(evtype === "new round" && ev["words"]) {
 		startRound();
-		insertWords(ev["words"]);
+		startwordlist = ev["words"];
+		insertWords(wordlist);
 	} else if(evtype === "collecting") {
 		startCollecting();
 	} else if(evtype === "vote" && ev["sentences"]) {
@@ -494,6 +496,14 @@ function showLogin() {
 	} else {
 		$("#gamebox").append('<div class="notification"><form action="index.cgi" method="post"><p>Username: <input type="text" name="username" id="username" /></p><p>Password: <input type="password" name="password" id="password" /></p><input type="submit" value="Log In" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"><a href="register.cgi">Register</a></p><p class="notes"><a href="forgot.cgi">Forgot your password?</a></p></form></div>');
 	}
+}
+
+function clear() {
+	resetUi();
+	for(i in [0, 1, 2, 3] {
+		$("#wordsbox" + i).clear();
+	}
+	insertWords(startwordlist);
 }
 
 function startRound() {
