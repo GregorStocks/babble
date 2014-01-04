@@ -6,6 +6,7 @@
                  [cheshire "5.0.1"]
                  [compojure "1.1.6"]
                  [clj-time "0.5.1"]
+                 [org.clojure/clojure-contrib "1.2.0"]
                  [org.clojure/tools.logging "0.2.3"]
                  [hiccup "1.0.4"]]
   :plugins [[lein-cljsbuild "1.0.1"]

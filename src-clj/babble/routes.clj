@@ -3,6 +3,7 @@
         babble.views
         [ring.util.response :only (redirect)]
         [cheshire.core :only (generate-string)]
+        [clojure.contrib.generic.functor :only (fmap)]
         [hiccup.middleware :only (wrap-base-url)])
   (:require [compojure.route :as route]
             [clojure.tools.logging :as log]
@@ -10,16 +11,24 @@
             [clj-time.core :as time]
             [compojure.response :as response]))
 
-(defonce EVENTS (atom [{:eventid 69
-                        :room 69
-                        :type "new round"
-                        :timeleft 69
-                        :words ["ass" "poop" "butt" "bort" (str (rand-int 100))]}]))
+(defn initial-event [roomid]
+  {:eventid 1
+   :room roomid
+   :type "new round"
+   :timeleft 0
+   :words ["ass" "poop" "butt" "bort"]})
+
+(defn empty-room [name roomid]
+  {:name name
+   :users #{}
+   :events [(initial-event roomid)]
+   :event (initial-event roomid)
+   :eventid 1
+   :scores {}})
+
 (defonce USERS (atom []))
-(defonce ROOMS (atom {69 {:name "Poop room"
-                          :users #{}}
-                      70 {:name "Boob room"
-                          :users #{}}}))
+(defonce ROOMS (atom {69 (empty-room "Poop room" 69)
+                      70 (empty-room "Boob room" 70)}))
 
 (defn ->long [x]
   (Long. (str x)))
@@ -43,51 +52,53 @@
         username (params "sesskey")
         text (params "text")
         roomid (->long (params "roomid"))]
-    (log/info "Chat message:" username text roomid)
-    (swap! EVENTS conj (new-event {:type "chat"
-                                   :username username
-                                   :text text})))
+    (log/info "#" roomid " <" username "> " text)
+    (swap! ROOMS update-in [roomid :events] conj (new-event {:type "chat"
+                                                             :username username
+                                                             :text text})))
   (stub request))
 
 (defn get-events-since [request]
-  (let [eventid (->long ((:query-params request) "eventid"))]
+  (let [eventid (->long ((:query-params request) "eventid"))
+        roomid (->long ((:query-params request) "roomid"))]
     (response {"status" "OK"
-               "events" (filter #(> (:eventid %) eventid) @EVENTS)})))
+               "events" (filter #(> (:eventid %) eventid)
+                                (:events (@ROOMS roomid)))})))
 
 (defn getstate [request]
-  (response {"status" "OK"
-             "state" {"event" {"eventid" 69
-                               "type" "new round"
-                               "timeleft" 69
-                               "words" ["ass" "poop" "butt" "bort" (str (rand-int 100))]}
-                      "eventid" 69
-                      :scores {}
-                      :players []}}))
+  (let [roomid (->long ((:query-params request) "roomid"))]
+    (response {"status" "OK"
+               "state" (select-keys (@ROOMS roomid) [:users :scores :event :eventid])})))
 
 (defn getroomlist [request]
+  (log/info @ROOMS)
   (response {"status" "OK"
-             "rooms" @ROOMS}))
+             "rooms" (fmap #(select-keys % [:name :users]) @ROOMS)}))
 
 (defn join [request]
   (let [params (:form-params request)
         username (params "sesskey")
-        roomid (->long (params "roomid"))]
-    (swap! EVENTS conj (new-event {:type "join"
-                                   :score 0
-                                   :name username}))
-    (swap! ROOMS update-in [roomid :users] conj username)
-    (log/info "Rooms are now" @ROOMS)
+        roomid (->long (params "roomid"))
+        event (new-event {:type "join"
+                          :score 0
+                          :name username})]
+    (swap! ROOMS #(-> %
+                      (update-in [roomid :users] conj username)
+                      (update-in [roomid :events] conj event)
+                      (update-in [roomid :eventid] (constantly (:eventid event)))
+                      (update-in [roomid :scores username] (fn [score] (or score 0)))))
     (stub request)))
 
 (defn part [request]
   (let [params (:form-params request)
         username (params "sesskey")
-        roomid (->long (params "roomid"))]
-    (swap! EVENTS conj (new-event {:type "part"
-                                   :name username}))
-    (log/info "Disjing" (pr-str roomid) (pr-str @ROOMS) (pr-str username))
-    (swap! ROOMS update-in [roomid :users] disj username)
-    (log/info "Rooms are now" @ROOMS)
+        roomid (->long (params "roomid"))
+        event (new-event {:type "part"
+                          :name username})]
+    (swap! ROOMS #(-> %
+                      (update-in [roomid :users] disj username)
+                      (update-in [roomid :events] conj event)
+                      (update-in [roomid :eventid] (constantly (:eventid event)))))
     (stub request)))
 
 (defroutes main-routes
