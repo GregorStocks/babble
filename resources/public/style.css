@@ -1,0 +1,286 @@
+body {
+	background: #751919;
+	background-image: url('images/background.png');
+}
+.wordbox {
+	padding: 1px 4px 1px 4px;
+	border: 1px outset #e9e9c4;
+	background: #e9e9c4;
+	text-align: center;
+	cursor: move;
+	margin: 3px;
+	float: left;
+	font-size: 0.8em;
+	line-height: 1.5em;
+	font-weight: bold;
+	font-family: Tahoma, Verdana, Sans;	
+}
+.spacer {
+	padding: 1px 4px 1px 4px;
+	text-align: center;
+	cursor: move;
+	margin: 3px;
+	float: left;
+	font-size: 0.8em;
+	line-height: 1.5em;
+	font-weight: bold;
+	font-family: Tahoma, Verdana, Sans;	
+	
+	background:  #666666;
+	color: #444444;
+	border: 1px solid #444444;
+}
+.wordscontainer {
+	padding: .3em .15em .3em .15em;
+	margin-left: auto;
+	margin-right: auto;
+	float: left;
+}
+
+.wordsouter {
+	background: #333333;
+	border: .2em inset #751919;
+	width: 600px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.wordsbox {
+	width: 48%;
+	min-height: 10em;
+}
+.gamebox {
+	height: 27em;
+}
+.dropbox {
+	border-top: 1px dotted #aaaaaa;
+	border-bottom: 1px dotted #aaaaaa;
+	background: #444444;
+	height: auto;
+	margin-left: auto;
+	margin-right: auto;
+	float: none;
+	width: 596px;
+}
+.sentence {
+	margin: 0;
+	text-align: center;
+	padding: 4px;
+	color: white;
+	font-size: 0.7em;
+	font-family: Tahoma, Verdana, Sans;
+	font-weight: bold;
+}
+#footer {
+	width: 600px;
+	margin-left: auto;
+	margin-right: auto;
+}
+#timerfull {
+	background: #4ab088;
+	height: 1em;
+	width: 0px;
+	float: left;
+}
+#timer {
+	background: #550909;
+	border: 1px inset #751919;
+	height: 1em;
+	width: 600px;
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+	clear: both;
+	overflow: hidden;
+}
+.notes {
+	color: #dddddd;
+	text-align: center;
+	font-size: 0.6em;
+	font-family: Verdana, Sans;
+}
+.notes a {
+	color: #eeaa45;
+}
+.timer {
+	font-size: small;
+	text-align:center;
+}
+.clear {
+	clear: both;
+}
+.userbox {
+	margin-left: auto;
+	margin-right: auto;
+	background: #fff;
+	width: 400px;
+	text-align: center;
+	border: 1px solid #000;
+}
+.chat {
+	margin-left: auto;
+	margin-right: auto;
+	background: #e9e9c4;
+	width: 50em;
+	text-align: left;
+	border: 1px inset #555555;
+	font-size: 0.8em;
+	font-family: Tahoma, Verdana, Sans;
+	padding: 0px;
+}
+.chat p {
+	margin: 0px;
+}
+.chat .chat_action {
+	color: #0000cc;
+}
+
+.chat .chat_username {
+	font-weight: bold;
+	color: #008800;
+	margin-right: 2px;
+}
+
+#chatinput {
+	background: white;
+	padding: 8px;
+	border-top: 1px solid #cccccc;
+}
+
+#chatmessage {
+	border: none;
+	width: 100%;
+}
+
+.members {
+	height: 15em;
+	overflow: auto;
+	float: left;
+	width: 10em;
+	padding: 6px;
+	background: white;
+	border-right: 1px solid #cccccc;
+}
+
+#membertable {
+	width: 100%;
+}
+
+.username {
+	color: #006600;
+}
+
+.score { 
+	text-align: right;
+}
+
+.chatmsgs {
+	height: 15em;
+	width: 37.5em;
+	overflow: auto;
+	padding: 6px;
+	float: right;
+}
+
+.notification {
+	margin-left: auto;
+	margin-right: auto;
+	background-image: url('images/blacktrans50.png');
+	width: 600px;
+	text-align: center;
+	border: 2px dotted #ffe890;
+	color: #ffe890;
+	font-family: Georgia, "Sans Serif";
+	font-weight: bold;
+}
+
+#rooms button {
+	border: 1px solid #953939;
+	width: 300px;
+	padding: 10px 0px;
+	background: #550909;
+	color: #ffe890;
+	font-family: Georgia, "Sans Serif";
+}
+
+#rooms button:hover {
+	background: #661919;
+}
+
+#rooms button:active {
+	background: #420000;
+}
+
+.special {
+	color: #f00;
+}
+
+.voted {
+	background: #555
+}
+
+.error {
+	margin: 0px;
+	color: #f00;
+}
+
+#indicator {
+	background: #781818;
+	border: 1px solid #b72F2F;
+	width: 86px;
+	height: 86px;
+	z-index: 0;
+}
+
+#indicator img {
+	margin: 10px;
+}
+
+.votetable {
+	border: 0px;
+	border-spacing: 0px;
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 15px
+}
+
+.votetable td {
+	border: 0px;
+	border-top: 1px dotted #ffe890;
+	padding: 4px;
+	background: #550909;
+}
+
+.voted td {
+	background: #1631a4;
+}
+
+.winners {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.winner {
+	color: #ff9090;
+}
+
+.clearwords {
+	float: right;
+	padding: 1px 4px 1px 4px;
+	border: 1px outset #ccf;
+	background: #ccccff;
+	text-align: center;
+	margin: 3px;
+	font-size: 0.8em;
+	line-height: 1.5em;
+	font-weight: bold;
+	font-family: Tahoma, Verdana, Sans;	
+}
+
+.clearwords a {
+	text-decoration: none;
+}
+.names {
+	margin: 0;
+}
