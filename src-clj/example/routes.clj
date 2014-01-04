@@ -22,12 +22,18 @@
 
 (defn get-events-since [request]
   (response {"status" "OK"
-             "events" []}))
+             "events" [{"eventid" 69
+                        "type" "new round"
+                        "timeleft" 69
+                        "words" ["ass" "poop" "butt" "bort" (str (rand-int 100))]}]}))
 
 (defn getstate [request]
   (response {"status" "OK"
-             "state" {"event" nil
-                      "eventid" 0
+             "state" {"event" {"eventid" 69
+                               "type" "new round"
+                               "timeleft" 69
+                               "words" ["ass" "poop" "butt" "bort" (str (rand-int 100))]}
+                      "eventid" 69
                       :scores {}
                       :players []}}))
 

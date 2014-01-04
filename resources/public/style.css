@@ -51,6 +51,7 @@ body {
 }
 .gamebox {
 	height: 27em;
+        padding-bottom: 20px;
 }
 .dropbox {
 	border-top: 1px dotted #aaaaaa;
