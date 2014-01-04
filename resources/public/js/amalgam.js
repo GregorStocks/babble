@@ -494,7 +494,7 @@ function showLogin() {
 			.prepend("<p class='notes' id='loggedin'>You are currently logged in as "+ $.cookie('amalgam-username') + ".</p>");
 		showRooms();
 	} else {
-		$("#gamebox").append('<div class="notification"><form action="index.cgi" method="post"><p>Username: <input type="text" name="username" id="username" /></p><p>Password: <input type="password" name="password" id="password" /></p><input type="submit" value="Log In" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"><a href="register.cgi">Register</a></p><p class="notes"><a href="forgot.cgi">Forgot your password?</a></p></form></div>');
+		$("#gamebox").append('<div class="notification"><form action="index.cgi" method="post"><p>Username: <input type="text" name="username" id="username" /></p><p>You don\'t need a password. <input type="hidden" name="password" id="password" /></p><input type="submit" value="Go!" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"></form></div>');
 	}
 }
 

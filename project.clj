@@ -6,12 +6,13 @@
                   :exclusions [org.apache.ant/ant]]
                  [compojure "1.1.6"]
 		 [rotary "0.4.0"]
+		 [org.clojure/tools.logging "0.2.3"]
                  [hiccup "1.0.4"]]
   :plugins [[lein-cljsbuild "1.0.1"]
             [lein-ring "0.8.7"]]
   :cljsbuild {
     :builds [{:source-paths ["src-cljs"]
-              :compiler {:output-to "resources/public/js/babble.js"
+              :compiler {:output-to "resources/public/js/babble-autogen.js"
                          :optimizations :whitespace
                          :pretty-print true}}]}
   :ring {:handler example.routes/app})

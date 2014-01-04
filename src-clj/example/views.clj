@@ -4,10 +4,10 @@
       [page :refer [html5]]
       [page :refer [include-js]]]))
 
-(defn index-page []
+(defn register-page []
   (html5
     [:head
-      [:title "Hello World"]
+      [:title "Register page for you to register on"]
       (include-js "/js/main.js")]
     [:body
       [:h1 "Hello World"]]))
