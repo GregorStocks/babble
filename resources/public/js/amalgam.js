@@ -806,6 +806,14 @@ function insertWords(words) {
       if($(this).hasClass('copy')) {
 	$(this).text("==");
 	updateSentence();
+      } else {
+        $(this).insertBefore($('#clear'));
+        $(this).css({
+	  position: 'static',
+	  'float': 'left'
+        });
+        $.dropManage();
+        updateSentence();
       }
       console.log("Hello hello");
     })
