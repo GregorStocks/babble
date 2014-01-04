@@ -1,5 +1,7 @@
 <html>
 <head>
+<script src="js/amalgam.js"></script>
+<script src="js/dictionary.js"></script>
 <script src="js/babble.js"></script>
 <title>Babble</title>
 <link rel="shortcut icon" href="/favicon.ico" />
@@ -7,7 +9,17 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 </head>
 <body>
-<div class="gamebox" id="gamebox"></div>
+<div class="gamebox" id="gamebox">
+                         <div class='wordsbox wordscontainer' id='wordsbox0'></div>
+                         <div class='wordsbox wordscontainer' id='wordsbox1'></div>
+                         <div class='clear'></div>
+                         <div class='dropbox wordscontainer' id='dropbox'></div>
+                         <p class='sentence' id='sentence'>&nbsp;</p>
+                         <div class='clear'><span class='clearwords' id='clear'><a href='javascript:clear()'>Clear</a></span><div class='clear' id='clearer'></div></div>
+                         <div class='wordsbox wordscontainer' id='wordsbox2'></div>
+                         <div class='wordsbox wordscontainer' id='wordsbox3'></div>
+<div class='clear'></div>
+</div>
 
 
 <div id="timer"><div id="timediv"></div><div id="timerfull"></div></div>
