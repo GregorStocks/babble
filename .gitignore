@@ -2,3 +2,8 @@
 *.swo
 *.bak
 *.pyc
+.lein-plugins
+[#]*
+.#*
+target
+resources/js
