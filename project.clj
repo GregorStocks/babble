@@ -1,5 +1,5 @@
-(defproject cljsbuild-example-simple "1.0.1"
-  :description "A simple example of how to use lein-cljsbuild"
+(defproject babble "0.0.69"
+  :description "A poopy butt"
   :source-paths ["src-clj"]
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/clojurescript "0.0-2014"
