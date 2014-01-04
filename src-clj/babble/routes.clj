@@ -1,6 +1,6 @@
-(ns example.routes
+(ns babble.routes
   (:use compojure.core
-        example.views
+        babble.views
         [ring.util.response :only (redirect)]
         [cheshire.core :only (generate-string)]
         [hiccup.middleware :only (wrap-base-url)])
@@ -16,10 +16,10 @@
                         :timeleft 69
                         :words ["ass" "poop" "butt" "bort" (str (rand-int 100))]}]))
 (defonce USERS (atom []))
-(defonce ROOMS (atom {69 {"name" "Poop room"
-                          "users" []}
-                      70 {"name" "Boob room"
-                          "users" []}}))
+(defonce ROOMS (atom {69 {:name "Poop room"
+                          :users #{}}
+                      70 {:name "Boob room"
+                          :users #{}}}))
 
 (defn ->long [x]
   (Long. (str x)))
@@ -51,7 +51,6 @@
 
 (defn get-events-since [request]
   (let [eventid (->long ((:query-params request) "eventid"))]
-    (log/info "HEY" eventid (map :eventid @EVENTS) (pr-str @EVENTS ) (filter #(> (:eventid %) eventid) @EVENTS))
     (response {"status" "OK"
                "events" (filter #(> (:eventid %) eventid) @EVENTS)})))
 
@@ -70,10 +69,25 @@
              "rooms" @ROOMS}))
 
 (defn join [request]
-  (let [username ((:form-params request) "sesskey")]
+  (let [params (:form-params request)
+        username (params "sesskey")
+        roomid (->long (params "roomid"))]
     (swap! EVENTS conj (new-event {:type "join"
                                    :score 0
                                    :name username}))
+    (swap! ROOMS update-in [roomid :users] conj username)
+    (log/info "Rooms are now" @ROOMS)
+    (stub request)))
+
+(defn part [request]
+  (let [params (:form-params request)
+        username (params "sesskey")
+        roomid (->long (params "roomid"))]
+    (swap! EVENTS conj (new-event {:type "part"
+                                   :name username}))
+    (log/info "Disjing" (pr-str roomid) (pr-str @ROOMS) (pr-str username))
+    (swap! ROOMS update-in [roomid :users] disj username)
+    (log/info "Rooms are now" @ROOMS)
     (stub request)))
 
 (defroutes main-routes
@@ -84,7 +98,7 @@
   (POST "/api/vote.cgi" [] stub)
   (POST "/api/updatesentence.cgi" [] stub)
   (POST "/api/ping.cgi" [] stub)
-  (POST "/api/part.cgi" [] stub)
+  (POST "/api/part.cgi" [] part)
   (POST "/api/join.cgi" [] join)
   (GET "/api/getstate.cgi" [] getstate)
   (GET "/api/getroomlist.cgi" [] getroomlist)

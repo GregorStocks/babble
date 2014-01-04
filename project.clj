@@ -15,4 +15,5 @@
               :compiler {:output-to "resources/public/js/babble-autogen.js"
                          :optimizations :whitespace
                          :pretty-print true}}]}
-  :ring {:handler example.routes/app})
+  :ring {:handler babble.routes/app
+         :init babble.core/init-background-workers})

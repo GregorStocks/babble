@@ -1,4 +1,4 @@
-(ns example.views
+(ns babble.views
   (:require
     [hiccup
       [page :refer [html5]]

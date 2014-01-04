@@ -461,6 +461,7 @@ function busyIndicator(show) {
 }
 
 function logout() {
+  $.post('api/part.cgi', {'sesskey': get_sess_key(), 'roomid': get_room_id()}, make_error_handler(), "json");
   $('#sesskey').val("");
   $('#logout').remove();
   $('#loggedin').remove();
