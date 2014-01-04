@@ -10,26 +10,44 @@
             [compojure.response :as response]))
 
 (defn response [m]
-      {:body (generate-string m))
+      {:body (generate-string m)})
 
 (defn login [request]
   (log/info "its working.......")
-  {:body (generate-string {"status" "OK"
-                           "sesskey" (str (rand-int 10))})})
+  (response {"status" "OK"
+             "sesskey" (str (rand-int 10))}))
 
-(defn chat [request]
-  {"status" "OK"})
+(defn stub [request]
+  (response {"status" "OK"}))
 
 (defn get-events-since [request]
-  {"status" "OK"
-   "events" []})
+  (response {"status" "OK"
+             "events" []}))
 
+(defn getstate [request]
+  (response {"status" "OK"
+             "state" {"event" nil
+                      "eventid" 0
+                      :scores {}
+                      :players []}}))
+
+(defn getroomlist [request]
+  (response {"status" "OK"
+             "rooms" {69 {"name" "Poop room"
+                          "users" []}}}))
 
 (defroutes main-routes
   (GET "/" [] (redirect "index.html"))
   (POST "/api/login.cgi" [] login)
-  (POST "/api/chat.cgi" [] chat)
-  (POST "/api/geteventssince.cgi" [] get-events-since)
+  (POST "/api/chat.cgi" [] stub)
+  (GET "/api/geteventssince.cgi" [] get-events-since)
+  (POST "/api/vote.cgi" [] stub)
+  (POST "/api/updatesentence.cgi" [] stub)
+  (POST "/api/ping.cgi" [] stub)
+  (POST "/api/part.cgi" [] stub)
+  (POST "/api/join.cgi" [] stub)
+  (GET "/api/getstate.cgi" [] getstate)
+  (GET "/api/getroomlist.cgi" [] getroomlist)
   (route/resources "/")
   (route/not-found "Page not found"))
 
