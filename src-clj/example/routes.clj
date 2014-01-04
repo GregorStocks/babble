@@ -10,18 +10,19 @@
             [clj-time.core :as time]
             [compojure.response :as response]))
 
-(def EVENTS (atom [{:eventid 69
-                    :type "new round"
-                    :timeleft 69
-                    :words ["ass" "poop" "butt" "bort" (str (rand-int 100))]}]))
-(def USERS (atom []))
+(defonce EVENTS (atom [{:eventid 69
+                        :room 69
+                        :type "new round"
+                        :timeleft 69
+                        :words ["ass" "poop" "butt" "bort" (str (rand-int 100))]}]))
+(defonce USERS (atom []))
+(defonce ROOMS (atom {69 {"name" "Poop room"
+                          "users" []}
+                      70 {"name" "Boob room"
+                          "users" []}}))
 
 (defn ->long [x]
   (Long. (str x)))
-
-(defn sesskey->username [sesskey]
-  sesskey ;; LMAO
-  )
 
 (defn response [m]
       {:body (generate-string m)})
@@ -39,10 +40,10 @@
 
 (defn send-chat-message [request]
   (let [params (:form-params request)
-        username (sesskey->username (params "sesskey"))
+        username (params "sesskey")
         text (params "text")
         roomid (->long (params "roomid"))]
-    (log/info "The request was" request username text roomid)
+    (log/info "Chat message:" username text roomid)
     (swap! EVENTS conj (new-event {:type "chat"
                                    :username username
                                    :text text})))
@@ -66,8 +67,7 @@
 
 (defn getroomlist [request]
   (response {"status" "OK"
-             "rooms" {69 {"name" "Poop room"
-                          "users" []}}}))
+             "rooms" @ROOMS}))
 
 (defn join [request]
   (let [username ((:form-params request) "sesskey")]
