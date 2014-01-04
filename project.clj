@@ -11,7 +11,7 @@
             [lein-ring "0.8.7"]]
   :cljsbuild {
     :builds [{:source-paths ["src-cljs"]
-              :compiler {:output-to "resources/public/babble.js"
+              :compiler {:output-to "resources/public/js/babble.js"
                          :optimizations :whitespace
                          :pretty-print true}}]}
   :ring {:handler example.routes/app})
