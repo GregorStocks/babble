@@ -7,25 +7,52 @@
   (:require [compojure.route :as route]
             [clojure.tools.logging :as log]
             [compojure.handler :as handler]
+            [clj-time.core :as time]
             [compojure.response :as response]))
+
+(def EVENTS (atom [{:eventid 69
+                    :type "new round"
+                    :timeleft 69
+                    :words ["ass" "poop" "butt" "bort" (str (rand-int 100))]}]))
+(def USERS (atom []))
+
+(defn ->long [x]
+  (Long. (str x)))
+
+(defn sesskey->username [sesskey]
+  sesskey ;; LMAO
+  )
 
 (defn response [m]
       {:body (generate-string m)})
 
-(defn login [request]
-  (log/info "its working.......")
-  (response {"status" "OK"
-             "sesskey" (str (rand-int 10))}))
-
 (defn stub [request]
   (response {"status" "OK"}))
 
+(defn new-event [m]
+  (merge m {:eventid (.getMillis (time/now))}))
+
+(defn login [request]
+  (let [username ((:form-params request) "username")]
+    (response {"status" "OK"
+               "sesskey" username})))
+
+(defn send-chat-message [request]
+  (let [params (:form-params request)
+        username (sesskey->username (params "sesskey"))
+        text (params "text")
+        roomid (->long (params "roomid"))]
+    (log/info "The request was" request username text roomid)
+    (swap! EVENTS conj (new-event {:type "chat"
+                                   :username username
+                                   :text text})))
+  (stub request))
+
 (defn get-events-since [request]
-  (response {"status" "OK"
-             "events" [{"eventid" 69
-                        "type" "new round"
-                        "timeleft" 69
-                        "words" ["ass" "poop" "butt" "bort" (str (rand-int 100))]}]}))
+  (let [eventid (->long ((:query-params request) "eventid"))]
+    (log/info "HEY" eventid (map :eventid @EVENTS) (pr-str @EVENTS ) (filter #(> (:eventid %) eventid) @EVENTS))
+    (response {"status" "OK"
+               "events" (filter #(> (:eventid %) eventid) @EVENTS)})))
 
 (defn getstate [request]
   (response {"status" "OK"
@@ -42,16 +69,23 @@
              "rooms" {69 {"name" "Poop room"
                           "users" []}}}))
 
+(defn join [request]
+  (let [username ((:form-params request) "sesskey")]
+    (swap! EVENTS conj (new-event {:type "join"
+                                   :score 0
+                                   :name username}))
+    (stub request)))
+
 (defroutes main-routes
   (GET "/" [] (redirect "index.html"))
   (POST "/api/login.cgi" [] login)
-  (POST "/api/chat.cgi" [] stub)
+  (POST "/api/chat.cgi" [] send-chat-message)
   (GET "/api/geteventssince.cgi" [] get-events-since)
   (POST "/api/vote.cgi" [] stub)
   (POST "/api/updatesentence.cgi" [] stub)
   (POST "/api/ping.cgi" [] stub)
   (POST "/api/part.cgi" [] stub)
-  (POST "/api/join.cgi" [] stub)
+  (POST "/api/join.cgi" [] join)
   (GET "/api/getstate.cgi" [] getstate)
   (GET "/api/getroomlist.cgi" [] getroomlist)
   (route/resources "/")
