@@ -27,8 +27,7 @@
    :scores {}})
 
 (defonce USERS (atom []))
-(defonce ROOMS (atom {69 (empty-room "Poop room" 69)
-                      70 (empty-room "Boob room" 70)}))
+(defonce ROOMS (atom {69 (empty-room "Poop room" 69)}))
 
 (defn ->long [x]
   (Long. (str x)))
@@ -82,11 +81,13 @@
         event (new-event {:type "join"
                           :score 0
                           :name username})]
-    (swap! ROOMS #(-> %
-                      (update-in [roomid :users] conj username)
-                      (update-in [roomid :events] conj event)
-                      (update-in [roomid :eventid] (constantly (:eventid event)))
-                      (update-in [roomid :scores username] (fn [score] (or score 0)))))
+    (when-not (contains? (:users (@ROOMS roomid)) username) ;; legitimately new joiner
+      (swap! ROOMS #(-> %
+                        (update-in [roomid :users] conj username)
+                        (update-in [roomid :events] conj event)
+                        (update-in [roomid :eventid] (constantly (:eventid event)))
+                        (update-in [roomid :scores username] (fn [score] (or score 0))))))
+    (log/info "Rooms are now" @ROOMS)
     (stub request)))
 
 (defn part [request]

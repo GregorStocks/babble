@@ -340,7 +340,7 @@ function eventLoop() {
       }
     }
   }));
-  setTimeout(eventLoop, 1000);
+  setTimeout(eventLoop, 3000);
 }
 
 function start() {
@@ -350,7 +350,7 @@ function start() {
 	state = data["state"];
 	processEvent(state["event"]);
 	cureventid = state["eventid"];
-	addPlayers(state["players"], state["scores"]);
+	addUsers(state["users"], state["scores"]);
 	eventsLooping = true;
 	setTimeout(eventLoop, 1000);
 	setTimeout(pingLoop, 5000);
@@ -418,9 +418,9 @@ function timeLoop() {
   setTimeout(timeLoop, 100);
 }
 
-function addPlayers(players, scores) {
-  for(var player in players) {
-    var name = players[player];
+function addUsers(users, scores) {
+  for(var user in users) {
+    var name = users[user];
     if(!(name in scores)) {
       scores[name] = 0;
     }
@@ -466,8 +466,6 @@ function logout() {
   $('#logout').remove();
   $('#loggedin').remove();
   $("#membertable").empty();
-  $.cookie('amalgam-sesskey', null, {});
-  $.cookie('amalgam-username', null, {});
   eventsLooping = false;
   timeLeft = 0;
   showLogin();
@@ -479,8 +477,6 @@ function login() {
   $.post("api/login.cgi", {"password": password, "username": username}, make_error_handler(function(data) {
     if(data && data["status"] && data["status"] === "OK" && data["sesskey"]) {
       $('#sesskey').val(data["sesskey"]);
-      $.cookie('amalgam-sesskey', data["sesskey"], {path: '/', expires: new Date(2020, 1, 1)});
-      $.cookie('amalgam-username', username, {path: '/', expires: new Date(2020, 1, 1)});
       $("#footer").prepend("<p class='notes' id='loggedin'>You are currently logged in as " + username + ".</p>")
 	.prepend("<p class='notes' id='logout'><a href='javascript:logout()'>Log out</a></p>");
       showRooms();
@@ -490,14 +486,7 @@ function login() {
 
 function showLogin() {
   resetUi();
-  if($.cookie('amalgam-sesskey') && $.cookie('amalgam-username')) {
-    $('#sesskey').val($.cookie('amalgam-sesskey'));
-    $("#footer").prepend("<p class='notes' id='logout'><a href='javascript:logout()'>Log out</a></p>")
-      .prepend("<p class='notes' id='loggedin'>You are currently logged in as "+ $.cookie('amalgam-username') + ".</p>");
-    showRooms();
-  } else {
-    $("#gamebox").append('<div class="notification"><form action="index.cgi" method="post"><p>Username: <input type="text" name="username" id="username" /></p><p>You don\'t need a password. <input type="hidden" name="password" id="password" /></p><input type="submit" value="Go!" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"></form></div>');
-  }
+  $("#gamebox").append('<div class="notification"><form action="index.cgi" method="post"><p>Username: <input type="text" name="username" id="username" /></p><p>You don\'t need a password. <input type="hidden" name="password" id="password" /></p><input type="submit" value="Go!" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"></form></div>');
 }
 
 function clear() {
