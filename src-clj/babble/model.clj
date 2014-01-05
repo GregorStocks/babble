@@ -13,7 +13,7 @@
             [clojure.tools.reader.edn :as edn]
             [clojure.java.io :as io]))
 
-(defonce WORDS (edn/read-string (slurp (io/resource "dictionary.edn"))))
+(def WORDS (edn/read-string (slurp (io/resource "dictionary.edn"))))
 (defn rand-word [t]
   (rand-nth (t WORDS)))
 
