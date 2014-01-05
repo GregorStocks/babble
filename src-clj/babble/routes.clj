@@ -38,13 +38,15 @@
   (let [eventid (->long ((:query-params request) "eventid"))
         roomid (->long ((:query-params request) "roomid"))]
     (response {"status" "OK"
-               "events" (filter #(> (:eventid %) eventid)
-                                (:events (@ROOMS roomid)))})))
+               "events" (map postprocess-event (filter #(> (:eventid %) eventid)
+                                                       (:events (@ROOMS roomid))))})))
 
 (defn getstate [request]
   (let [roomid (->long ((:query-params request) "roomid"))]
     (response {"status" "OK"
-               "state" (select-keys (@ROOMS roomid) [:users :scores :event :eventid])})))
+               "state" (update-in (select-keys (@ROOMS roomid) [:users :scores :event :eventid])
+                                  [:event]
+                                  postprocess-event)})))
 
 (defn getroomlist [request]
   (response {"status" "OK"

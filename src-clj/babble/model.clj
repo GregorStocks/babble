@@ -99,3 +99,9 @@
 
 (defn ping-user [username rid]
   (swap! ROOMS update-in [rid :last-ping username] (fn [&args] (time/now))))
+
+(defn postprocess-event [event]
+  (dissoc (if (:end event)
+            (assoc event :timeleft (time/in-seconds (time/interval (time/now) (:end event))))
+            event)
+          :end))
