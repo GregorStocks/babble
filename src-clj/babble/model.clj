@@ -9,14 +9,30 @@
             [clojure.tools.logging :as log]
             [compojure.handler :as handler]
             [clj-time.core :as time]
-            [compojure.response :as response]))
+            [compojure.response :as response]
+            [clojure.tools.reader.edn :as edn]
+            [clojure.java.io :as io]))
+
+(defonce WORDS (edn/read-string (slurp (io/resource "dictionary.edn"))))
+(defn rand-word [t]
+  (rand-nth (t WORDS)))
+
+(def mandatory (:mandatory WORDS))
+
+(defn get-word-list []
+  (concat (repeatedly 40 #(rand-word :nouns))
+          (repeatedly 40 #(rand-word :verbs))
+          (repeatedly 40 #(rand-word :modifiers))
+          mandatory
+          (repeatedly (- 40 (count mandatory))
+                  #(rand-word :leftovers))))
 
 (defn initial-event [rid]
   {:eventid 1
    :room rid
    :type "new round"
    :timeleft 0
-   :words ["ass" "poop" "butt" "bort"]})
+   :words (get-word-list)})
 
 (defn empty-room [name rid]
   {:name name

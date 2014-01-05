@@ -10,7 +10,7 @@
   (log/info "tick")
   (Thread/sleep 10000)
   (each-room #(model/add-event % (model/new-event {:type "new round"
-                                                   :words ["ass" "butt" "dick" "hell" "dildos"]})))
+                                                   :words (model/get-word-list)})))
 
   (Thread/sleep 5000)
   (each-room #(model/add-event % (model/new-event {:type "winner"
