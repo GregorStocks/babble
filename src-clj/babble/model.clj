@@ -101,4 +101,4 @@
                       (keys votes)))))
 
 (defn ping-user [username rid]
-  (swap! ROOMS update-in [rid :last-ping] (constantly (time/now))))
+  (swap! ROOMS update-in [rid :last-ping] (constantly time/now)))

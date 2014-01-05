@@ -91,7 +91,8 @@
   (let [params (:form-params request)
         username (params "sesskey")
         rid (->long (params "roomid"))]
-    (ping-user username rid)))
+    (ping-user username rid)
+    (add-user rid username)))
 
 (defroutes main-routes
   (GET "/" [] (redirect "index.html"))
