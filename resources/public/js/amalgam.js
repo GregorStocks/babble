@@ -1,4 +1,5 @@
 var SESSKEY = "";
+var CANT_VOTE_YOURSELF = false; // to cheat, change this
 function get_sess_key() {
   return SESSKEY;
 }
@@ -374,10 +375,7 @@ function start() {
     }));
   }), "json");
 
-  console.log("YES");
   window.onbeforeunload = function() {
-    console.log("parting");
-    alert(1);
     $.post('api/part.cgi', {'sesskey': get_sess_key(), 'roomid': get_room_id()}, make_error_handler(), "json");
   };
 }
@@ -605,7 +603,8 @@ function startVoting(sentences) {
     var niceid = nice(sentenceid);
     NICE_TO_MEAN[niceid] = sentenceid;
 
-    if (get_sess_key() == sentenceid) {
+    console.log(CANT_VOTE_YOURSELF);
+    if (CANT_VOTE_YOURSELF && get_sess_key() == sentenceid) {
       $("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td><td></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
     } else {
       $("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td><td><button onclick=\"votefor('" + niceid + "')\">Vote</button></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
@@ -647,10 +646,8 @@ function showWinners(data) {
 var SCORES = [];
 
 function showGameWinners() {
-  console.log ("ok");
   resetUi();
   $("#gamebox").append("<div class='notification'><p>GAME OVER!!!</p></div>");
-  console.log("is it working");
   for(var person in SCORES) {
     $("#gamebox").append("<p>" + htmlentities(person) + " had " + SCORES[person] + " points.</p>");
   }

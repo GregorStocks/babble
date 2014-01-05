@@ -10,22 +10,27 @@
 (def VOTE-COLLECTING-TIME 2000)
 (def WINNER-GLOATING-TIME 7000)
 (def GAME-OVER-TIME 15000)
+(def PING-TIMEOUT (time/seconds 15))
 
 (defn end-time [delta]
   (time/plus (time/now) (time/millis delta)))
 
-(defn wait [msecs rid]
+(defn housekeeping [rid]
   (model/trim-room rid)
   (doseq [username (:users (@model/ROOMS rid))]
-    (when-not (time/before? (time/minus (time/now) (time/minutes 1))
+    (when-not (time/before? (time/minus (time/now) PING-TIMEOUT)
                             (or ((:last-ping (@model/ROOMS rid)) username)
                                 (time/date-time 2010)))
       (log/info "Removing inactive user" username rid)
       (let [event (model/new-event {:type "part"
                                     :name username})]
         (model/add-event rid event)
-        (model/remove-user rid username))))
-  (Thread/sleep msecs))
+        (model/remove-user rid username)))))
+
+(defn wait [msecs rid]
+  (dotimes [i (/ msecs 1000)]
+    (housekeeping rid)
+    (Thread/sleep 1000)))
 
 (defn tick [rid]
   (log/debug "new round" rid)
