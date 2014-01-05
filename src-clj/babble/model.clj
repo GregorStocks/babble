@@ -43,11 +43,7 @@
    :scores {}})
 
 (defonce USERS (atom []))
-(defonce ROOMS (atom {69 (empty-room "Poop room" 69)
-                      70 (empty-room "Butt room" 70)
-                      71 (empty-room "Hell room" 71)
-                      72 (empty-room "Damn room" 72)
-                      73 (empty-room "Ass room" 73)}))
+(defonce ROOMS (atom {69 (empty-room "Poop room" 69)}))
 
 (defn ->long [x]
   (Long. (str x)))
