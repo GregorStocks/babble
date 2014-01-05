@@ -233,7 +233,7 @@
 			  top = event.pageY + settings(current).top;
                         }
 			var right='auto';
-			if (settings(current).positionLeft) {
+			if (settings(current) && settings(current).positionLeft) {
 				right = $(window).width() - left;
 				left = 'auto';
 			}
