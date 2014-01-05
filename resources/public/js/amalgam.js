@@ -634,8 +634,10 @@ function playerJoined(name, score) {
   if(!score) {
     score = 0;
   }
-  $("#membertable").append("<tr id='user_" + name + "' class='username'><td class='username'>" + name + "</td><td class='score'>" + score + "</td></tr>");
-  scrollChat();
+  if (name != get_sess_key()) {
+    $("#membertable").append("<tr id='user_" + name + "' class='username'><td class='username'>" + name + "</td><td class='score'>" + score + "</td></tr>");
+    scrollChat();
+  }
 }
 
 function playerParted(name) {
@@ -648,7 +650,7 @@ function playerParted(name) {
   scrollChat();
 }
 
-function chatMessage(message, username) {
+function showChatMessage(message, username) {
   $("#chatmsgs").append(
     $("<p />").append(
       $("<span />").addClass("chat_username").text(username + ":")
@@ -659,8 +661,15 @@ function chatMessage(message, username) {
   scrollChat();
 }
 
+function chatMessage(message, username) {
+  if (username != get_sess_key()) {
+    showChatMessage(message, username);
+  }
+}
+
 function sendChat() {
   $.post("api/chat.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key(), 'text': get_chat_text()}, make_error_handler(), "json");
+  showChatMessage(get_chat_text(), get_sess_key());
   $("#chatmessage").val("");
 }
 
