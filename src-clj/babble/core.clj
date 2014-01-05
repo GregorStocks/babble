@@ -3,9 +3,9 @@
            [babble.model :as model]
            [clj-time.core :as time]))
 
-(def SENTENCE-MAKING-TIME 30000)
+(def SENTENCE-MAKING-TIME 5000)
 (def SENTENCE-COLLECTING-TIME 2000)
-(def VOTING-TIME 15000)
+(def VOTING-TIME 5000)
 (def VOTE-COLLECTING-TIME 2000)
 (def WINNER-GLOATING-TIME 3000)
 (def GAME-OVER-TIME 3000)
