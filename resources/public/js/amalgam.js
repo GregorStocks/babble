@@ -80,6 +80,8 @@ function add_suffix(phrase, suffix) {
       suff = "d";
     } else if(phrase.match(/lf$/)) {
       return phrase.replace(/lf$/, 'ved');
+    } else if(phrase.match(/\bI$/)) {
+      suff = "'d";
     }
   } else if(suff === "ing") {
     if(phrase.match(/e$/)) {
@@ -114,8 +116,16 @@ function add_to_sentence(sentence, phrase, sentence_start, prefixes) {
   // a -> an
   // this is a pretty ugly way to do this but OH WELL
   if(sentence.match(/ a$/i) || sentence.match(/^a$/i)) {
-    if(phrase.match(/^[aeiou]$/i) || phrase.match(/^h[aeiou]/i)) {
-      if(!phrase.match(/^uni/i)) {
+    if(phrase.match(/^[aeiou]$/i) || phrase.match(/^h[aeiou]/i) || phrase === "X-Ray") {
+      if(!phrase.match(/^uni/i) &&
+         phrase !== "one" &&
+         phrase !== "Ouija board" &&
+         phrase !== "UFO" &&
+         phrase !== "use" &&
+         phrase !== "uvula" &&
+         phrase !== "ukuelele" &&
+         phrase !== "unique" &&
+         phrase !== "utopia") {
         sentence += "n";
       }
     }
@@ -183,24 +193,24 @@ function makeSentence(words) {
     } else {
       // if there's a phrase ready to add to the sentence, add it (empties prefix stack)
       if(curphrase && !connecting) {
-	sentence = add_to_sentence(sentence, curphrase, sentence_start, prefixstack);
-	curphrase = "";
+        sentence = add_to_sentence(sentence, curphrase, sentence_start, prefixstack);
+        curphrase = "";
       }
 
       connecting = false;
       // start new phrase
       if(dict_entry && dict_entry["type"] === PREFIX) {
-	prefixstack.push(word);
+        prefixstack.push(word);
       } else {
-	curphrase += word;
+        curphrase += word;
       }
       if(sentence.length > 0) {
-	sentence_start = capitalize_next;
-	if(in_caret) {
-	  sentence_start = true;
-	  in_caret = false;
-	}
-	capitalize_next = false;
+        sentence_start = capitalize_next;
+        if(in_caret) {
+          sentence_start = true;
+          in_caret = false;
+        }
+        capitalize_next = false;
       }
     }
   }
@@ -225,18 +235,18 @@ function updateSentence() {
       var idnum = parseInt(i, 10);
       var word = wordlist[idnum];
       if(word === "==") {
-	var wordtext = $(box).text();
-	i = 0;
-	var b = $(".wordbox:not(.copy):contains('" + wordtext + "')");
-	if(b && b.attr('id')) {
-	  i = b.attr('id').match(/\d+/);
-	}
-	if(i) {
-	  idnum = parseInt(i, 10);
-	  word = wordlist[idnum];
-	} else {
-	  word = "==";
-	}
+        var wordtext = $(box).text();
+        i = 0;
+        var b = $(".wordbox:not(.copy):contains('" + wordtext + "')");
+        if(b && b.attr('id')) {
+          i = b.attr('id').match(/\d+/);
+        }
+        if(i) {
+          idnum = parseInt(i, 10);
+          word = wordlist[idnum];
+        } else {
+          word = "==";
+        }
       }
       words.push(word);
     }
@@ -257,8 +267,8 @@ function shouldInsertBefore(target, dropX, dropY, insertee) {
     if (p.length) {
       p = $(p.get(0));
       if (dragCenterX > p.position()['left'] + p.width() / 2 && 
-	  target.position()['top'] > p.position()['top']) {
-	return true;
+          target.position()['top'] > p.position()['top']) {
+        return true;
       }
     }
     return false;
@@ -331,9 +341,9 @@ function eventLoop() {
     if(data && data["status"] && data["status"] === "OK" && data["events"]) {
       events = data["events"];
       for(var i in events) {
-	if(eventsLooping) {
-	  processEvent(events[i]);
-	}
+        if(eventsLooping) {
+          processEvent(events[i]);
+        }
       }
     }
   }));
@@ -344,13 +354,13 @@ function start() {
   $.post("api/join.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()}, make_error_handler(function() {
     $.getJSON("api/getstate.cgi", {"roomid": get_room_id()}, make_error_handler(function(data) {
       if(data && data["status"] && data["status"] === "OK" && data["state"]) {
-	state = data["state"];
-	processEvent(state["event"]);
-	cureventid = state["eventid"];
-	addUsers(state["users"], state["scores"]);
-	eventsLooping = true;
-	setTimeout(eventLoop, 1000);
-	setTimeout(pingLoop, 5000);
+        state = data["state"];
+        processEvent(state["event"]);
+        cureventid = state["eventid"];
+        addUsers(state["users"], state["scores"]);
+        eventsLooping = true;
+        setTimeout(eventLoop, 1000);
+        setTimeout(pingLoop, 5000);
       }
     }));
   }), "json");
@@ -369,14 +379,14 @@ function showRooms() {
       $("#gamebox").append("<div class='notification' id='rooms'><h3>Choose a room to join:</h3></div>");
       var rooms = data["rooms"];
       for(var roomid in rooms) {
-	var butt = "<button id='room" + roomid + "' name='room" + roomid + "' onclick='selectroom(" + roomid + ")'>" + rooms[roomid]['name'] + " (" + rooms[roomid]['users'].length + ")</button>";
-	$("#rooms").append($("<p>" + butt + "</p>").tooltip({bodyHandler: function() {
-	  var x = "";
-	  for(user in rooms[roomid]['users']) {
-	    x += "<p class='names'>" + rooms[roomid]['users'][user] + "</p>";
-	  }
-	  return x;
-	}, showURL: false, opacity: 1}));
+        var butt = "<button id='room" + roomid + "' name='room" + roomid + "' onclick='selectroom(" + roomid + ")'>" + rooms[roomid]['name'] + " (" + rooms[roomid]['users'].length + ")</button>";
+        $("#rooms").append($("<p>" + butt + "</p>").tooltip({bodyHandler: function() {
+          var x = "";
+          for(user in rooms[roomid]['users']) {
+            x += "<p class='names'>" + rooms[roomid]['users'][user] + "</p>";
+          }
+          return x;
+        }, showURL: false, opacity: 1}));
       }
     }
   }));
@@ -389,9 +399,9 @@ function selectroom(roomid) {
   $("#chat").append(
     $('<div id="chatinput">').append(
       $('<input type="text" id="chatmessage" />').keypress(function(e) {
-	if (e.which === 13) {
-	  sendChat();
-	}
+        if (e.which === 13) {
+          sendChat();
+        }
       })
     ));
   start();
@@ -448,8 +458,8 @@ function busyIndicator(show) {
       top: '50%'
     })
       .css({
-	marginLeft: '-' + ind.outerWidth() / 2 + 'px',
-	marginTop: '-' + ind.outerHeight() / 2 + 'px'
+        marginLeft: '-' + ind.outerWidth() / 2 + 'px',
+        marginTop: '-' + ind.outerHeight() / 2 + 'px'
       });
     
   } else {
@@ -475,7 +485,7 @@ function login() {
     if(data && data["status"] && data["status"] === "OK" && data["sesskey"]) {
       $('#sesskey').val(data["sesskey"]);
       $("#footer").prepend("<p class='notes' id='loggedin'>You are currently logged in as " + username + ".</p>")
-	.prepend("<p class='notes' id='logout'><a href='javascript:logout()'>Log out</a></p>");
+        .prepend("<p class='notes' id='logout'><a href='javascript:logout()'>Log out</a></p>");
       showRooms();
     }
   }), "json");
@@ -502,15 +512,15 @@ function startRound() {
   $("#gamebox")
     .append(
       $("<div class='wordsouter' />")
-	.append("<div class='wordsbox wordscontainer' id='wordsbox0'></div>")
-	.append("<div class='wordsbox wordscontainer' id='wordsbox1'></div>")
-	.append("<div class='clear'></div>")
-	.append("<div class='dropbox wordscontainer' id='dropbox'></div>")
-	.append("<p class='sentence' id='sentence'>&nbsp;</p>")
-	.append("<div class='clear'></div>")
-	.append("<div class='wordsbox wordscontainer' id='wordsbox2'></div>")
-	.append("<div class='wordsbox wordscontainer' id='wordsbox3'></div>")
-	.append("<div class='clear'></div>")
+        .append("<div class='wordsbox wordscontainer' id='wordsbox0'></div>")
+        .append("<div class='wordsbox wordscontainer' id='wordsbox1'></div>")
+        .append("<div class='clear'></div>")
+        .append("<div class='dropbox wordscontainer' id='dropbox'></div>")
+        .append("<p class='sentence' id='sentence'>&nbsp;</p>")
+        .append("<div class='clear'></div>")
+        .append("<div class='wordsbox wordscontainer' id='wordsbox2'></div>")
+        .append("<div class='wordsbox wordscontainer' id='wordsbox3'></div>")
+        .append("<div class='clear'></div>")
     );
   $("#dropbox")
     .append("<span class='clearwords' id='clear'><a href='javascript:clear()'>Clear</a></span>")
@@ -523,17 +533,17 @@ function startRound() {
       
       var done = false;
       $.each($('#dropbox > .wordbox'), function(idx, box) {
-	if(!done && shouldInsertBefore($(box), event.pageX, event.pageY, $(event.dragTarget))) {
-	  done = true;
-	  $(event.dragTarget).insertBefore(box);
-	}
+        if(!done && shouldInsertBefore($(box), event.pageX, event.pageY, $(event.dragTarget))) {
+          done = true;
+          $(event.dragTarget).insertBefore(box);
+        }
       });
       if(!done) {
-	$(event.dragTarget).insertBefore($('#clear'));
+        $(event.dragTarget).insertBefore($('#clear'));
       }
       $(event.dragTarget).css({
-	position: 'static',
-	'float': 'left'
+        position: 'static',
+        'float': 'left'
       });
       $('.spacer').css({width: '0px'}).remove();
       $.dropManage(); // might have resized from adding a fella
@@ -621,9 +631,9 @@ function showWinners(data) {
 function showGameWinners() {
   resetUi();
   $("#gamebox").append("<div class='notification'><p>GAME OVER!!!</p></div>");
-  /*	for(person in scores) {
-	$("#gamebox").append("<p>" + person + " had " + scores[person] + " points.</p>");
-	}*/
+  /*        for(person in scores) {
+        $("#gamebox").append("<p>" + person + " had " + scores[person] + " points.</p>");
+        }*/
   $(".score").text(0);
 }
 
@@ -733,18 +743,18 @@ function insertWords(words) {
     var oldCurSpacer = curSpacer;
     if (event.pageY > db.position()['top'] && event.pageY < db.position()['top'] + db.height()) {
       $.each($('#dropbox > .wordbox'), function(idx, box) {
-	if(!done && shouldInsertBefore($(box), event.pageX, event.pageY, $(event.dragTarget))) {
-	  done = true;
-	  
-	  if (curSpacer !== box) {
-	    killSpacers();
-	    curSpacer = box;
-	  }
-	}
+        if(!done && shouldInsertBefore($(box), event.pageX, event.pageY, $(event.dragTarget))) {
+          done = true;
+          
+          if (curSpacer !== box) {
+            killSpacers();
+            curSpacer = box;
+          }
+        }
       });
       
       if (!done) {
-	curSpacer = $('#clear').get(0);
+        curSpacer = $('#clear').get(0);
       }
     } else {
       curSpacer = null;
@@ -754,41 +764,41 @@ function insertWords(words) {
       killSpacers();
       
       if (curSpacer !== null) {
-	$(event.dragTarget).clone()
-	  .removeClass('wordbox')
-	  .addClass('spacer')
-	  .insertBefore(curSpacer)
-	  .css({
-	    position: 'static',
-	    'float': 'left',
-	    width: '0px'
-	  })
-	  .animate({width: ($(event.dragTarget).width()) + "px"},	25);
-      }			
+        $(event.dragTarget).clone()
+          .removeClass('wordbox')
+          .addClass('spacer')
+          .insertBefore(curSpacer)
+          .css({
+            position: 'static',
+            'float': 'left',
+            width: '0px'
+          })
+          .animate({width: ($(event.dragTarget).width()) + "px"},        25);
+      }                        
     }
   })
     .bind('dragstart', function(event) {
       if ($(this).parent().get(0).id === 'dropbox') {
-	
-	var done = false;
-	$.each($('#dropbox > .wordbox'), function(idx, box) {
-	  if(!done && shouldInsertBefore($(box), event.pageX, event.pageY, $(event.dragTarget))) {
-	    done = true;
-	    curSpacer = box;
-	  }
-	});
-	if (!done) {
-	  curSpacer = $("#clear").get(0);
-	}
-	$(event.dragTarget).clone()
-	  .removeClass('wordbox')
-	  .addClass('spacer')
-	  .insertBefore(curSpacer)
-	  .css({
-	    position: 'static',
-	    'float': 'left',
-	    width: $(event.dragTarget).width() + 'px'
-	  });
+        
+        var done = false;
+        $.each($('#dropbox > .wordbox'), function(idx, box) {
+          if(!done && shouldInsertBefore($(box), event.pageX, event.pageY, $(event.dragTarget))) {
+            done = true;
+            curSpacer = box;
+          }
+        });
+        if (!done) {
+          curSpacer = $("#clear").get(0);
+        }
+        $(event.dragTarget).clone()
+          .removeClass('wordbox')
+          .addClass('spacer')
+          .insertBefore(curSpacer)
+          .css({
+            position: 'static',
+            'float': 'left',
+            width: $(event.dragTarget).width() + 'px'
+          });
       }
       $('#wordsbox0').append(this); // remove from the sentence
       $.dropManage(); // drop area might have resized from removing it
@@ -800,13 +810,13 @@ function insertWords(words) {
     })
     .rightClick(function() {
       if($(this).hasClass('copy')) {
-	$(this).text("==");
-	updateSentence();
+        $(this).text("==");
+        updateSentence();
       } else {
         $(this).insertBefore($('#clear'));
         $(this).css({
-	  position: 'static',
-	  'float': 'left'
+          position: 'static',
+          'float': 'left'
         });
         $.dropManage();
         updateSentence();
@@ -814,18 +824,18 @@ function insertWords(words) {
     })
     .mousedown(function() {
       if($(this).hasClass('copy') && $(this).text() === "==") {
-	if(lastClick) {
-	  $(this).text(lastClick);
-	}
+        if(lastClick) {
+          $(this).text(lastClick);
+        }
       } else {
-	lastClick = $(this).text();
+        lastClick = $(this).text();
       }
     })
     .dblclick(function() {
       $(this).insertBefore($('#clear'));
       $(this).css({
-	position: 'static',
-	'float': 'left'
+        position: 'static',
+        'float': 'left'
       });
       $.dropManage();
       updateSentence();
