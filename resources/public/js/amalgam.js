@@ -492,6 +492,11 @@ function showLogin() {
 function clear() {
   $(".wordscontainer").empty();
   insertWords(startwordlist);
+  $("#dropbox")
+    .append("<span class='clearwords' id='clear'><a href='javascript:clear()'>Clear</a></span>")
+    .append("<div class='clear' id='clearer'></div>");
+  updateSentence();
+
 }
 
 function startRound() {
