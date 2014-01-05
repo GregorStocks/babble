@@ -4,42 +4,19 @@
         [ring.util.response :only (redirect)]
         [cheshire.core :only (generate-string)]
         [clojure.contrib.generic.functor :only (fmap)]
-        [hiccup.middleware :only (wrap-base-url)])
+        [hiccup.middleware :only (wrap-base-url)]
+        [babble.model])
   (:require [compojure.route :as route]
             [clojure.tools.logging :as log]
             [compojure.handler :as handler]
             [clj-time.core :as time]
             [compojure.response :as response]))
 
-(defn initial-event [roomid]
-  {:eventid 1
-   :room roomid
-   :type "new round"
-   :timeleft 0
-   :words ["ass" "poop" "butt" "bort"]})
-
-(defn empty-room [name roomid]
-  {:name name
-   :users #{}
-   :events [(initial-event roomid)]
-   :event (initial-event roomid)
-   :eventid 1
-   :scores {}})
-
-(defonce USERS (atom []))
-(defonce ROOMS (atom {69 (empty-room "Poop room" 69)}))
-
-(defn ->long [x]
-  (Long. (str x)))
-
 (defn response [m]
       {:body (generate-string m)})
 
 (defn stub [request]
   (response {"status" "OK"}))
-
-(defn new-event [m]
-  (merge m {:eventid (.getMillis (time/now))}))
 
 (defn login [request]
   (let [username ((:form-params request) "username")]
@@ -52,9 +29,9 @@
         text (params "text")
         roomid (->long (params "roomid"))]
     (log/info "#" roomid " <" username "> " text)
-    (swap! ROOMS update-in [roomid :events] conj (new-event {:type "chat"
-                                                             :username username
-                                                             :text text})))
+    (add-event roomid {:type "chat"
+                       :username username
+                       :text text}))
   (stub request))
 
 (defn get-events-since [request]
@@ -70,7 +47,6 @@
                "state" (select-keys (@ROOMS roomid) [:users :scores :event :eventid])})))
 
 (defn getroomlist [request]
-  (log/info @ROOMS)
   (response {"status" "OK"
              "rooms" (fmap #(select-keys % [:name :users]) @ROOMS)}))
 
@@ -82,12 +58,8 @@
                           :score 0
                           :name username})]
     (when-not (contains? (:users (@ROOMS roomid)) username) ;; legitimately new joiner
-      (swap! ROOMS #(-> %
-                        (update-in [roomid :users] conj username)
-                        (update-in [roomid :events] conj event)
-                        (update-in [roomid :eventid] (constantly (:eventid event)))
-                        (update-in [roomid :scores username] (fn [score] (or score 0))))))
-    (log/info "Rooms are now" @ROOMS)
+      (add-event roomid event)
+      (add-user roomid username))
     (stub request)))
 
 (defn part [request]
@@ -96,10 +68,8 @@
         roomid (->long (params "roomid"))
         event (new-event {:type "part"
                           :name username})]
-    (swap! ROOMS #(-> %
-                      (update-in [roomid :users] disj username)
-                      (update-in [roomid :events] conj event)
-                      (update-in [roomid :eventid] (constantly (:eventid event)))))
+    (add-event roomid event)
+    (remove-user roomid username)
     (stub request)))
 
 (defroutes main-routes
