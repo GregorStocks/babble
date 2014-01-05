@@ -49,7 +49,8 @@
   (doseq [rid (keys @model/ROOMS)]
     (doseq [username (:users (@model/ROOMS rid))]
       (when-not (time/before? (time/minus (time/now) (time/minutes 1))
-                              (or ((:last-ping (@model/ROOMS rid)) username) (time/date-time 2010)))
+                              (or ((:last-ping (@model/ROOMS rid)) username)
+                                  (time/date-time 2010)))
         (log/info "Removing inactive user" username rid)
         (model/remove-user rid username)))))
 
