@@ -582,7 +582,7 @@ function startVoting(sentences) {
     var sentence = makeSentence(sentences[sentenceid]);
     var niceid = sentenceid.replace(/\$/g, "");
 
-    if (false && get_sess_key() == sentenceid) {
+    if (get_sess_key() == sentenceid) {
       $("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td><td></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
     } else {
       $("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td><td><button onclick=\"votefor('" + sentenceid + "')\">Vote</button></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
