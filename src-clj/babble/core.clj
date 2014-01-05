@@ -55,7 +55,6 @@
   (model/next-round rid)
 
   (let [best-score (apply max 0 (vals (:scores (@model/ROOMS rid))))]
-    (log/info best-score)
     (when (>= best-score GOAL-SCORE)
       (model/add-event rid
                        (model/new-event {:type "game over"
