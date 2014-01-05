@@ -287,7 +287,7 @@ button" "Bit" "Bigfoot" "Bliss" "Bell" "Belief" "Business" "Bikini" "Beagle"
 "He" "He" "He" "He" "She" "She" "She" "She" "She" "Not" "Not" "Have" "My" "My"
 "His" "His" "His" "Her" "Her" "Her" "Her" "Her" "Him" "Him" "Him" "Him" "They"
 "They" "This" "This" "This" "This" "That" "That" "That" "That" "==" "==" "=="
-"++" "++" "++" "++" "." "?" "!" ""]
+"++" "++" "++" "++" "." "?" "!" ","]
 
  :verbs [ "Am" "Am" "Am" "Are" "Are" "Amaze" "Ask" "Ask" "Act" "Act" "Annoy"
 "Age" "Age" "Accept" "Alert" "Astonish" "Afford" "Adore" "Arrange" "Agree"
@@ -470,7 +470,7 @@ button" "Bit" "Bigfoot" "Bliss" "Bell" "Belief" "Business" "Bikini" "Beagle"
 "She" "She" "Should" "Should" "Should" "Would" "Would" "Would" "Could" "Could"
 "Could" "All" "All" "All" "My" "My" "My" "His" "His" "His" "Him" "Him" "Him"
 "Him" "Her" "Her" "Her" "Her" "Her" "They" "They" "This" "This" "This" "That"
-"That" "That" "==" "==" "==" "++" "++" "++" "++" "." "." "?" "?" "!" "!" "" ""]
+"That" "That" "==" "==" "==" "++" "++" "++" "++" "." "." "?" "?" "!" "!" "," ","]
 
  :modifiers ["Awful" "Always" "Appropriate" "Awkward" "Average" "After" "After"
 "Around" "Awry" "Abnormal" "All" "All" "All" "Adequate" "Alone" "Automatic"
@@ -641,8 +641,8 @@ button" "Bit" "Bigfoot" "Bliss" "Bell" "Belief" "Business" "Bikini" "Beagle"
 "Didn't" "Didn't" "Doesn't" "Dang" "Darn" "Drat" "Except" "Except" "Every"
 "Every" "Ever" "Ever" "Even" "Even" "Else" "Eh" "Either" "Each" "Everyone"
 "From" "From" "From" "From" "For" "For" "For" "For" "Give" "Give" "Give" "Get"
-"Get" "Get" "Given" "Go" "Gee" "He" "He" "He" "He" "He "He"" "Her" "Her" "Her"
-"Her" "Her "Her"" "His" "His" "His" "His" "Him" "Him" "Him" "Him" "However"
+"Get" "Get" "Given" "Go" "Gee" "He" "He" "He" "He" "He" "He" "Her" "Her" "Her"
+"Her" "Her" "Her" "His" "His" "His" "His" "Him" "Him" "Him" "Him" "However"
 "Have" "Have" "Have" "Have" "How" "How" "How" "Has" "Has" "Has" "Has" "Had"
 "Had" "Had" "Hey" "Half" "Hi" "Howdy" "Hello" "I" "I" "I" "I" "In" "In" "In"
 "In" "In" "If" "If" "If" "It" "It" "It" "It" "Into" "Into" "Just" "Just" "Like"
@@ -654,7 +654,7 @@ button" "Bit" "Bigfoot" "Bliss" "Bell" "Belief" "Business" "Bikini" "Beagle"
 "Over" "Over" "Once" "Old" "Old" "Ooh" "Own" "Own" "Own" "Our" "Our" "Other"
 "Other" "Out" "Out" "Out" "Out" "Okay" "Ought" "Onward" "Oops" "Otherwise"
 "Put" "Put" "Plus" "Pair" "Per" "P.S." "Right" "Right" "Sure" "Sure" "Say"
-"Say" "Say" "She" "She" "She" "She" "She "She"" "Should" "Should" "So" "So"
+"Say" "Say" "She" "She" "She" "She" "She" "She" "Should" "Should" "So" "So"
 "Since" "Some" "Some" "Some" "See" "See" "Saw" "Soon" "Them" "Them" "Them"
 "Them" "To" "To" "To" "To" "To" "Too" "Too" "These" "These" "They" "They"
 "They" "They" "They" "Today" "Today" "Tomorrow" "Tomorrow" "Than" "Than" "Than"
@@ -678,5 +678,5 @@ button" "Bit" "Bigfoot" "Bliss" "Bell" "Belief" "Business" "Bikini" "Beagle"
 "-ness" "-ness" "-en" "-en" "." "." "." "." "." "." "!" "!" "!" "!" "!" "?" "?"
 "?" "?" "?" "^" ":" ":" ";" ";" "..." ".." "-" "-" "++" "++" "==" "==" "'" "'" ]
 
-:mandatory ["." "!" "?" "" "Are" "Is" "The" "And" "Or" "Of" "A" "-s" "-ed"
+:mandatory ["." "!" "?" "," "Are" "Is" "The" "And" "Or" "Of" "A" "-s" "-ed"
 "-ly" "-ing" "-er" "-y" "^" "-s" "-ed" "==" ]}
