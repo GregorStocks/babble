@@ -340,7 +340,7 @@ function eventLoop() {
       }
     }
   }));
-  setTimeout(eventLoop, 3000);
+  setTimeout(eventLoop, 1000);
 }
 
 function start() {

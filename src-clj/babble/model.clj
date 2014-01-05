@@ -30,9 +30,7 @@
 (defn initial-event [rid]
   {:eventid 1
    :room rid
-   :type "new round"
-   :timeleft 0
-   :words []})
+   :type "game over"})
 
 (defn empty-room [name rid]
   {:name name
@@ -53,11 +51,14 @@
 (defn new-event [m]
   (merge m {:eventid (.getMillis (time/now))}))
 
-(defn add-event [rid event]
-  (log/info "Event:" event)
-  (swap! ROOMS #(-> %
-                    (update-in [rid :events] conj (new-event event))
-                    (update-in [rid :eventid] (constantly (:eventid event))))))
+(defn add-event ([rid event] (add-event rid event false))
+  ([rid event important?]
+     (log/info "Event:" event)
+     (swap! ROOMS #(-> (if important?
+                         (update-in % [rid :event] (constantly event))
+                         %)
+                       (update-in [rid :events] conj (new-event event))
+                       (update-in [rid :eventid] (constantly (:eventid event)))))))
 
 (defn add-user [rid username]
   (swap! ROOMS #(-> %
@@ -84,12 +85,14 @@
   ;; this isn't thread-safe but it's okay because we've only got one thread per room
   (let [votes (:votes (@ROOMS rid))
         votes-by-username (frequencies (vals votes))
-        winner (apply max-key votes-by-username (keys votes-by-username))
+        winner (if (seq votes) (apply max-key votes-by-username (keys votes-by-username)))
         points-by-username (merge-with + votes-by-username (if winner {winner 2}))]
     (log/info votes-by-username winner points-by-username)
     (doseq [username (keys points-by-username)]
       (swap! ROOMS update-in [rid :points username] #(+ (or % 0) (or (points-by-username username) 0))))
     (apply merge (map #(hash-map % {:votes (or (votes-by-username %) 0)
                                     :points (or (points-by-username %) 0)
-                                    :iswinner (= % winner)})
+                                    :iswinner (= % winner)
+                                    :sentence (or (((@ROOMS rid) :sentences) %)
+                                                  [])})
                       (keys votes)))))

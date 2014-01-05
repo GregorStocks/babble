@@ -47,7 +47,7 @@ body {
 .wordsouter {
 	background: #333333;
 	border: .2em inset #751919;
-	width: 600px;
+	width: 900px;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -267,6 +267,10 @@ body {
 .winners {
 	margin-left: auto;
 	margin-right: auto;
+}
+
+.winners {
+    color: #eeeeee;
 }
 
 .winner {
