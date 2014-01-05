@@ -3,9 +3,9 @@
            [babble.model :as model]
            [clj-time.core :as time]))
 
-(def SENTENCE-MAKING-TIME 45000)
+(def SENTENCE-MAKING-TIME 15000)
 (def SENTENCE-COLLECTING-TIME 2000)
-(def VOTING-TIME 5000)
+(def VOTING-TIME 15000)
 (def VOTE-COLLECTING-TIME 2000)
 (def WINNER-GLOATING-TIME 3000)
 (def GAME-OVER-TIME 5000)
@@ -60,6 +60,7 @@
                                        :end (end-time GAME-OVER-TIME)})
                      true)
     (Thread/sleep GAME-OVER-TIME))
+  (model/trim-room rid)
 
   (doseq [rid (keys @model/ROOMS)]
     (doseq [username (:users (@model/ROOMS rid))]

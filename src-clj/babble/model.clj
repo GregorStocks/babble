@@ -11,7 +11,8 @@
             [clj-time.core :as time]
             [compojure.response :as response]
             [clojure.tools.reader.edn :as edn]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [hiccup.util :as hiccup]))
 
 (def WORDS (edn/read-string (slurp (io/resource "dictionary.edn"))))
 (defn rand-word [t]
@@ -76,26 +77,28 @@
 
 (defn next-round [rid]
   (swap! ROOMS #(-> %
-                    (update-in [rid :sentences] (constantly {"A Ghost" ["none of these sentences deserve to win."]}))
+                    (update-in [rid :sentences] (constantly {"a ghost" ["All of these sentences are bad."]}))
                     (update-in [rid :votes] (constantly {})))))
 
 (defn round-points! [rid]
   ;; this isn't thread-safe but it's okay because we've only got one thread per room
   (let [votes (:votes (@ROOMS rid))
-        votes-by-username (select-keys (frequencies (vals votes)) (keys votes))
-        winner (if (seq votes-by-username) (apply max-key votes-by-username (keys votes-by-username)))
-        points-by-username (apply merge-with + votes-by-username
+        raw-votes-by-username (frequencies (vals votes))
+        valid-votes-by-username (select-keys raw-votes-by-username (keys votes))
+        winner (if (seq valid-votes-by-username) (apply max-key valid-votes-by-username (keys valid-votes-by-username)))
+        points-by-username (apply merge-with + valid-votes-by-username
                                   (if winner {winner 2})
                                   (map #(if (= winner (votes %)) {% 1})
                                        (keys votes)))]
     (doseq [username (keys points-by-username)]
       (swap! ROOMS update-in [rid :points username] #(+ (or % 0) (or (points-by-username username) 0))))
-    (apply merge (map #(hash-map % {:votes (or (votes-by-username %) 0)
+    (log/info raw-votes-by-username)
+    (apply merge (map #(hash-map % {:votes (or (raw-votes-by-username %) 0)
                                     :points (or (points-by-username %) 0)
                                     :iswinner (= % winner)
                                     :sentence (or (((@ROOMS rid) :sentences) %)
                                                   [])})
-                      (concat (keys votes) (keys votes-by-username))))))
+                      (concat (keys votes) (keys raw-votes-by-username))))))
 
 (defn ping-user [username rid]
   (swap! ROOMS update-in [rid :last-ping username] (fn [&args] (time/now))))
@@ -105,3 +108,8 @@
             (assoc event :timeleft (time/in-seconds (time/interval (time/now) (:end event))))
             event)
           :end))
+
+(defn trim-room [rid]
+  ;; I'll uncomment this when it's actually necessary.
+;;  (swap! ROOMS update-in [rid :events] (partial take-last 50))
+  )

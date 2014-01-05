@@ -1,5 +1,6 @@
+var SESSKEY = "";
 function get_sess_key() {
-  return $('#sesskey').val();
+  return SESSKEY;
 }
 
 function get_room_id() {
@@ -469,7 +470,7 @@ function busyIndicator(show) {
 
 function logout() {
   $.post('api/part.cgi', {'sesskey': get_sess_key(), 'roomid': get_room_id()}, make_error_handler(), "json");
-  $('#sesskey').val("");
+  SESSKEY = "";
   $('#logout').remove();
   $('#loggedin').remove();
   $("#membertable").empty();
@@ -483,7 +484,7 @@ function login() {
   var password = $("#password").val();
   $.post("api/login.cgi", {"password": password, "username": username}, make_error_handler(function(data) {
     if(data && data["status"] && data["status"] === "OK" && data["sesskey"]) {
-      $('#sesskey').val(data["sesskey"]);
+      SESSKEY = data["sesskey"];
       $("#footer").prepend("<p class='notes' id='loggedin'>You are currently logged in as " + username + ".</p>")
         .prepend("<p class='notes' id='logout'><a href='javascript:logout()'>Log out</a></p>");
       showRooms();
@@ -587,7 +588,7 @@ function startVoting(sentences) {
     ++i;
 
     var sentence = makeSentence(sentences[sentenceid]);
-    var niceid = sentenceid.replace(/\$/g, "");
+    var niceid = sentenceid.replace(/[^A-Za-z0-9]/g, "");
 
     if (get_sess_key() == sentenceid) {
       $("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td><td></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
