@@ -362,22 +362,26 @@ function eventLoop() {
 
 function start() {
   $.post("api/join.cgi", {'roomid': get_room_id(), 'sesskey': get_sess_key()}, make_error_handler(function() {
-    $.getJSON("api/getstate.cgi", {"roomid": get_room_id()}, make_error_handler(function(data) {
-      if(data && data["status"] && data["status"] === "OK" && data["state"]) {
-        state = data["state"];
-        processEvent(state["event"]);
-        cureventid = state["eventid"];
-        addUsers(state["users"], state["scores"]);
-        eventsLooping = true;
-        setTimeout(eventLoop, 1000);
-        setTimeout(pingLoop, 5000);
-      }
-    }));
+    reloadState();
   }), "json");
 
   window.onbeforeunload = function() {
     $.post('api/part.cgi', {'sesskey': get_sess_key(), 'roomid': get_room_id()}, make_error_handler(), "json");
   };
+}
+
+function reloadState() {
+  $.getJSON("api/getstate.cgi", {"roomid": get_room_id()}, make_error_handler(function(data) {
+    if(data && data["status"] && data["status"] === "OK" && data["state"]) {
+      state = data["state"];
+      processEvent(state["event"]);
+      cureventid = state["eventid"];
+      setUsers(state["users"], state["scores"]);
+      eventsLooping = true;
+      setTimeout(eventLoop, 1000);
+      setTimeout(pingLoop, 5000);
+    }
+  }));
 }
 
 function showRooms() {
@@ -444,6 +448,11 @@ function addUsers(users, scores) {
     SCORES[name] = scores[name];
     $("#membertable").append("<tr id='user_" + nice(name) + "' class='username_row'><td class='username'>" + htmlentities(name) + "</td><td class='score'>" + scores[name] + "</td></tr>");
   }
+}
+
+function setUsers(users, scores) {
+  $("#membertable").empty();
+  addUsers(users, scores);
 }
 
 var totalTime;
@@ -637,10 +646,8 @@ function showWinners(data) {
       cls = " class='winner'";
     }
     $("#winners").append("<tr" + cls + "><td>" + makeSentence(data[name]["sentence"]) + "</td><td>" + htmlentities(name) + "</td><td>" + data[name]["votes"] + "</td><td>" + data[name]["points"]);
-    scorebox = $("#user_" + nice(name) + " > .score");
-    var points = parseInt(scorebox.text(), 10);
-    scorebox.text(points + data[name]["points"]);
   }
+  updateState();
 }
 
 var SCORES = [];
