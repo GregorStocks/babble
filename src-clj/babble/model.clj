@@ -108,10 +108,14 @@
   (swap! ROOMS update-in [rid :last-ping username] (fn [&args] (time/now))))
 
 (defn postprocess-event [event]
-  (dissoc (if (:end event)
-            (assoc event :timeleft (time/in-seconds (time/interval (time/now) (:end event))))
-            event)
-          :end))
+  (let [now (time/now)
+        end (:end event)
+        ev (dissoc event :end)]
+    (if end
+      (assoc ev :timeleft (if (time/before? now end)
+                            (time/in-seconds (time/interval now end))
+                            0))
+      ev)))
 
 (defn trim-room [rid]
   ;; I'll uncomment this when it's actually necessary.

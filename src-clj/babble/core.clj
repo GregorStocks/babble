@@ -14,6 +14,19 @@
 (defn end-time [delta]
   (time/plus (time/now) (time/millis delta)))
 
+(defn wait [msecs rid]
+  (model/trim-room rid)
+  (doseq [username (:users (@model/ROOMS rid))]
+    (when-not (time/before? (time/minus (time/now) (time/minutes 1))
+                            (or ((:last-ping (@model/ROOMS rid)) username)
+                                (time/date-time 2010)))
+      (log/info "Removing inactive user" username rid)
+      (let [event (model/new-event {:type "part"
+                                    :name username})]
+        (model/add-event rid event)
+        (model/remove-user rid username))))
+  (Thread/sleep msecs))
+
 (defn tick [rid]
   (log/debug "new round" rid)
   (model/add-event rid
@@ -21,14 +34,14 @@
                                      :end (end-time SENTENCE-MAKING-TIME)
                                      :words (model/get-word-list)})
                    true)
-  (Thread/sleep SENTENCE-MAKING-TIME)
+  (wait SENTENCE-MAKING-TIME rid)
 
   (log/debug "collecting" rid)
   (model/add-event rid
                    (model/new-event {:type "collecting"
                                      :end (end-time SENTENCE-COLLECTING-TIME)})
                    true)
-  (Thread/sleep SENTENCE-COLLECTING-TIME)
+  (wait SENTENCE-COLLECTING-TIME rid)
 
   (log/debug "voting" rid)
   (model/add-event rid
@@ -36,14 +49,14 @@
                                      :sentences (:sentences (@model/ROOMS rid))
                                      :end (end-time VOTING-TIME)})
                    true)
-  (Thread/sleep VOTING-TIME)
+  (wait VOTING-TIME rid)
 
   (log/debug "voting over" rid)
   (model/add-event rid
                    (model/new-event {:type "voting over"
                                      :end (end-time VOTE-COLLECTING-TIME)})
                    true)
-  (Thread/sleep VOTE-COLLECTING-TIME)
+  (wait VOTE-COLLECTING-TIME rid)
 
   (log/debug "showing winners")
   (model/add-event rid
@@ -51,7 +64,7 @@
                                      :data (model/round-points! rid)
                                      :end (end-time WINNER-GLOATING-TIME)})
                    true)
-  (Thread/sleep WINNER-GLOATING-TIME)
+  (wait WINNER-GLOATING-TIME rid)
   (model/next-round rid)
 
   (let [best-score (apply max 0 (vals (:scores (@model/ROOMS rid))))]
@@ -61,20 +74,7 @@
                                          :end (end-time GAME-OVER-TIME)})
                        true)
       (model/next-game rid))
-
-    (Thread/sleep GAME-OVER-TIME))
-  (model/trim-room rid)
-
-  (doseq [rid (keys @model/ROOMS)]
-    (doseq [username (:users (@model/ROOMS rid))]
-      (when-not (time/before? (time/minus (time/now) (time/minutes 1))
-                              (or ((:last-ping (@model/ROOMS rid)) username)
-                                  (time/date-time 2010)))
-        (log/info "Removing inactive user" username rid)
-        (let [event (model/new-event {:type "part"
-                                      :name username})]
-          (model/add-event rid event)
-          (model/remove-user rid username))))))
+    (wait GAME-OVER-TIME rid)))
 
 (defn work-loop [rid]
   (while true

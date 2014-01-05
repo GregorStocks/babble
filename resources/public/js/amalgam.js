@@ -374,9 +374,12 @@ function start() {
     }));
   }), "json");
 
-  $(window).bind("beforeunload", function() {
+  console.log("YES");
+  window.onbeforeunload = function() {
+    console.log("parting");
+    alert(1);
     $.post('api/part.cgi', {'sesskey': get_sess_key(), 'roomid': get_room_id()}, make_error_handler(), "json");
-  });
+  };
 }
 
 function showRooms() {

@@ -38,8 +38,8 @@
   (let [eventid (->long ((:query-params request) "eventid"))
         roomid (->long ((:query-params request) "roomid"))]
     (response {"status" "OK"
-               "events" (map postprocess-event (filter #(> (:eventid %) eventid)
-                                                       (:events (@ROOMS roomid))))})))
+               "events" (take-last 50 (map postprocess-event (filter #(> (:eventid %) eventid)
+                                                                     (:events (@ROOMS roomid)))))})))
 
 (defn getstate [request]
   (let [roomid (->long ((:query-params request) "roomid"))]
@@ -89,13 +89,6 @@
         votee (params "sentenceid")]
     (set-vote roomid username votee)))
 
-(defn ping [request]
-  (let [params (:form-params request)
-        username (params "sesskey")
-        rid (->long (params "roomid"))]
-    (ping-user username rid)
-    (add-user rid username)))
-
 (defroutes main-routes
   (GET "/" [] (redirect "index.html"))
   (POST "/api/login.cgi" [] login)
@@ -103,7 +96,7 @@
   (GET "/api/geteventssince.cgi" [] get-events-since)
   (POST "/api/vote.cgi" [] vote)
   (POST "/api/updatesentence.cgi" [] update-sentence)
-  (POST "/api/ping.cgi" [] ping)
+  (POST "/api/ping.cgi" [] join)
   (POST "/api/part.cgi" [] part)
   (POST "/api/join.cgi" [] join)
   (GET "/api/getstate.cgi" [] getstate)
