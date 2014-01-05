@@ -14,8 +14,13 @@ body {
 	line-height: 1.5em;
 	font-weight: bold;
 	font-family: Tahoma, Verdana, Sans;	
-user-select: none;
+        user-select: none;
+-webkit-user-select: none; /* Chrome/Safari */        
+-moz-user-select: none; /* Firefox */
+-ms-user-select: none; /* IE10+ */
 
+/* Rules below not implemented in browsers yet */
+-o-user-select: none;
 }
 .spacer {
 	padding: 1px 4px 1px 4px;
