@@ -10,9 +10,6 @@ var eventsLooping = false;
 
 $(function() {
   $("body").ajaxError(function(event, request, settings, error) {
-    console.debug(settings);
-    console.debug(request);
-    console.debug(event);
     $('body').append(request.responseText);
   });
 
