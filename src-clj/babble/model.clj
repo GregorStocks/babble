@@ -76,14 +76,14 @@
 
 (defn next-round [rid]
   (swap! ROOMS #(-> %
-                    (update-in [rid :sentences] (constantly {"A Ghost" "Butts"}))
+                    (update-in [rid :sentences] (constantly {"A Ghost" ["none of these sentences deserve to win."]}))
                     (update-in [rid :votes] (constantly {})))))
 
 (defn round-points! [rid]
   ;; this isn't thread-safe but it's okay because we've only got one thread per room
   (let [votes (:votes (@ROOMS rid))
         votes-by-username (select-keys (frequencies (vals votes)) (keys votes))
-        winner (if (seq votes) (apply max-key votes-by-username (keys votes-by-username)))
+        winner (if (seq votes-by-username) (apply max-key votes-by-username (keys votes-by-username)))
         points-by-username (apply merge-with + votes-by-username
                                   (if winner {winner 2})
                                   (map #(if (= winner (votes %)) {% 1})
