@@ -486,7 +486,7 @@ function login() {
 
 function showLogin() {
   resetUi();
-  $("#gamebox").append('<div class="notification"><form action="index.cgi" method="post"><p>Who are you <input type="text" name="username" id="username" /></p><input type="hidden" name="password" id="password" /></p><input type="submit" value="Go!" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"></form></div>');
+  $("#gamebox").append('<div class="notification"><form action="index.cgi" method="post"><p>Who are you?<br /><input type="text" name="username" id="username" autofocus/></p><input type="hidden" name="password" id="password" /></p><input type="submit" value="Go!" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"></form></div>');
 }
 
 function clear() {
