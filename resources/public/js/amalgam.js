@@ -7,6 +7,14 @@ function get_room_id() {
   return $('#roomid').val();
 }
 
+function htmlentities(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function nice(str) {
+  return str.replace(/[^A-Za-z0-9]/g, "");
+}
+
 var eventsLooping = false;
 
 $(function() {
@@ -384,7 +392,7 @@ function showRooms() {
         $("#rooms").append($("<p>" + butt + "</p>").tooltip({bodyHandler: function() {
           var x = "";
           for(user in rooms[roomid]['users']) {
-            x += "<p class='names'>" + rooms[roomid]['users'][user] + "</p>";
+            x += "<p class='names'>" + htmlentities(rooms[roomid]['users'][user]) + "</p>";
           }
           return x;
         }, showURL: false, opacity: 1}));
@@ -432,7 +440,8 @@ function addUsers(users, scores) {
     if(!(name in scores)) {
       scores[name] = 0;
     }
-    $("#membertable").append("<tr id='user_" + name + "' class='username_row'><td class='username'>" + name + "</td><td class='score'>" + scores[name] + "</td></tr>");
+    SCORES[name] = scores[name];
+    $("#membertable").append("<tr id='user_" + nice(name) + "' class='username_row'><td class='username'>" + htmlentities(name) + "</td><td class='score'>" + scores[name] + "</td></tr>");
   }
 }
 
@@ -485,7 +494,7 @@ function login() {
   $.post("api/login.cgi", {"password": password, "username": username}, make_error_handler(function(data) {
     if(data && data["status"] && data["status"] === "OK" && data["sesskey"]) {
       SESSKEY = data["sesskey"];
-      $("#footer").prepend("<p class='notes' id='loggedin'>You are currently logged in as " + username + ".</p>")
+      $("#footer").prepend("<p class='notes' id='loggedin'>You are currently logged in as " + htmlentities(username) + ".</p>")
         .prepend("<p class='notes' id='logout'><a href='javascript:logout()'>Log out</a></p>");
       showRooms();
     }
@@ -573,11 +582,13 @@ function hashesTo(key, hash) {
   return false;
 }
 
-function votefor(sentenceid) {
+function votefor(niceid) {
   $(".sentence").removeClass("voted");
-  $.post('api/vote.cgi', {sentenceid: sentenceid, sesskey: get_sess_key(), roomid: get_room_id()}, make_error_handler(), "json");
-  $("#sent" + sentenceid.replace(/\$/g, "")).addClass("voted");
+  $.post('api/vote.cgi', {sentenceid: NICE_TO_MEAN[niceid], sesskey: get_sess_key(), roomid: get_room_id()}, make_error_handler(), "json");
+  $("#sent" + niceid).addClass("voted");
 }
+
+var NICE_TO_MEAN = {};
 
 function startVoting(sentences) {
   resetUi();
@@ -588,12 +599,13 @@ function startVoting(sentences) {
     ++i;
 
     var sentence = makeSentence(sentences[sentenceid]);
-    var niceid = sentenceid.replace(/[^A-Za-z0-9]/g, "");
+    var niceid = nice(sentenceid);
+    NICE_TO_MEAN[niceid] = sentenceid;
 
     if (get_sess_key() == sentenceid) {
       $("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td><td></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
     } else {
-      $("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td><td><button onclick=\"votefor('" + sentenceid + "')\">Vote</button></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
+      $("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td><td><button onclick=\"votefor('" + niceid + "')\">Vote</button></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
     }
   }
 }
@@ -622,19 +634,23 @@ function showWinners(data) {
     if(data[name]["iswinner"]) {
       cls = " class='winner'";
     }
-    $("#winners").append("<tr" + cls + "><td>" + makeSentence(data[name]["sentence"]) + "</td><td>" + name + "</td><td>" + data[name]["votes"] + "</td><td>" + data[name]["points"]);
-    scorebox = $("#user_" + name + " > .score");
+    $("#winners").append("<tr" + cls + "><td>" + makeSentence(data[name]["sentence"]) + "</td><td>" + htmlentities(name) + "</td><td>" + data[name]["votes"] + "</td><td>" + data[name]["points"]);
+    scorebox = $("#user_" + nice(name) + " > .score");
     var points = parseInt(scorebox.text(), 10);
     scorebox.text(points + data[name]["points"]);
   }
 }
 
+var SCORES = [];
+
 function showGameWinners() {
+  console.log ("ok");
   resetUi();
   $("#gamebox").append("<div class='notification'><p>GAME OVER!!!</p></div>");
-  /*        for(person in scores) {
-        $("#gamebox").append("<p>" + person + " had " + scores[person] + " points.</p>");
-        }*/
+  console.log("is it working");
+  for(var person in SCORES) {
+    $("#gamebox").append("<p>" + htmlentities(person) + " had " + SCORES[person] + " points.</p>");
+  }
   $(".score").text(0);
 }
 
@@ -648,7 +664,7 @@ function playerJoined(name, score) {
     score = 0;
   }
   if (name != get_sess_key()) {
-    $("#membertable").append("<tr id='user_" + name + "' class='username'><td class='username'>" + name + "</td><td class='score'>" + score + "</td></tr>");
+    $("#membertable").append("<tr id='user_" + nice(name) + "' class='username'><td class='username'>" + htmlentities(name) + "</td><td class='score'>" + score + "</td></tr>");
     scrollChat();
   }
 }
@@ -659,7 +675,7 @@ function playerParted(name) {
       $("<span />").addClass("chat_action").text(name + " left.")
     )
   );
-  $("#user_" + name).remove();
+  $("#user_" + nice(name)).remove();
   scrollChat();
 }
 

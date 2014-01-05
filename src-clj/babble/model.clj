@@ -77,8 +77,13 @@
 
 (defn next-round [rid]
   (swap! ROOMS #(-> %
-                    (update-in [rid :sentences] (constantly {"a ghost" ["All of these sentences are bad."]}))
+                    (update-in [rid :sentences] (constantly { ;;"a ghost" ["All of these sentences are bad."]
+                                                             }))
                     (update-in [rid :votes] (constantly {})))))
+
+(defn next-game [rid]
+  (swap! ROOMS #(-> %
+                    (update-in [rid :scores] (constantly {})))))
 
 (defn round-points! [rid]
   ;; this isn't thread-safe but it's okay because we've only got one thread per room
@@ -91,8 +96,7 @@
                                   (map #(if (= winner (votes %)) {% 1})
                                        (keys votes)))]
     (doseq [username (keys points-by-username)]
-      (swap! ROOMS update-in [rid :points username] #(+ (or % 0) (or (points-by-username username) 0))))
-    (log/info raw-votes-by-username)
+      (swap! ROOMS update-in [rid :scores username] #(+ (or % 0) (or (points-by-username username) 0))))
     (apply merge (map #(hash-map % {:votes (or (raw-votes-by-username %) 0)
                                     :points (or (points-by-username %) 0)
                                     :iswinner (= % winner)

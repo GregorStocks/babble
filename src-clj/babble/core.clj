@@ -3,12 +3,13 @@
            [babble.model :as model]
            [clj-time.core :as time]))
 
+(def GOAL-SCORE 2)
 (def SENTENCE-MAKING-TIME 15000)
 (def SENTENCE-COLLECTING-TIME 2000)
 (def VOTING-TIME 15000)
 (def VOTE-COLLECTING-TIME 2000)
-(def WINNER-GLOATING-TIME 3000)
-(def GAME-OVER-TIME 5000)
+(def WINNER-GLOATING-TIME 7000)
+(def GAME-OVER-TIME 15000)
 
 (defn end-time [delta]
   (time/plus (time/now) (time/millis delta)))
@@ -53,12 +54,15 @@
   (Thread/sleep WINNER-GLOATING-TIME)
   (model/next-round rid)
 
-  (when false
-    (log/debug "game over" rid)
-    (model/add-event rid
-                     (model/new-event {:type "game over"
-                                       :end (end-time GAME-OVER-TIME)})
-                     true)
+  (let [best-score (apply max 0 (vals (:scores (@model/ROOMS rid))))]
+    (log/info best-score)
+    (when (>= best-score GOAL-SCORE)
+      (model/add-event rid
+                       (model/new-event {:type "game over"
+                                         :end (end-time GAME-OVER-TIME)})
+                       true)
+      (model/next-game rid))
+
     (Thread/sleep GAME-OVER-TIME))
   (model/trim-room rid)
 
