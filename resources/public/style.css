@@ -81,8 +81,8 @@ body {
         padding-bottom: 30px;
 }
 
-.sentence.voted {
-    font-size: 1.2em;
+.votetable .sentence {
+    font-size: 1em;
 }
 #footer {
 	width: 600px;
