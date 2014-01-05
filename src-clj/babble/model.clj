@@ -36,6 +36,7 @@
   {:name name
    :users #{}
    :sentences {}
+   :last-ping {}
    :votes {}
    :events [(initial-event rid)]
    :event (initial-event rid)
@@ -98,3 +99,6 @@
                                     :sentence (or (((@ROOMS rid) :sentences) %)
                                                   [])})
                       (keys votes)))))
+
+(defn ping-user [username rid]
+  (swap! ROOMS update-in [rid :last-ping] (constantly (time/now))))

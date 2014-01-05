@@ -57,6 +57,7 @@
         event (new-event {:type "join"
                           :score 0
                           :name username})]
+    (ping-user username roomid)
     (when-not (contains? (:users (@ROOMS roomid)) username) ;; legitimately new joiner
       (add-event roomid event)
       (add-user roomid username))
@@ -86,6 +87,12 @@
         votee (params "sentenceid")]
     (set-vote roomid username votee)))
 
+(defn ping [request]
+  (let [params (:form-params request)
+        username (params "sesskey")
+        rid (->long (params "roomid"))]
+    (ping-user username rid)))
+
 (defroutes main-routes
   (GET "/" [] (redirect "index.html"))
   (POST "/api/login.cgi" [] login)
@@ -93,7 +100,7 @@
   (GET "/api/geteventssince.cgi" [] get-events-since)
   (POST "/api/vote.cgi" [] vote)
   (POST "/api/updatesentence.cgi" [] update-sentence)
-  (POST "/api/ping.cgi" [] stub)
+  (POST "/api/ping.cgi" [] ping)
   (POST "/api/part.cgi" [] part)
   (POST "/api/join.cgi" [] join)
   (GET "/api/getstate.cgi" [] getstate)

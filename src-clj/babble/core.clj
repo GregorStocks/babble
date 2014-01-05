@@ -1,6 +1,7 @@
 (ns babble.core
   (require [clojure.tools.logging :as log]
-           [babble.model :as model]))
+           [babble.model :as model]
+           [clj-time.core :as time]))
 
 (defn tick [rid]
   (log/debug "new round" rid)
@@ -43,7 +44,14 @@
     (model/add-event rid
                       (model/new-event {:type "game over"})
                       true)
-    (Thread/sleep 5000)))
+    (Thread/sleep 5000))
+
+  (doseq [rid (keys @model/ROOMS)]
+    (doseq [username (:users (@model/ROOMS rid))]
+      (when-not (time/before? (time/minus (time/now) (time/minutes 1))
+                              (or ((:last-ping (@model/ROOMS rid)) username) (time/date-time 2010)))
+        (log/info "Removing inactive user" username rid)
+        (model/remove-user rid username)))))
 
 (defn work-loop [rid]
   (while true
