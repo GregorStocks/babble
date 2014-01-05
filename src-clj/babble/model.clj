@@ -86,7 +86,9 @@
   (let [votes (:votes (@ROOMS rid))
         votes-by-username (frequencies (vals votes))
         winner (if (seq votes) (apply max-key votes-by-username (keys votes-by-username)))
-        points-by-username (merge-with + votes-by-username (if winner {winner 2}))]
+        points-by-username (apply merge-with + votes-by-username
+                                  (if winner {winner 2})
+                                  (map #(if (= winner (votes %)) {% 1}) (keys votes)))]
     (log/info votes-by-username winner points-by-username)
     (doseq [username (keys points-by-username)]
       (swap! ROOMS update-in [rid :points username] #(+ (or % 0) (or (points-by-username username) 0))))
