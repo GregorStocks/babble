@@ -829,7 +829,11 @@ function insertWords(words) {
       curSpacer = null;
     })
     .rightClick(function() {
-      if($(this).hasClass('copy')) {
+      if ($(this).parent().get(0).id === 'dropbox') {
+        $("#wordsbox0").append(this);
+        $.dropManage();
+        updateSentence();
+      } else if($(this).hasClass('copy')) {
         $(this).text("==");
         updateSentence();
       } else {
