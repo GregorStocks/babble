@@ -63,12 +63,6 @@
 
   (doseq [rid (keys @model/ROOMS)]
     (doseq [username (:users (@model/ROOMS rid))]
-      (log/info "checking for" username (:last-ping (@model/ROOMS rid))
-                (time/before? (time/minus (time/now) (time/minutes 1))
-                              (or ((:last-ping (@model/ROOMS rid)) username)
-                                  (time/date-time 2010)))
-                (or ((:last-ping (@model/ROOMS rid)) username)
-                    (time/date-time 2010)))
       (when-not (time/before? (time/minus (time/now) (time/minutes 1))
                               (or ((:last-ping (@model/ROOMS rid)) username)
                                   (time/date-time 2010)))
