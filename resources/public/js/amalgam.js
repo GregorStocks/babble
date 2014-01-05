@@ -486,7 +486,7 @@ function login() {
 
 function showLogin() {
   resetUi();
-  $("#gamebox").append('<div class="notification"><form action="index.cgi" method="post"><p>Username: <input type="text" name="username" id="username" /></p><p>You don\'t need a password. <input type="hidden" name="password" id="password" /></p><input type="submit" value="Go!" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"></form></div>');
+  $("#gamebox").append('<div class="notification"><form action="index.cgi" method="post"><p>Who are you <input type="text" name="username" id="username" /></p><input type="hidden" name="password" id="password" /></p><input type="submit" value="Go!" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"></form></div>');
 }
 
 function clear() {
@@ -562,31 +562,26 @@ function hashesTo(key, hash) {
 
 function votefor(sentenceid) {
   $(".sentence").removeClass("voted");
-  $.post('api/vote.cgi', {sentenceid: sentenceid, sesskey: get_sess_key()}, make_error_handler(), "json");
+  $.post('api/vote.cgi', {sentenceid: sentenceid, sesskey: get_sess_key(), roomid: get_room_id()}, make_error_handler(), "json");
   $("#sent" + sentenceid.replace(/\$/g, "")).addClass("voted");
 }
 
 function startVoting(sentences) {
   resetUi();
-  $("#gamebox").append("<div class='notification'><p>Vote for a sentence:</p<table class='votetable' id='votetable' border=1></table></div>");
+  $("#gamebox").append("<div class='notification'><p>Vote for a sentence:</p><table class='votetable' id='votetable' border=1></table></div>");
   var i = 0;
 
-  for(var sentenceid in sentences) {
+  for (var sentenceid in sentences) {
     ++i;
 
-    var showfunc = function() {		
-      var sentence = makeSentence(sentences[arguments.callee.sentenceid]);
-      var niceid = arguments.callee.sentenceid.replace(/\$/g, "");
+    var sentence = makeSentence(sentences[sentenceid]);
+    var niceid = sentenceid.replace(/\$/g, "");
 
-      if(hashesTo(get_sess_key(), arguments.callee.sentenceid)) {
-	$("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td><td></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
-      } else {
-	$("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td><td><button onclick=\"votefor('" + arguments.callee.sentenceid + "')\">Vote</button></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
-      }
-    };
-    showfunc.sentenceid = sentenceid;
-
-    setTimeout(showfunc, 100*i);
+    if (false && get_sess_key() == sentenceid) {
+      $("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td><td></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
+    } else {
+      $("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td><td><button onclick=\"votefor('" + sentenceid + "')\">Vote</button></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
+    }
   }
 }
 
@@ -805,7 +800,6 @@ function insertWords(words) {
         $.dropManage();
         updateSentence();
       }
-      console.log("Hello hello");
     })
     .mousedown(function() {
       if($(this).hasClass('copy') && $(this).text() === "==") {

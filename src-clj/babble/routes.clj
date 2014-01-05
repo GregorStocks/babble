@@ -72,13 +72,27 @@
     (remove-user roomid username)
     (stub request)))
 
+(defn update-sentence [request]
+  (let [params (:form-params request)
+        username (params "sesskey")
+        roomid (->long (params "roomid"))
+        words (params "words")]
+    (set-sentence roomid username words)))
+
+(defn vote [request]
+  (let [params (:form-params request)
+        username (params "sesskey")
+        roomid (->long (params "roomid"))
+        votee (params "sentenceid")]
+    (set-vote roomid username votee)))
+
 (defroutes main-routes
   (GET "/" [] (redirect "index.html"))
   (POST "/api/login.cgi" [] login)
   (POST "/api/chat.cgi" [] send-chat-message)
   (GET "/api/geteventssince.cgi" [] get-events-since)
-  (POST "/api/vote.cgi" [] stub)
-  (POST "/api/updatesentence.cgi" [] stub)
+  (POST "/api/vote.cgi" [] vote)
+  (POST "/api/updatesentence.cgi" [] update-sentence)
   (POST "/api/ping.cgi" [] stub)
   (POST "/api/part.cgi" [] part)
   (POST "/api/join.cgi" [] join)
