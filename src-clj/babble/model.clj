@@ -54,7 +54,6 @@
 
 (defn add-event ([rid event] (add-event rid event false))
   ([rid event important?]
-     (log/info "Event:" event)
      (swap! ROOMS #(-> (if important?
                          (update-in % [rid :event] (constantly event))
                          %)
@@ -70,11 +69,9 @@
   (swap! ROOMS update-in [rid :users] disj username))
 
 (defn set-sentence [rid username words]
-  (log/info rid username words)
   (swap! ROOMS update-in [rid :sentences username] (constantly words)))
 
 (defn set-vote [rid username votee]
-  (log/info rid username votee)
   (swap! ROOMS update-in [rid :votes username] (constantly votee)))
 
 (defn next-round [rid]
@@ -90,7 +87,6 @@
         points-by-username (apply merge-with + votes-by-username
                                   (if winner {winner 2})
                                   (map #(if (= winner (votes %)) {% 1}) (keys votes)))]
-    (log/info votes-by-username winner points-by-username)
     (doseq [username (keys points-by-username)]
       (swap! ROOMS update-in [rid :points username] #(+ (or % 0) (or (points-by-username username) 0))))
     (apply merge (map #(hash-map % {:votes (or (votes-by-username %) 0)

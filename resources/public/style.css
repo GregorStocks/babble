@@ -81,7 +81,7 @@ body {
         padding-bottom: 30px;
 }
 
-.sentence .voted {
+.sentence.voted {
     font-size: 1.2em;
 }
 #footer {
