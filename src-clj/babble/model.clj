@@ -21,11 +21,11 @@
 (def mandatory (:mandatory WORDS))
 
 (defn get-word-list []
-  (concat (repeatedly 40 #(rand-word :nouns))
-          (repeatedly 40 #(rand-word :verbs))
-          (repeatedly 40 #(rand-word :modifiers))
-          mandatory
-          (repeatedly (- 40 (count mandatory))
+  (concat mandatory
+          (repeatedly 16 #(rand-word :nouns))
+          (repeatedly 16 #(rand-word :verbs))
+          (repeatedly 16 #(rand-word :modifiers))
+          (repeatedly 16
                   #(rand-word :leftovers))))
 
 (defn initial-event [rid]
