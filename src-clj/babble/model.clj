@@ -95,7 +95,7 @@
                                                                   (keys valid-votes-by-username))))
         winner (first (apply max-key second ["Nobody" 0] tiebroken-votes-by-username))
         points-by-username (apply merge-with + valid-votes-by-username
-                                  (if winner {winner 2})
+                                  (if (and winner (votes winner)) {winner 2})
                                   (map #(if (= winner (votes %)) {% 1})
                                        (keys votes)))]
     (doseq [username (keys points-by-username)]
