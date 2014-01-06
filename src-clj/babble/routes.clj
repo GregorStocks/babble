@@ -79,7 +79,7 @@
   (let [params (:form-params request)
         username (params "sesskey")
         roomid (->long (params "roomid"))
-        words (params "words")]
+        words (flatten [(params "words")])]
     (set-sentence roomid username words)))
 
 (defn vote [request]

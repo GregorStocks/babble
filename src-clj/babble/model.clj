@@ -93,9 +93,7 @@
         tiebroken-votes-by-username (apply hash-map (flatten (map #(vector % (+ (valid-votes-by-username %)
                                                                                 (* 0.001 (reduce + (map count (((@ROOMS rid) :sentences) %))))))
                                                                   (keys valid-votes-by-username))))
-        _ (log/info tiebroken-votes-by-username)
-        winner (if (seq tiebroken-votes-by-username)
-                 (apply max-key tiebroken-votes-by-username))
+        winner (first (apply max-key second tiebroken-votes-by-username))
         points-by-username (apply merge-with + valid-votes-by-username
                                   (if winner {winner 2})
                                   (map #(if (= winner (votes %)) {% 1})
