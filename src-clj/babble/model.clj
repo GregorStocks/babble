@@ -90,7 +90,12 @@
   (let [votes (:votes (@ROOMS rid))
         raw-votes-by-username (frequencies (vals votes))
         valid-votes-by-username (select-keys raw-votes-by-username (keys votes))
-        winner (if (seq valid-votes-by-username) (apply max-key valid-votes-by-username (keys valid-votes-by-username)))
+        tiebroken-votes-by-username (apply hash-map (flatten (map #(vector % (+ (valid-votes-by-username %)
+                                                                                (* 0.001 (reduce + (map count (((@ROOMS rid) :sentences) %))))))
+                                                                  (keys valid-votes-by-username))))
+        _ (log/info tiebroken-votes-by-username)
+        winner (if (seq tiebroken-votes-by-username)
+                 (apply max-key tiebroken-votes-by-username))
         points-by-username (apply merge-with + valid-votes-by-username
                                   (if winner {winner 2})
                                   (map #(if (= winner (votes %)) {% 1})
@@ -102,7 +107,7 @@
                                     :iswinner (= % winner)
                                     :sentence (or (((@ROOMS rid) :sentences) %)
                                                   [])})
-                      (concat (keys votes) (keys raw-votes-by-username))))))
+                      ((@ROOMS rid) :users)))))
 
 (defn ping-user [username rid]
   (swap! ROOMS update-in [rid :last-ping username] (fn [&args] (time/now))))
