@@ -1,5 +1,5 @@
-(defproject babble "0.0.69"
-  :description "A poopy butt"
+(defproject babble "0.9.0"
+  :description "Searching for meaning where, ultimately, there is none."
   :source-paths ["src-clj"]
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/clojurescript "0.0-2014" :exclusions [org.apache.ant/ant]]
