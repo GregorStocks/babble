@@ -647,16 +647,17 @@ function showWinners(data) {
     }
     $("#winners").append("<tr" + cls + "><td>" + makeSentence(data[name]["sentence"]) + "</td><td>" + htmlentities(name) + "</td><td>" + data[name]["votes"] + "</td><td>" + data[name]["points"]);
   }
-  updateState();
+  reloadState();
 }
 
 var SCORES = [];
 
 function showGameWinners() {
   resetUi();
-  $("#gamebox").append("<div class='notification'><p>GAME OVER!!!</p></div>");
+  $("#gamebox").append("<div class='notification' id='gameover'><p>GAME OVER!!!</p></div>");
+  $("#gameover").append("<table id='gameovertable'><tr><th>player</th><th>score</th></tr></table>");
   for(var person in SCORES) {
-    $("#gamebox").append("<p>" + htmlentities(person) + " had " + SCORES[person] + " points.</p>");
+    $("#gameovertable").append("<tr><td>" + htmlentities(person) + "</td><td>" + SCORES[person] + "</td></tr>");
   }
   $(".score").text(0);
 }
