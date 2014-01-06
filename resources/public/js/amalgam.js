@@ -387,6 +387,7 @@ function reloadState() {
 function showRooms() {
   resetUi();
   $("#membertable").empty();
+  $.cookie('babble-username', null, {});
   $("#chatmessage").remove();
   $.getJSON("api/getroomlist.cgi", make_error_handler(function(data) {
     if(data && data["status"] && data["status"] === "OK" && data["rooms"]) {
@@ -490,6 +491,7 @@ function busyIndicator(show) {
 function logout() {
   $.post('api/part.cgi', {'sesskey': get_sess_key(), 'roomid': get_room_id()}, make_error_handler(), "json");
   SESSKEY = "";
+  $.cookie('babble-username', null, {});
   $('#logout').remove();
   $('#loggedin').remove();
   $("#membertable").empty();
@@ -504,6 +506,7 @@ function login() {
   $.post("api/login.cgi", {"password": password, "username": username}, make_error_handler(function(data) {
     if(data && data["status"] && data["status"] === "OK" && data["sesskey"]) {
       SESSKEY = data["sesskey"];
+      $.cookie('babble-username', SESSKEY, {path: '/', expires: new Date(2020, 1, 1)});
       $("#footer").prepend("<p class='notes' id='loggedin'>You are currently logged in as " + htmlentities(username) + ".</p>")
         .prepend("<p class='notes' id='logout'><a href='javascript:logout()'>Log out</a></p>");
       showRooms();
@@ -512,8 +515,15 @@ function login() {
 }
 
 function showLogin() {
-  resetUi();
-  $("#gamebox").append('<div class="notification"><form action="index.cgi" method="post"><p>Who are you?<br /><input type="text" name="username" id="username" autofocus/></p><input type="hidden" name="password" id="password" /></p><input type="submit" value="Go!" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"></form></div>');
+  if ($.cookie('babble-username')) {
+    SESSKEY = $.cookie('babble-username');
+      $("#footer").prepend("<p class='notes' id='loggedin'>You are currently logged in as " + htmlentities(SESSKEY) + ".</p>")
+      .prepend("<p class='notes' id='logout'><a href='javascript:logout()'>Log out</a></p>");
+    showRooms();
+  } else {
+    resetUi();
+    $("#gamebox").append('<div class="notification"><form action="index.cgi" method="post"><p>Who are you?<br /><input type="text" name="username" id="username" autofocus/></p><input type="hidden" name="password" id="password" /></p><input type="submit" value="Go!" name="submit" onclick="login(); return false" onkeypress="return false" /><p class="notes"></form></div>');
+  }
 }
 
 function clear() {
@@ -612,7 +622,6 @@ function startVoting(sentences) {
     var niceid = nice(sentenceid);
     NICE_TO_MEAN[niceid] = sentenceid;
 
-    console.log(CANT_VOTE_YOURSELF);
     if (CANT_VOTE_YOURSELF && get_sess_key() == sentenceid) {
       $("<tr class='sentence' id='sent" + niceid + "'><td>" + sentence + "</td><td></td></tr>").hide().appendTo("#votetable").fadeIn("fast");
     } else {
