@@ -387,7 +387,6 @@ function reloadState() {
 function showRooms() {
   resetUi();
   $("#membertable").empty();
-  $.cookie('babble-username', null, {});
   $("#chatmessage").remove();
   $.getJSON("api/getroomlist.cgi", make_error_handler(function(data) {
     if(data && data["status"] && data["status"] === "OK" && data["rooms"]) {
@@ -495,6 +494,7 @@ function logout() {
   $('#logout').remove();
   $('#loggedin').remove();
   $("#membertable").empty();
+  $.cookie('babble-username', null, {});
   eventsLooping = false;
   timeLeft = 0;
   showLogin();
