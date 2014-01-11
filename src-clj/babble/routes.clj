@@ -35,7 +35,9 @@
   (stub request))
 
 (defn get-events-since [request]
-  (let [eventid (->long ((:query-params request) "eventid"))
+  (let [eventid (try (->long ((:query-params request) "eventid"))
+                     (catch Exception e (log/info request)
+                            0))
         roomid (->long ((:query-params request) "roomid"))]
     (response {"status" "OK"
                "events" (take-last 50 (map postprocess-event (filter #(> (:eventid %) eventid)
