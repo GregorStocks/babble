@@ -3,8 +3,8 @@
            [babble.model :as model]
            [clj-time.core :as time]))
 
-(def GOAL-SCORE 2)
-(def SENTENCE-MAKING-TIME 45000)
+(def GOAL-SCORE 30)
+(def SENTENCE-MAKING-TIME 70000)
 (def SENTENCE-COLLECTING-TIME 2000)
 (def VOTING-TIME 25000)
 (def VOTE-COLLECTING-TIME 2000)
