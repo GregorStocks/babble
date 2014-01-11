@@ -265,6 +265,8 @@
               "swim" {:combos {"-ed" "swam"}}
               "swing" {:combos {"-ed" "swung"}}
               "take" {:combos {"-ed" "took"}}
+              "tan" {:combos {"-ed" "tanned"
+                              "-ing" "tanning"}}
               "teach" {:combos {"-ed" "taught"}}
               "tear" {:combos {"-ed" "tore"}}
               "tell" {:combos {"-ed" "told"}}

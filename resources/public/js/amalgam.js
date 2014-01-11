@@ -91,7 +91,11 @@ function add_suffix(phrase, suffix) {
     } else if(phrase.match(/lf$/)) {
       return phrase.replace(/lf$/, 'ved');
     } else if(phrase.match(/\bI$/)) {
-      suff = "'d";
+      suff = "'d"; // I'd
+    } else if(phrase.match(/b$/)) {
+      suff = "bed";
+    } else if(phrase.match(/g$/)) {
+      suff = "ged";
     }
   } else if(suff === "ing") {
     if(phrase.match(/e$/)) {
@@ -101,6 +105,7 @@ function add_suffix(phrase, suffix) {
     if(phrase.match(/ic$/)) {
       suff = "ally";
     }
+  } else if (suff === "er") {
   }
   return phrase + suff;
 }
