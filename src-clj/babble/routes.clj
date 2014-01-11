@@ -10,7 +10,8 @@
             [clojure.tools.logging :as log]
             [compojure.handler :as handler]
             [clj-time.core :as time]
-            [compojure.response :as response]))
+            [compojure.response :as response]
+            [babble.dictionary :as dictionary]))
 
 (defn response [m]
       {:body (generate-string m)})
@@ -103,6 +104,7 @@
   (POST "/api/join.cgi" [] join)
   (GET "/api/getstate.cgi" [] getstate)
   (GET "/api/getroomlist.cgi" [] getroomlist)
+  (GET "/js/dictionary-autogen.js" [] (fn [request] hash-map :body (dictionary/dict-js)))
   (route/resources "/")
   (route/not-found "Page not found"))
 
