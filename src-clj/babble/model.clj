@@ -15,20 +15,18 @@
             [hiccup.util :as hiccup]))
 
 (def WORDS (edn/read-string (slurp (io/resource "dictionary.edn"))))
-(defn rand-word [t]
-  (rand-nth (t WORDS)))
+(defn rand-words [t x]
+  (take x (shuffle (t WORDS))))
 
 (def mandatory (:mandatory WORDS))
 (def NINETEEN 19)
 
 (defn get-word-list []
-  (concat
-          (repeatedly NINETEEN #(rand-word :nouns))
-          (repeatedly NINETEEN #(rand-word :verbs))
-          (repeatedly NINETEEN #(rand-word :modifiers))
+  (concat (rand-words :nouns NINETEEN)
+          (rand-words :verbs NINETEEN)
+          (rand-words :modifiers NINETEEN)
           mandatory
-          (repeatedly NINETEEN
-                  #(rand-word :leftovers))))
+          (rand-words :leftovers NINETEEN)))
 
 (defn initial-event [rid]
   {:eventid 1
