@@ -746,7 +746,7 @@ function insertWords(words) {
     if(word === "==" || word === "^" || word === "++") {
       box.addClass('special');
     }
-    $('#wordsbox' + Math.floor(4 * i / words.length)).append(box);
+    $('#wordsbox' + Math.min(3, Math.floor(i / 19))).append(box); // TODO stop magic numbering
   }
 
   $.each($('.wordsbox'), function(idx, box) {

@@ -19,13 +19,15 @@
   (rand-nth (t WORDS)))
 
 (def mandatory (:mandatory WORDS))
+(def NINETEEN 19)
 
 (defn get-word-list []
-  (concat mandatory
-          (repeatedly 16 #(rand-word :nouns))
-          (repeatedly 16 #(rand-word :verbs))
-          (repeatedly 16 #(rand-word :modifiers))
-          (repeatedly 16
+  (concat
+          (repeatedly NINETEEN #(rand-word :nouns))
+          (repeatedly NINETEEN #(rand-word :verbs))
+          (repeatedly NINETEEN #(rand-word :modifiers))
+          mandatory
+          (repeatedly NINETEEN
                   #(rand-word :leftovers))))
 
 (defn initial-event [rid]
