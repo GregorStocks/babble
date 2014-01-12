@@ -21,8 +21,8 @@
                             (or ((:last-ping (@model/ROOMS rid)) username)
                                 (time/date-time 2010)))
       (log/info "Removing inactive user" username rid)
-      (let [event (model/new-event {:type "part"
-                                    :name username})]
+      (let [event (model/new-lengthless-event {:type "part"
+                                               :name username})]
         (model/add-event rid event)
         (model/remove-user rid username)))))
 
