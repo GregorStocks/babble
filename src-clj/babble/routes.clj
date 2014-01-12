@@ -104,7 +104,8 @@
   (POST "/api/join.cgi" [] join)
   (GET "/api/getstate.cgi" [] getstate)
   (GET "/api/getroomlist.cgi" [] getroomlist)
-  (GET "/js/dictionary-autogen.js" [] (fn [request] hash-map :body (dictionary/dict-js)))
+  (GET "/js/dictionary-autogen.js" [] (fn [request] {:headers {"Content-Type" "text/javascript"}
+                                                     :body (dictionary/dict-js)}))
   (route/resources "/")
   (route/not-found "Page not found"))
 
