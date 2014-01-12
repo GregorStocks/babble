@@ -1,4 +1,4 @@
-(defproject babble "0.9.0"
+(defproject babble "0.9.1"
   :description "Searching for meaning where, ultimately, there is none."
   :source-paths ["src-clj"]
   :dependencies [[org.clojure/clojure "1.5.1"]
