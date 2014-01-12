@@ -133,6 +133,5 @@
       ev)))
 
 (defn trim-room [rid]
-  ;; I'll uncomment this when it's actually necessary.
-;;  (swap! ROOMS update-in [rid :events] (partial take-last 50))
-  )
+  ;; drop all but the 50 most recent events
+  (swap! ROOMS update-in [rid :events] (partial take-last 50)))
