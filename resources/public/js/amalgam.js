@@ -532,14 +532,23 @@ function showLogin() {
   }
 }
 
-function clear() {
-  $(".wordscontainer").empty();
-  insertWords(startwordlist);
-  $("#dropbox")
-    .append("<span class='clearwords' id='clear'><a href='javascript:clear()'>Clear</a></span>")
-    .append("<div class='clear' id='clearer'></div>");
-  updateSentence();
+var box_poses = [];
 
+function resetPosition(tile) {
+  tile.css({
+    position: 'absolute',
+    top: box_poses[tile.attr('id')]['top'],
+    left: box_poses[tile.attr('id')]['left'],
+    'float': 'none'
+  });
+}
+
+function clear() {
+  $.each($('.wordbox'), function(idx, box) {
+    $("#wordsbox0").append(box);
+    resetPosition($(box));
+  });
+  updateSentence();
 }
 
 function startRound() {
@@ -757,19 +766,13 @@ function insertWords(words) {
   });
 
   // next, save all of their positions
-  var box_poses = [];
   $.each($('.wordbox'), function(idx, box) {
     box_poses[$(box).attr('id')] = $(box).position(); 
   });
 
   // then, convert them all to absolute positioning using saved positions
   $.each($('.wordbox'), function(idx, box) {
-    $(box).css({
-      position: 'absolute',
-      top: box_poses[$(box).attr('id')]['top'],
-      left: box_poses[$(box).attr('id')]['left'],
-      'float': 'none'
-    });
+    resetPosition($(box));
   });
   $('.wordbox').bind('drag', function(event){
     $(this).css({
@@ -851,12 +854,7 @@ function insertWords(words) {
     .rightClick(function() {
       if ($(this).parent().get(0).id === 'dropbox') {
         $("#wordsbox0").append(this);
-        $(this).css({
-          position: 'absolute',
-          top: box_poses[$(this).attr('id')]['top'],
-          left: box_poses[$(this).attr('id')]['left'],
-          'float': 'none'
-        });
+        resetPosition($(this));
         $.dropManage();
         updateSentence();
       } else if($(this).hasClass('copy')) {
