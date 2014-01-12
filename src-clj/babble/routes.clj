@@ -59,8 +59,8 @@
   (let [params (:form-params request)
         username (params "sesskey")
         roomid (->long (params "roomid"))
-        event (new-event {:type "join"
-                          :score 0
+        event (new-lengthless-event {:type "join"
+                                     :score 0
                           :name username})]
     (ping-user username roomid)
     (when-not (contains? (:users (@ROOMS roomid)) username) ;; legitimately new joiner
@@ -72,8 +72,8 @@
   (let [params (:form-params request)
         username (params "sesskey")
         roomid (->long (params "roomid"))
-        event (new-event {:type "part"
-                          :name username})]
+        event (new-lengthless-event {:type "part"
+                                     :name username})]
     (add-event roomid event)
     (remove-user roomid username)
     (stub request)))

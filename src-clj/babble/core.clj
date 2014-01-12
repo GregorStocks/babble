@@ -4,16 +4,15 @@
            [clj-time.core :as time]))
 
 (def GOAL-SCORE 30)
-(def SENTENCE-MAKING-TIME 70000)
-(def SENTENCE-COLLECTING-TIME 2000)
-(def VOTING-TIME 25000)
-(def VOTE-COLLECTING-TIME 2000)
-(def WINNER-GLOATING-TIME 10000)
-(def GAME-OVER-TIME 20000)
-(def PING-TIMEOUT (time/seconds 15))
 
-(defn end-time [delta]
-  (time/plus (time/now) (time/millis delta)))
+;; seconds
+(def SENTENCE-MAKING-TIME 70)
+(def SENTENCE-COLLECTING-TIME 2)
+(def VOTING-TIME 25)
+(def VOTE-COLLECTING-TIME 2)
+(def WINNER-GLOATING-TIME 10)
+(def GAME-OVER-TIME 20)
+(def PING-TIMEOUT (time/seconds 15))
 
 (defn housekeeping [rid]
   (model/trim-room rid)
@@ -27,47 +26,45 @@
         (model/add-event rid event)
         (model/remove-user rid username)))))
 
-(defn wait [msecs rid]
-  (dotimes [i (/ msecs 1000)]
+(defn wait [secs rid]
+  (dotimes [i secs]
     (housekeeping rid)
     (Thread/sleep 1000)))
 
 (defn tick [rid]
   (log/debug "new round" rid)
   (model/add-event rid
-                   (model/new-event {:type "new round"
-                                     :end (end-time SENTENCE-MAKING-TIME)
+                   (model/new-event SENTENCE-MAKING-TIME
+                                    {:type "new round"
                                      :words (model/get-word-list)})
                    true)
   (wait SENTENCE-MAKING-TIME rid)
 
   (log/debug "collecting" rid)
   (model/add-event rid
-                   (model/new-event {:type "collecting"
-                                     :end (end-time SENTENCE-COLLECTING-TIME)})
+                   (model/new-event SENTENCE-COLLECTING-TIME {:type "collecting"})
                    true)
   (wait SENTENCE-COLLECTING-TIME rid)
 
   (log/debug "voting" rid)
   (model/add-event rid
-                   (model/new-event {:type "vote"
-                                     :sentences (:sentences (@model/ROOMS rid))
-                                     :end (end-time VOTING-TIME)})
+                   (model/new-event VOTING-TIME {:type "vote"
+                                                 :sentences (:sentences (@model/ROOMS rid))})
                    true)
   (wait VOTING-TIME rid)
 
   (log/debug "voting over" rid)
   (model/add-event rid
-                   (model/new-event {:type "voting over"
-                                     :end (end-time VOTE-COLLECTING-TIME)})
+                   (model/new-event VOTE-COLLECTING-TIME
+                                    {:type "voting over"})
                    true)
   (wait VOTE-COLLECTING-TIME rid)
 
   (log/debug "showing winners")
   (model/add-event rid
-                   (model/new-event {:type "winner"
-                                     :data (model/round-points! rid)
-                                     :end (end-time WINNER-GLOATING-TIME)})
+                   (model/new-event WINNER-GLOATING-TIME
+                                    {:type "winner"
+                                     :data (model/round-points! rid)})
                    true)
   (wait WINNER-GLOATING-TIME rid)
   (model/next-round rid)
@@ -75,8 +72,8 @@
   (let [best-score (apply max 0 (vals (:scores (@model/ROOMS rid))))]
     (when (>= best-score GOAL-SCORE)
       (model/add-event rid
-                       (model/new-event {:type "game over"
-                                         :end (end-time GAME-OVER-TIME)})
+                       (model/new-event GAME-OVER-TIME
+                                        {:type "game over"})
                        true)
       (model/next-game rid))
     (wait GAME-OVER-TIME rid)))

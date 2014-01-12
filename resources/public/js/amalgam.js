@@ -305,7 +305,7 @@ function processEvent(ev) {
   cureventid = eventid;
   var evtype = ev["type"];
   if(ev["timeleft"]) {
-    setTime(ev["timeleft"]);
+    setTime(ev["timeleft"], ev["maxtime"]);
   }
 
   if(evtype === "new round" && ev["words"]) {
@@ -461,8 +461,9 @@ function setUsers(users, scores) {
 }
 
 var totalTime;
-function setTime(time) {
-  totalTime = timeLeft = Math.max(time * 1000, 0);
+function setTime(time, total) {
+  totalTime = Math.max(total * 1000, 0);
+  timeLeft = Math.max(time * 1000, 0);
   lastUpdate = new Date().getTime();
   showTime = true;
 }

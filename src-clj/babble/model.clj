@@ -50,15 +50,23 @@
 (defn ->long [x]
   (Long. (str x)))
 
-(defn new-event [m]
-  (merge m {:eventid (.getMillis (time/now))}))
+(defn new-lengthless-event
+  ([event] (new-lengthless-event event (time/now)))
+  ([event now]
+     (assoc event :eventid (.getMillis now))))
+
+(defn new-event [length m]
+  (let [now (time/now)]
+    (merge (new-lengthless-event m now)
+           {:end (time/plus now (time/secs length))
+            :maxtime length})))
 
 (defn add-event ([rid event] (add-event rid event false))
   ([rid event important?]
      (swap! ROOMS #(-> (if important?
                          (update-in % [rid :event] (constantly event))
                          %)
-                       (update-in [rid :events] conj (new-event event))
+                       (update-in [rid :events] conj (new-lengthless-event event))
                        (update-in [rid :eventid] (constantly (:eventid event)))))))
 
 (defn add-user [rid username]
