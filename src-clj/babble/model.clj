@@ -99,21 +99,22 @@
   (let [votes (:votes (@ROOMS rid))
         raw-votes-by-username (frequencies (vals votes))
         valid-votes-by-username (select-keys raw-votes-by-username (keys votes))
-        tiebroken-votes-by-username (apply hash-map (flatten (map #(vector % (* (valid-votes-by-username %)
-                                                                                (+ 1 (* 0.0000001 (reduce + (map count (((@ROOMS rid) :sentences) %)))))))
-                                                                  (keys valid-votes-by-username))))
-        winner (first (apply max-key second (shuffle (conj (seq tiebroken-votes-by-username) [nil 0.1]))))
+        tiebroken-votes-by-username (apply hash-map
+                                           :Nobody 0.1
+                                           (flatten (map #(vector % (* (valid-votes-by-username %)
+                                                                       (+ 1 (* 0.0000001 (reduce + (map count (((@ROOMS rid) :sentences) %))))))) ;; break ties by sentence length
+                                                         (keys valid-votes-by-username))))
+        winner (first (apply max-key second (shuffle (seq tiebroken-votes-by-username))))
         points-by-username (apply merge-with + valid-votes-by-username
-                                  (if (and winner (votes winner)) {winner 2})
+                                  (if (votes winner) {winner 2})
                                   (map #(if (= winner (votes %)) {% 1})
                                        (keys votes)))
-        raw-votes-by-username-with-nobody-maybe (concat raw-votes-by-username (if-not winner
-                                                                                ["Nobody" (max 0 (- (count (set/union (set (:users (@ROOMS rid)))
-                                                                                                                      (keys votes)))
-                                                                                                    (count votes)))]))]
+        raw-votes-by-username-with-nobody-maybe (merge raw-votes-by-username (if (= winner :Nobody) {winner (max 0 (- (count (set/union (set (:users (@ROOMS rid)))
+                                                                                                                                         (keys votes)))
+                                                                                                                       (count votes)))}))]
     (doseq [username (keys points-by-username)]
       (swap! ROOMS update-in [rid :scores username] #(+ (or % 0) (or (points-by-username username) 0))))
-    (apply merge (map #(hash-map % {:votes (or (raw-votes-by-username %) 0)
+    (apply merge (map #(hash-map % {:votes (or (raw-votes-by-username-with-nobody-maybe %) 0)
                                     :points (or (points-by-username %) 0)
                                     :iswinner (= % winner)
                                     :sentence (or (((@ROOMS rid) :sentences) %)
