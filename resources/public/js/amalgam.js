@@ -851,6 +851,12 @@ function insertWords(words) {
     .rightClick(function() {
       if ($(this).parent().get(0).id === 'dropbox') {
         $("#wordsbox0").append(this);
+        $(this).css({
+          position: 'absolute',
+          top: box_poses[$(this).attr('id')]['top'],
+          left: box_poses[$(this).attr('id')]['left'],
+          'float': 'none'
+        });
         $.dropManage();
         updateSentence();
       } else if($(this).hasClass('copy')) {
