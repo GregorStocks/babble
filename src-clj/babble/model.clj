@@ -12,7 +12,8 @@
             [compojure.response :as response]
             [clojure.tools.reader.edn :as edn]
             [clojure.java.io :as io]
-            [hiccup.util :as hiccup]))
+            [hiccup.util :as hiccup]
+            [clojure.set :as set]))
 
 (def WORDS (edn/read-string (slurp (io/resource "dictionary.edn"))))
 (defn rand-words [t x]
@@ -98,14 +99,18 @@
   (let [votes (:votes (@ROOMS rid))
         raw-votes-by-username (frequencies (vals votes))
         valid-votes-by-username (select-keys raw-votes-by-username (keys votes))
-        tiebroken-votes-by-username (apply hash-map (flatten (map #(vector % (+ (valid-votes-by-username %)
-                                                                                (* 0.001 (reduce + (map count (((@ROOMS rid) :sentences) %))))))
+        tiebroken-votes-by-username (apply hash-map (flatten (map #(vector % (* (valid-votes-by-username %)
+                                                                                (+ 1 (* 0.0000001 (reduce + (map count (((@ROOMS rid) :sentences) %)))))))
                                                                   (keys valid-votes-by-username))))
-        winner (first (apply max-key second ["Nobody" 0] tiebroken-votes-by-username))
+        winner (first (apply max-key second (shuffle (conj (seq tiebroken-votes-by-username) [nil 0.1]))))
         points-by-username (apply merge-with + valid-votes-by-username
                                   (if (and winner (votes winner)) {winner 2})
                                   (map #(if (= winner (votes %)) {% 1})
-                                       (keys votes)))]
+                                       (keys votes)))
+        raw-votes-by-username-with-nobody-maybe (concat raw-votes-by-username (if-not winner
+                                                                                ["Nobody" (max 0 (- (count (set/union (set (:users (@ROOMS rid)))
+                                                                                                                      (keys votes)))
+                                                                                                    (count votes)))]))]
     (doseq [username (keys points-by-username)]
       (swap! ROOMS update-in [rid :scores username] #(+ (or % 0) (or (points-by-username username) 0))))
     (apply merge (map #(hash-map % {:votes (or (raw-votes-by-username %) 0)
