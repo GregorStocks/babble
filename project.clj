@@ -11,7 +11,8 @@
                  [hiccup "1.0.4"]
 ]
   :plugins [[lein-cljsbuild "1.0.1"]
-            [lein-ring "0.8.10"]]
+            [lein-ring "0.8.10"]
+            [lein-ver "1.0.1"]]
   :cljsbuild {
     :builds [{:source-paths ["src-cljs"]
               :compiler {:output-to "resources/public/js/babble-autogen.js"

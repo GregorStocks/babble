@@ -3,6 +3,7 @@
 *.bak
 *.pyc
 .lein-plugins
+.lein-repl-history
 [#]*
 .#*
 target
