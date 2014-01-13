@@ -870,7 +870,8 @@ function insertWords(words) {
         updateSentence();
       }
     })
-    .mousedown(function() {
+    .mousedown(function(ev) {
+      if (ev.button !== 0) return;
       if($(this).hasClass('copy') && $(this).text() === "==") {
         if(lastClick) {
           $(this).text(lastClick);
