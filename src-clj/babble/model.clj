@@ -112,20 +112,26 @@
                                   (map #(if (= winner (votes %)) {% 1})
                                        (keys votes)))
         raw-votes-by-username-with-nobody-maybe (merge raw-votes-by-username (if (= winner :Nobody) {winner (max 0 (- (count (set/union (set (:users (@ROOMS rid)))
-                                                                                                                                         (keys votes)))
-                                                                                                                       (count votes)))}))]
+                                                                                                                                        (keys votes)))
+                                                                                                                      (count votes)))}))]
     (doseq [username (keys points-by-username)]
       (swap! ROOMS update-in [rid :scores username] #(+ (or % 0) (or (points-by-username username) 0))))
-    (apply merge (map #(hash-map % {:votes (or (raw-votes-by-username-with-nobody-maybe %) 0)
-                                    :points (or (points-by-username %) 0)
-                                    :iswinner (= % winner)
-                                    :sentence (or (((@ROOMS rid) :sentences) %)
-                                                  [])})
-                      (concat ((@ROOMS rid) :users)
-                              [winner]
-                              (keys points-by-username)
-                              (keys valid-votes-by-username)
-                              (keys votes))))))
+    (apply sorted-map-by
+           #(or (= winner %1)
+                (and (not= winner %2)
+                     (> (get tiebroken-votes-by-username %1 0)
+                        (get tiebroken-votes-by-username %2 0))))
+           (apply concat (map (fn [username]
+                                [username {:votes (or (raw-votes-by-username-with-nobody-maybe username) 0)
+                                           :points (or (points-by-username username) 0)
+                                           :iswinner (= winner username)
+                                           :sentence (or (((@ROOMS rid) :sentences) username)
+                                                         [])}])
+                              (concat ((@ROOMS rid) :users)
+                                      [winner]
+                                      (keys points-by-username)
+                                      (keys valid-votes-by-username)
+                                      (keys votes)))))))
 
 (defn ping-user [username rid]
   (swap! ROOMS update-in [rid :last-ping username] (fn [&args] (time/now))))
