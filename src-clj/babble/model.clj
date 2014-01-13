@@ -79,7 +79,9 @@
   (swap! ROOMS update-in [rid :users] disj username))
 
 (defn set-sentence [rid username words]
-  (swap! ROOMS update-in [rid :sentences username] (constantly words)))
+  (swap! ROOMS update-in [rid :sentences] (if (seq words)
+                                            #(assoc % username words)
+                                            #(dissoc % username))))
 
 (defn set-vote [rid username votee]
   (swap! ROOMS update-in [rid :votes username] (constantly votee)))

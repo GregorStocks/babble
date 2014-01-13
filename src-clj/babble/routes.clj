@@ -82,7 +82,7 @@
   (let [params (:form-params request)
         username (params "sesskey")
         roomid (->long (params "roomid"))
-        words (flatten [(params "words")])]
+        words (if-let [w (params "words")] (flatten [w]))] ;; force it to an array or nil - POST params are weird
     (set-sentence roomid username words)))
 
 (defn vote [request]
