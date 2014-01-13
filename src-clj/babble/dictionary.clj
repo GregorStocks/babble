@@ -82,7 +82,11 @@
               ":" {:type NONENDING_PUNCTUATION}
               ";" {:type NONENDING_PUNCTUATION}
               "?" {:type ENDING_PUNCTUATION}
-              "!" {:type ENDING_PUNCTUATION}))
+              "!" {:type ENDING_PUNCTUATION}
+              "Mr." {:type ENDING_PUNCTUATION}
+              "Mrs." {:type ENDING_PUNCTUATION}
+              "Ms." {:type ENDING_PUNCTUATION}
+              "Dr." {:type ENDING_PUNCTUATION}))
 
 (defn get-combos []
   (sorted-map "I" {:combos {"is" "I'm"
