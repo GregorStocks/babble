@@ -67,16 +67,18 @@
                                      :data (model/round-points! rid)})
                    true)
   (wait WINNER-GLOATING-TIME rid)
-  (model/next-round rid)
 
   (let [best-score (apply max 0 (vals (:scores (@model/ROOMS rid))))]
-    (when (>= best-score GOAL-SCORE)
-      (model/add-event rid
-                       (model/new-event GAME-OVER-TIME
-                                        {:type "game over"})
-                       true)
-      (model/next-game rid))
-    (wait GAME-OVER-TIME rid)))
+    (if (>= best-score GOAL-SCORE)
+      (do
+        (model/add-event rid
+                         (model/new-event GAME-OVER-TIME
+                                          {:type "game over"})
+                         true)
+        (model/next-game rid)
+        (wait GAME-OVER-TIME rid))
+      (do
+        (model/next-round rid)))))
 
 (defn work-loop [rid]
   (while true
