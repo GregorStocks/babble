@@ -53,7 +53,7 @@
 
 (defn getroomlist [request]
   (response {"status" "OK"
-             "rooms" (fmap #(select-keys % [:name :users]) @ROOMS)}))
+             "rooms" (fmap #(select-keys % [:name :users :autojoin]) @ROOMS)}))
 
 (defn join [request]
   (let [params (:form-params request)

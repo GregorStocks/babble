@@ -43,7 +43,8 @@
    :events [(initial-event rid)]
    :event (initial-event rid)
    :eventid 1
-   :scores {}})
+   :scores {}
+   :autojoin true})
 
 (defonce USERS (atom []))
 (defonce ROOMS (atom {69 (empty-room "Poop room" 69)}))
