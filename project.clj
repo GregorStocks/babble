@@ -8,11 +8,12 @@
                  [clj-time "0.6.0"]
                  [org.clojure/clojure-contrib "1.2.0"]
                  [org.clojure/tools.logging "0.2.3"]
-                 [hiccup "1.0.4"]
-]
+                 [hiccup "1.0.4"]]
   :plugins [[lein-cljsbuild "1.0.1"]
             [lein-ring "0.8.10"]
             [lein-ver "1.0.1"]]
+  :license {:name "MIT License"
+            :url "http://www.opensource.org/licenses/mit-license.php"}
   :cljsbuild {
     :builds [{:source-paths ["src-cljs"]
               :compiler {:output-to "resources/public/js/babble-autogen.js"
