@@ -92,6 +92,11 @@
         votee (params "sentenceid")]
     (set-vote roomid username votee)))
 
+(defn round-summary [request]
+  (log/info "WOOOOOOOOOOOO" request)
+  {:status 200
+   :body "<html>FUCK</html>"})
+
 (defroutes main-routes
   (GET "/" [] (redirect "index.html"))
   (POST "/api/login.cgi" [] login)
@@ -105,7 +110,8 @@
   (GET "/api/getstate.cgi" [] getstate)
   (GET "/api/getroomlist.cgi" [] getroomlist)
   (GET "/js/dictionary-autogen.js" [] (fn [request] {:headers {"Content-Type" "text/javascript"}
-                                                     :body (dictionary/dict-js)}))
+                                                    :body (dictionary/dict-js)}))
+  (GET "/round/:round" [round] round-summary)
   (route/resources "/")
   (route/not-found "Page not found"))
 

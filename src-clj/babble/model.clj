@@ -102,13 +102,13 @@
   (let [votes (:votes (@ROOMS rid))
         raw-votes-by-username (frequencies (vals votes))
         valid-votes-by-username (select-keys raw-votes-by-username (keys votes))
-        tiebroken-votes-by-username (apply hash-map
-                                           :Nobody 0.1
-                                           (flatten (map #(vector % (* (valid-votes-by-username %)
-                                                                       (+ 1
-                                                                          (* 0.0000001 (reduce + (map count (((@ROOMS rid) :sentences) %)))) ;; break ties by sentence length
-                                                                          (* 0.00000001 (rand))))) ;; ensure no exact ties (barring ridiculousness), so it's not based on something users control
-                                                         (keys valid-votes-by-username))))
+        tiebroken-votes-by-username (apply merge {:Nobody 0.1}
+
+                                           (map #(hash-map % (* (valid-votes-by-username %)
+                                                              (+ 1
+                                                                 (* 0.0000001 (reduce + (map count (((@ROOMS rid) :sentences) %)))) ;; break ties by sentence length
+                                                                 (* 0.00000001 (rand))))) ;; ensure no exact ties (barring ridiculousness), so it's not based on something users control
+                                                (keys valid-votes-by-username)))
         winner (first (apply max-key second (seq tiebroken-votes-by-username)))
         points-by-username (apply merge-with + valid-votes-by-username
                                   (if (votes winner) {winner 2})

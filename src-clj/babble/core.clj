@@ -1,23 +1,26 @@
 (ns babble.core
   (require [clojure.tools.logging :as log]
            [babble.model :as model]
+           [babble.permalink :as permalink]
            [clj-time.core :as time]))
 
-(def GOAL-SCORE 30)
+(def debug true)
+
+(def goal-score (if DEBUG 5 30))
 
 ;; seconds
-(def SENTENCE-MAKING-TIME 70)
-(def SENTENCE-COLLECTING-TIME 2)
-(def VOTING-TIME 25)
-(def VOTE-COLLECTING-TIME 2)
-(def WINNER-GLOATING-TIME 10)
-(def GAME-OVER-TIME 20)
-(def PING-TIMEOUT (time/seconds 15))
+(def sentence-making-time (if debug 10 70))
+(def sentence-collecting-time 2)
+(def voting-time (if debug 5 25))
+(def vote-collecting-time 2)
+(def winner-gloating-time (if debug 5 10))
+(def game-over-time (if debug 5 20))
+(def ping-timeout (time/seconds 15))
 
 (defn housekeeping [rid]
   (model/trim-room rid)
   (doseq [username (:users (@model/ROOMS rid))]
-    (when-not (time/before? (time/minus (time/now) PING-TIMEOUT)
+    (when-not (time/before? (time/minus (time/now) ping-timeout)
                             (or ((:last-ping (@model/ROOMS rid)) username)
                                 (time/date-time 2010)))
       (log/info "Removing inactive user" username rid)
@@ -33,52 +36,58 @@
 
 (defn tick [rid]
   (log/debug "new round" rid)
-  (model/add-event rid
-                   (model/new-event SENTENCE-MAKING-TIME
-                                    {:type "new round"
-                                     :words (model/get-word-list)})
-                   true)
-  (wait SENTENCE-MAKING-TIME rid)
+  (let [words (model/get-word-list)]
+    (model/add-event rid
+                     (model/new-event sentence-making-time
+                                      {:type "new round"
+                                       :words words})
+                     true)
+    (wait sentence-making-time rid)
 
-  (log/debug "collecting" rid)
-  (model/add-event rid
-                   (model/new-event SENTENCE-COLLECTING-TIME {:type "collecting"})
-                   true)
-  (wait SENTENCE-COLLECTING-TIME rid)
+    (log/debug "collecting" rid)
+    (model/add-event rid
+                     (model/new-event sentence-collecting-time {:type "collecting"})
+                     true)
+    (wait sentence-collecting-time rid)
 
-  (log/debug "voting" rid)
-  (model/add-event rid
-                   (model/new-event VOTING-TIME {:type "vote"
-                                                 :sentences (:sentences (@model/ROOMS rid))})
-                   true)
-  (wait VOTING-TIME rid)
+    (log/debug "voting" rid)
+    (model/add-event rid
+                     (model/new-event voting-time {:type "vote"
+                                                   :sentences (:sentences (@model/ROOMS rid))})
+                     true)
+    (wait voting-time rid)
 
-  (log/debug "voting over" rid)
-  (model/add-event rid
-                   (model/new-event VOTE-COLLECTING-TIME
-                                    {:type "voting over"})
-                   true)
-  (wait VOTE-COLLECTING-TIME rid)
+    (log/debug "voting over" rid)
+    (model/add-event rid
+                     (model/new-event vote-collecting-time
+                                      {:type "voting over"})
+                     true)
+    (wait vote-collecting-time rid)
 
-  (log/debug "showing winners")
-  (model/add-event rid
-                   (model/new-event WINNER-GLOATING-TIME
-                                    {:type "winner"
-                                     :data (model/round-points! rid)})
-                   true)
-  (wait WINNER-GLOATING-TIME rid)
+    (log/debug "showing winners")
+    (when-let [key (permalink/archive-room (@model/ROOMS rid) words)]
+      (log/info "OHOOO" key)
+      (model/add-event rid {:type "chat"
+                            :username "babblebot"
+                            :text (str "Round summary: http://localhost:3000/round/" key)}))
+    (model/add-event rid
+                     (model/new-event winner-gloating-time
+                                      {:type "winner"
+                                       :data (model/round-points! rid)})
+                     true)
+    (wait winner-gloating-time rid)
 
-  (let [best-score (apply max 0 (vals (:scores (@model/ROOMS rid))))]
-    (if (>= best-score GOAL-SCORE)
-      (do
-        (model/add-event rid
-                         (model/new-event GAME-OVER-TIME
-                                          {:type "game over"})
-                         true)
-        (model/next-game rid)
-        (wait GAME-OVER-TIME rid))
-      (do
-        (model/next-round rid)))))
+    (let [best-score (apply max 0 (vals (:scores (@model/ROOMS rid))))]
+      (if (>= best-score goal-score)
+        (do
+          (model/add-event rid
+                           (model/new-event game-over-time
+                                            {:type "game over"})
+                           true)
+          (model/next-game rid)
+          (wait game-over-time rid))
+        (do
+          (model/next-round rid))))))
 
 (defn work-loop [rid]
   (while true
