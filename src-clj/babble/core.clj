@@ -66,10 +66,8 @@
 
     (log/debug "showing winners")
     (when-let [key (permalink/archive-room (@model/ROOMS rid) words)]
-      (log/info "OHOOO" key)
-      (model/add-event rid {:type "chat"
-                            :username "babblebot"
-                            :text (str "Round summary: http://localhost:3000/round/" key)}))
+      (model/add-event rid {:type "summary"
+                            :url (str "/round/" key)}))
     (model/add-event rid
                      (model/new-event winner-gloating-time
                                       {:type "winner"

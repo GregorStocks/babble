@@ -1,3 +1,5 @@
+"use strict";
+
 var SESSKEY = "";
 var CANT_VOTE_YOURSELF = true; // to cheat, change this
 function get_sess_key() {
@@ -237,7 +239,7 @@ function makeSentence(words) {
 }
 
 function sendSentence(words) {
-  $.post("api/updatesentence.cgi", {"sesskey": get_sess_key(), "words": words, "roomid": get_room_id()}, make_error_handler(), "json"); 
+  $.post("api/updatesentence.cgi", {"sesskey": get_sess_key(), "words": words, "roomid": get_room_id()}, make_error_handler(), "json");
 }
 
 function updateSentence() {
@@ -281,7 +283,7 @@ function shouldInsertBefore(target, dropX, dropY, insertee) {
     var p = target.prevAll('.wordbox');
     if (p.length) {
       p = $(p.get(0));
-      if (dragCenterX > p.position()['left'] + p.width() / 2 && 
+      if (dragCenterX > p.position()['left'] + p.width() / 2 &&
           target.position()['top'] > p.position()['top']) {
         return true;
       }
@@ -300,6 +302,7 @@ var startwordlist = [];
 function processEvent(ev) {
   var eventid = ev["eventid"];
   if(eventid <= cureventid) { // likely with lag of > 1 second
+    console.log("Uh, why the FUCK am i discarding this", ev, cureventid, eventid);
     return;
   }
   cureventid = eventid;
@@ -307,6 +310,7 @@ function processEvent(ev) {
   if(ev["timeleft"]) {
     setTime(ev["timeleft"], ev["maxtime"]);
   }
+  console.log("Event:", ev);
 
   if(evtype === "new round" && ev["words"]) {
     startRound();
@@ -328,6 +332,10 @@ function processEvent(ev) {
     playerParted(ev["name"]);
   } else if(evtype === "chat" && ev["text"] && ev["username"]) {
     chatMessage(ev["text"], ev["username"]);
+  } else if(evtype === "summary" && ev["url"]) {
+    roundSummary(ev["url"]);
+  } else {
+    console.log("Unrecognized event:", ev);
   }
 }
 
@@ -354,7 +362,7 @@ function eventLoop() {
   }
   $.getJSON("api/geteventssince.cgi", {"eventid": cureventid, "roomid": get_room_id()}, make_error_handler(function(data) {
     if(data && data["status"] && data["status"] === "OK" && data["events"]) {
-      events = data["events"];
+      var events = data["events"];
       for(var i in events) {
         if(eventsLooping) {
           processEvent(events[i]);
@@ -378,7 +386,7 @@ function start() {
 function reloadState() {
   $.getJSON("api/getstate.cgi", {"roomid": get_room_id()}, make_error_handler(function(data) {
     if(data && data["status"] && data["status"] === "OK" && data["state"]) {
-      state = data["state"];
+      var state = data["state"];
       processEvent(state["event"]);
       cureventid = state["eventid"];
       setUsers(state["users"], state["scores"]);
@@ -492,7 +500,7 @@ function busyIndicator(show) {
         marginLeft: '-' + ind.outerWidth() / 2 + 'px',
         marginTop: '-' + ind.outerHeight() / 2 + 'px'
       });
-    
+
   } else {
     $("#indicator").remove();
   }
@@ -558,7 +566,7 @@ function clear() {
 
 function startRound() {
   resetUi();
-  
+
   $("#gamebox")
     .append(
       $("<div class='wordsouter' />")
@@ -580,7 +588,7 @@ function startRound() {
       // find the farthest-left wordbox with a center to the right of the mouse pointer.
       // insert word before it.
       // note that the wordboxes are already sorted in order for us.
-      
+
       var done = false;
       $.each($('#dropbox > .wordbox'), function(idx, box) {
         if(!done && shouldInsertBefore($(box), event.pageX, event.pageY, $(event.dragTarget))) {
@@ -662,7 +670,7 @@ function showWinners(data) {
   var morePoints = function(a, b) {
     return data[b]["points"] - data[a]["points"];
   };
-  stuff = [];
+  var stuff = [];
   for(var name in data) {
     stuff.push(name);
   }
@@ -743,6 +751,15 @@ function get_chat_text() {
   return $('#chatmessage').val();
 }
 
+function roundSummary(url) {
+  $("#chatmsgs").append(
+    $("<p />").append(
+      $("<span />").addClass("chat_text").html("<p><a href='" + url + "'>Round Summary</a></p>")
+    )
+  );
+  scrollChat();
+}
+
 var lastClick = null;
 var curSpacer;
 
@@ -752,7 +769,7 @@ function insertWords(words) {
 
   // first, insert all the boxes with static positioning
   for(var i = 0; i < words.length; i++) {
-    word = words[i];
+    var word = words[i];
     var box = $('<span id="wordbox' + i + '" class="wordbox">' + capitalize(word) + '</span>');
     box.disableTextSelect();
     if(word === "==") {
@@ -772,7 +789,7 @@ function insertWords(words) {
 
   // next, save all of their positions
   $.each($('.wordbox'), function(idx, box) {
-    box_poses[$(box).attr('id')] = $(box).position(); 
+    box_poses[$(box).attr('id')] = $(box).position();
   });
 
   // then, convert them all to absolute positioning using saved positions
@@ -793,24 +810,24 @@ function insertWords(words) {
       $.each($('#dropbox > .wordbox'), function(idx, box) {
         if(!done && shouldInsertBefore($(box), event.pageX, event.pageY, $(event.dragTarget))) {
           done = true;
-          
+
           if (curSpacer !== box) {
             killSpacers();
             curSpacer = box;
           }
         }
       });
-      
+
       if (!done) {
         curSpacer = $('#clear').get(0);
       }
     } else {
       curSpacer = null;
     }
-    
+
     if (curSpacer !== oldCurSpacer) {
       killSpacers();
-      
+
       if (curSpacer !== null) {
         $(event.dragTarget).clone()
           .removeClass('wordbox')
@@ -822,12 +839,12 @@ function insertWords(words) {
             width: '0px'
           })
           .animate({width: ($(event.dragTarget).width()) + "px"},        25);
-      }                        
+      }
     }
   })
     .bind('dragstart', function(event) {
       if ($(this).parent().get(0).id === 'dropbox') {
-        
+
         var done = false;
         $.each($('#dropbox > .wordbox'), function(idx, box) {
           if(!done && shouldInsertBefore($(box), event.pageX, event.pageY, $(event.dragTarget))) {

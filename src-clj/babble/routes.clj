@@ -10,6 +10,8 @@
             [clojure.tools.logging :as log]
             [compojure.handler :as handler]
             [clj-time.core :as time]
+            [babble.permalink :as permalink]
+            [clojure.string :as string]
             [compojure.response :as response]
             [babble.dictionary :as dictionary]))
 
@@ -37,12 +39,13 @@
 
 (defn get-events-since [request]
   (let [eventid (try (->long ((:query-params request) "eventid"))
-                     (catch Exception e (log/info request)
+                     (catch Exception e (log/info e "SHART" request)
                             0))
-        roomid (->long ((:query-params request) "roomid"))]
+        roomid (->long ((:query-params request) "roomid"))
+        events (reverse (take-last 50 (map postprocess-event (filter #(> (:eventid %) eventid)
+                                                                     (:events (@ROOMS roomid))))))]
     (response {"status" "OK"
-               "events" (take-last 50 (map postprocess-event (filter #(> (:eventid %) eventid)
-                                                                     (:events (@ROOMS roomid)))))})))
+               "events" events})))
 
 (defn getstate [request]
   (let [roomid (->long ((:query-params request) "roomid"))]
@@ -93,9 +96,22 @@
     (set-vote roomid username votee)))
 
 (defn round-summary [request]
-  (log/info "WOOOOOOOOOOOO" request)
-  {:status 200
-   :body "<html>FUCK</html>"})
+  (let [round (:round (:params request))
+        head "<head><title>Round Summary (very beta)</title><link rel='stylesheet' type='text/css' href='/style.css'></link></head>"
+        data (permalink/fetch-room round)
+        words (str "<div class='wordsouter'><div class='wordbox'>"
+                  (string/join "</div><div class='wordbox'>" (:words data))
+                  "</div></div>")
+        sentence-rows (apply str (map  #(str "<tr><td>" (name (first %)) "</td>"
+                                             "<td>" (string/join " " (second %)) "</td></tr>")
+                                      (:sentences data)))
+        _ (log/info "HMMM" sentence-rows)
+        sentences (str "<br><table style='clear:both; background-color: #e9e9e9'><tr><th>Player</th><th>Sentence</th></tr><tr>"
+                       sentence-rows
+                       "</tr></table>")
+        body (str "<body><div class='gamebox'>" words sentences "</div></body>")]
+    {:status 200
+     :body (str "<html>" head body "</html>")}))
 
 (defroutes main-routes
   (GET "/" [] (redirect "index.html"))

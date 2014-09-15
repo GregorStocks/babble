@@ -65,12 +65,12 @@
 
 (defn add-event ([rid event] (add-event rid event false))
   ([rid event important?]
-   (log/info "ADDIN EVENT" rid event important?)
-   (swap! ROOMS #(-> (if important?
-                       (update-in % [rid :event] (constantly event))
-                       %)
-                     (update-in [rid :events] conj (new-lengthless-event event))
-                     (update-in [rid :eventid] (constantly (:eventid event)))))))
+   (let [ev (new-lengthless-event event)]
+     (swap! ROOMS #(-> (if important?
+                         (update-in % [rid :event] (constantly ev))
+                         %)
+                       (update-in [rid :events] conj ev)
+                       (update-in [rid :eventid] (constantly (:eventid ev))))))))
 
 (defn add-user [rid username]
   (swap! ROOMS #(-> %
@@ -88,15 +88,15 @@
 (defn set-vote [rid username votee]
   (swap! ROOMS update-in [rid :votes username] (constantly votee)))
 
+(defn ai-sentences []
+  ;; todo, this is harder than i expected
+  {})
+
 (defn next-round [rid]
-  (swap! ROOMS #(-> %
-                    (update-in [rid :sentences] (constantly { ;;"a ghost" ["All of these sentences are bad."]
-                                                             }))
-                    (update-in [rid :votes] (constantly {})))))
+  (swap! ROOMS #(update-in % [rid] assoc :sentences (ai-sentences) :votes {})))
 
 (defn next-game [rid]
-  (swap! ROOMS #(-> %
-                    (update-in [rid :scores] (constantly {})))))
+  (swap! ROOMS #(update-in [rid] assoc :scores {})))
 
 (defn round-points! [rid]
   ;; this isn't thread-safe but it's okay because we've only got one thread per room
