@@ -5,10 +5,10 @@
            [clojure.tools.logging :as log]
            [cheshire.core :as json]
            [clojure.walk :as walk]
+           [clojure.java.io :as io]
            ))
 
-(def cred {:access-key "AKIAIRXN6F34BDI6D25Q"
-           :secret-key "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"})
+(def cred (read-string (slurp (io/resource "s3.edn"))))
 (def bucket "babble-permalinks")
 
 (defn serialize [words sentences]
