@@ -55,7 +55,7 @@
 (defn new-lengthless-event
   ([event] (new-lengthless-event event (time/now)))
   ([event now]
-     (assoc event :eventid (.getMillis now))))
+   (assoc event :eventid (.getMillis now))))
 
 (defn new-event [length m]
   (let [now (time/now)]
@@ -65,11 +65,12 @@
 
 (defn add-event ([rid event] (add-event rid event false))
   ([rid event important?]
-     (swap! ROOMS #(-> (if important?
-                         (update-in % [rid :event] (constantly event))
-                         %)
-                       (update-in [rid :events] conj (new-lengthless-event event))
-                       (update-in [rid :eventid] (constantly (:eventid event)))))))
+   (log/info "ADDIN EVENT" rid event important?)
+   (swap! ROOMS #(-> (if important?
+                       (update-in % [rid :event] (constantly event))
+                       %)
+                     (update-in [rid :events] conj (new-lengthless-event event))
+                     (update-in [rid :eventid] (constantly (:eventid event)))))))
 
 (defn add-user [rid username]
   (swap! ROOMS #(-> %
@@ -105,9 +106,9 @@
         tiebroken-votes-by-username (apply merge {:Nobody 0.1}
 
                                            (map #(hash-map % (* (valid-votes-by-username %)
-                                                              (+ 1
-                                                                 (* 0.0000001 (reduce + (map count (((@ROOMS rid) :sentences) %)))) ;; break ties by sentence length
-                                                                 (* 0.00000001 (rand))))) ;; ensure no exact ties (barring ridiculousness), so it's not based on something users control
+                                                                (+ 1
+                                                                   (* 0.0000001 (reduce + (map count (((@ROOMS rid) :sentences) %)))) ;; break ties by sentence length
+                                                                   (* 0.00000001 (rand))))) ;; ensure no exact ties (barring ridiculousness), so it's not based on something users control
                                                 (keys valid-votes-by-username)))
         winner (first (apply max-key second (seq tiebroken-votes-by-username)))
         points-by-username (apply merge-with + valid-votes-by-username

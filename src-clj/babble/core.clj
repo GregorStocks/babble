@@ -6,7 +6,7 @@
 
 (def debug true)
 
-(def goal-score (if DEBUG 5 30))
+(def goal-score (if debug 5 30))
 
 ;; seconds
 (def sentence-making-time (if debug 10 70))
