@@ -301,8 +301,7 @@ var startwordlist = [];
 
 function processEvent(ev) {
   var eventid = ev["eventid"];
-  if(eventid <= cureventid) { // likely with lag of > 1 second
-    console.log("Uh, why the FUCK am i discarding this", ev, cureventid, eventid);
+  if(eventid <= cureventid) { // likely with lag of > 1 second (?!?!?!?!)
     return;
   }
   cureventid = eventid;
@@ -310,7 +309,6 @@ function processEvent(ev) {
   if(ev["timeleft"]) {
     setTime(ev["timeleft"], ev["maxtime"]);
   }
-  console.log("Event:", ev);
 
   if(evtype === "new round" && ev["words"]) {
     startRound();
