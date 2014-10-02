@@ -21,37 +21,26 @@
 </head>
 <body>
 <script>
-$(showLogin);
-
-$(timeLoop);
-
+console.log("FUCK");
 $(function() {
-  $("body").ajaxError(function(event, request, settings, error) {
-    $('body').append(request.responseText);
-  });
-
-  $("#gamebox").rightClick(function() { });
-});
+console.log("SHIT");
+  insertWords(%WORDS%);
+  showWinners(%SUMMARY%);
+})
 </script>
 <div class="gamebox" id="gamebox">
-                         <div class='wordsbox wordscontainer' id='wordsbox0'></div>
-                         <div class='wordsbox wordscontainer' id='wordsbox1'></div>
-                         <div class='clear'></div>
-                         <div class='dropbox wordscontainer' id='dropbox'></div>
-                         <p class='sentence' id='sentence'>&nbsp;</p>
-                         <div class='clear'><span class='clearwords' id='clear'><a href='javascript:clear()'>Clear</a></span><div class='clear' id='clearer'></div></div>
-                         <div class='wordsbox wordscontainer' id='wordsbox2'></div>
-                         <div class='wordsbox wordscontainer' id='wordsbox3'></div>
-<div class='clear'></div>
+  <div class='wordsbox wordscontainer' id='wordsbox0'></div>
+  <div class='wordsbox wordscontainer' id='wordsbox1'></div>
+  <div class='clear'></div>
+  <div class='wordsbox wordscontainer' id='wordsbox2'></div>
+  <div class='wordsbox wordscontainer' id='wordsbox3'></div>
+  <div class='clear'></div>
 </div>
 
 
-<div id="timer"><div id="timediv"></div><div id="timerfull"></div></div>
 <br />
 
-<div class="chat" id="chat">
-        <div class="members" id="members"><table id="membertable"></table></div>
-        <div class="chatmsgs" id="chatmsgs"></div><div class="clear"></div>
+<div class="sentences" id="sentences">
 </div>
 
 <div id="footer">

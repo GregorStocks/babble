@@ -4,7 +4,7 @@
            [babble.permalink :as permalink]
            [clj-time.core :as time]))
 
-(def debug true)
+(def debug false)
 
 (def goal-score (if debug 5 30))
 
@@ -67,7 +67,7 @@
     (log/debug "showing winners")
     (when-let [key (permalink/archive-room (@model/ROOMS rid) words)]
       (model/add-event rid {:type "summary"
-                            :url (str "/round/" key)}))
+                            :url (str "/round-" key)}))
     (model/add-event rid
                      (model/new-event winner-gloating-time
                                       {:type "winner"

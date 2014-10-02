@@ -12,6 +12,8 @@
             [clj-time.core :as time]
             [babble.permalink :as permalink]
             [clojure.string :as string]
+            [clojure.java.io :as io]
+            [cheshire.core :as json]
             [compojure.response :as response]
             [babble.dictionary :as dictionary]))
 
@@ -97,21 +99,12 @@
 
 (defn round-summary [request]
   (let [round (:round (:params request))
-        head "<head><title>Round Summary (very beta)</title><link rel='stylesheet' type='text/css' href='/style.css'></link></head>"
         data (permalink/fetch-room round)
-        words (str "<div class='wordsouter'><div class='wordbox'>"
-                  (string/join "</div><div class='wordbox'>" (:words data))
-                  "</div></div>")
-        sentence-rows (apply str (map  #(str "<tr><td>" (name (first %)) "</td>"
-                                             "<td>" (string/join " " (second %)) "</td></tr>")
-                                      (:sentences data)))
-        _ (log/info "HMMM" sentence-rows)
-        sentences (str "<br><table style='clear:both; background-color: #e9e9e9'><tr><th>Player</th><th>Sentence</th></tr><tr>"
-                       sentence-rows
-                       "</tr></table>")
-        body (str "<body><div class='gamebox'>" words sentences "</div></body>")]
+        page (-> (slurp (io/resource "round.html"))
+                 (string/replace "%WORDS%" (json/generate-string (:words data)))
+                 (string/replace "%SUMMARY%" (json/generate-string (:summary data))))]
     {:status 200
-     :body (str "<html>" head body "</html>")}))
+     :body page}))
 
 (defroutes main-routes
   (GET "/" [] (redirect "index.html"))
@@ -127,7 +120,7 @@
   (GET "/api/getroomlist.cgi" [] getroomlist)
   (GET "/js/dictionary-autogen.js" [] (fn [request] {:headers {"Content-Type" "text/javascript"}
                                                     :body (dictionary/dict-js)}))
-  (GET "/round/:round" [round] round-summary)
+  (GET "/round-:round" [round] round-summary)
   (route/resources "/")
   (route/not-found "Page not found"))
 

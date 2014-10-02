@@ -1,7 +1,7 @@
 "use strict";
 
 var SESSKEY = "";
-var CANT_VOTE_YOURSELF = true; // to cheat, change this
+var CANT_VOTE_YOURSELF = false; // to cheat, change this
 function get_sess_key() {
   return SESSKEY;
 }
@@ -19,16 +19,6 @@ function nice(str) {
 }
 
 var eventsLooping = false;
-
-$(function() {
-  $("body").ajaxError(function(event, request, settings, error) {
-    $('body').append(request.responseText);
-  });
-
-    $("#gamebox").rightClick(function() {
-    })
-
-});
 
 function make_error_handler(callback) {
   return function(data, textStatus) {
@@ -321,6 +311,7 @@ function processEvent(ev) {
   } else if(evtype === "voting over") {
     startCollectingVotes();
   } else if(evtype === "winner" && ev["data"]) {
+    resetUi();
     showWinners(ev["data"]);
   } else if(evtype === "game over") {
     showGameWinners();
@@ -436,10 +427,6 @@ function selectroom(roomid) {
     ));
   start();
 }
-
-$(showLogin);
-
-$(timeLoop);
 
 var timeLeft = 0;
 var lastUpdate = 0;
@@ -663,7 +650,6 @@ function startCollectingVotes() {
 }
 
 function showWinners(data) {
-  resetUi();
   $("#gamebox").append("<div class='notification'><table class='winners' id='winners'><tr><th>Sentence</th><th>Player</th><th>Votes</th><th>Points</th></table></div>");
   var morePoints = function(a, b) {
     return data[b]["points"] - data[a]["points"];
