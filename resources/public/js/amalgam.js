@@ -1,7 +1,7 @@
 "use strict";
 
 var SESSKEY = "";
-var CANT_VOTE_YOURSELF = false; // to cheat, change this
+var CANT_VOTE_YOURSELF = true; // to cheat, change this
 function get_sess_key() {
   return SESSKEY;
 }
