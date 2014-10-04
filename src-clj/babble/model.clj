@@ -96,7 +96,7 @@
   (swap! ROOMS #(update-in % [rid] assoc :sentences (ai-sentences) :votes {})))
 
 (defn next-game [rid]
-  (swap! ROOMS #(update-in [rid] assoc :scores {})))
+  (swap! ROOMS #(update-in % [rid] assoc :scores {})))
 
 (defn round-points! [rid]
   ;; this isn't thread-safe but it's okay because we've only got one thread per room
