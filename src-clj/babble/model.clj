@@ -117,7 +117,7 @@
                                       (keys valid-votes)))
         winner (cond
                 (seq tiebroken-votes) (first (first (sort-by second tiebroken-votes)))
-                (seq (:sentences (@ROOMS rid)) (rand-nth (keys (:sentences (@ROOMS rid)))))
+                (seq (:sentences (@ROOMS rid))) (rand-nth (keys (:sentences (@ROOMS rid))))
                  :Nobody)
         points (apply merge-with + valid-votes
                       (if (votes winner) {winner 2})
