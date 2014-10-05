@@ -4,14 +4,16 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/clojurescript "0.0-2014" :exclusions [org.apache.ant/ant]]
                  [cheshire "5.0.1"]
+                 [lein-ring "0.8.12"]
                  [compojure "1.1.6"]
                  [clj-time "0.6.0"]
                  [org.clojure/clojure-contrib "1.2.0"]
                  [org.clojure/tools.logging "0.2.3"]
+                 [clj-logging-config "1.9.12"]
                  [hiccup "1.0.4"]
                  [clj-aws-s3 "0.3.10"]]
   :plugins [[lein-cljsbuild "1.0.1"]
-            [lein-ring "0.8.10"]
+            [lein-ring "0.8.12"]
             [lein-ver "1.0.1"]]
   :license {:name "MIT License"
             :url "http://www.opensource.org/licenses/mit-license.php"}

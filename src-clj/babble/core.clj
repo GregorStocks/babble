@@ -1,8 +1,12 @@
 (ns babble.core
   (require [clojure.tools.logging :as log]
            [babble.model :as model]
+           [clj-logging-config.log4j :as logconf]
            [babble.permalink :as permalink]
            [clj-time.core :as time]))
+
+(logconf/set-logger!)
+
 
 (def debug false)
 
