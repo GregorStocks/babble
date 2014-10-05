@@ -10,12 +10,22 @@
             [clojure.tools.logging :as log]
             [compojure.handler :as handler]
             [clj-time.core :as time]
+            [clj-logging-config.log4j :as logconf]
             [babble.permalink :as permalink]
             [clojure.string :as string]
             [clojure.java.io :as io]
             [cheshire.core :as json]
             [compojure.response :as response]
             [babble.dictionary :as dictionary]))
+
+(logconf/set-logger!
+ :level :debug
+ :out (doto (org.apache.log4j.RollingFileAppender.
+             (org.apache.log4j.EnhancedPatternLayout.
+              "%d{yyyy-MM-dd HH:mm:ssZ}{America/Los_Angeles} %-5p %c: %m%n")
+             "babble.log"
+             true)
+        (.setMaxBackupIndex 10)))
 
 (defn response [m]
       {:body (generate-string m)})
@@ -106,6 +116,12 @@
     {:status 200
      :body page}))
 
+(defn log-middleware [app]
+  (fn [request]
+    (let [result (app request)]
+      (log/debug "REQURES" (:uri request) "RESULT" result)
+      result)))
+
 (defroutes main-routes
   (GET "/" [] (redirect "index.html"))
   (POST "/api/login.cgi" [] login)
@@ -126,4 +142,6 @@
 
 (def app
   (-> (handler/site main-routes)
-      (wrap-base-url)))
+      wrap-base-url
+;;      log-middleware
+      ))

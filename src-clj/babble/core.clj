@@ -78,11 +78,13 @@
     (when-let [key (permalink/archive-room (@model/ROOMS rid) words)]
       (model/add-event rid {:type "summary"
                             :url (str "/round-" key)}))
-    (model/add-event rid
-                     (model/new-event winner-gloating-time
-                                      {:type "winner"
-                                       :data (model/round-points! rid)})
-                     true)
+    (let [points (model/round-points! rid)]
+      (log/info "round points" points)
+      (model/add-event rid
+                       (model/new-event winner-gloating-time
+                                        {:type "winner"
+                                         :data points})
+                       true))
     (wait winner-gloating-time rid)
 
     (let [best-score (apply max 0 (vals (:scores (@model/ROOMS rid))))]

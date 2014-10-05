@@ -108,6 +108,7 @@
 (defn round-points! [rid]
   ;; this isn't thread-safe but it's okay because we've only got one thread per room
   (let [votes (:votes (@ROOMS rid))
+        _ (log/info "UH" votes)
         raw-votes (frequencies (vals votes))
         valid-votes (select-keys raw-votes (keys votes))
         tiebroken-votes (into {} (map (fn [username]
