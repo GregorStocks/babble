@@ -15,6 +15,7 @@
             [hiccup.util :as hiccup]
             [clojure.set :as set]))
 
+(def debug? true)
 (def WORDS (edn/read-string (slurp (io/resource "dictionary.edn"))))
 (defn rand-words [t x]
   (take x (shuffle (t WORDS))))
@@ -34,16 +35,22 @@
    :room rid
    :type "game over"})
 
+(defn ai-sentences []
+  ;; todo, this is harder than i expected
+  (if debug?
+    {"ghost" ["ass" "butt"]}
+    {}))
+
 (defn empty-room [name rid]
   {:name name
-   :users #{}
-   :sentences {}
+   :users (if debug? #{"ghost"} #{})
+   :sentences (ai-sentences)
    :last-ping {}
    :votes {}
    :events [(initial-event rid)]
    :event (initial-event rid)
    :eventid 1
-   :scores {}
+   :scores (if debug? {"ghost" 0} {})
    :autojoin true})
 
 (defonce USERS (atom []))
@@ -88,12 +95,10 @@
 (defn set-vote [rid username votee]
   (swap! ROOMS update-in [rid :votes username] (constantly votee)))
 
-(defn ai-sentences []
-  ;; todo, this is harder than i expected
-  {})
-
 (defn next-round [rid]
-  (swap! ROOMS #(update-in % [rid] assoc :sentences (ai-sentences) :votes {})))
+  (swap! ROOMS #(update-in % [rid] assoc
+                           :sentences (ai-sentences)
+                           :votes (if debug? {"ghost" "ghost"} {}))))
 
 (defn next-game [rid]
   (swap! ROOMS #(update-in % [rid] assoc :scores {})))
@@ -101,40 +106,38 @@
 (defn round-points! [rid]
   ;; this isn't thread-safe but it's okay because we've only got one thread per room
   (let [votes (:votes (@ROOMS rid))
-        raw-votes-by-username (frequencies (vals votes))
-        valid-votes-by-username (select-keys raw-votes-by-username (keys votes))
-        tiebroken-votes-by-username (apply merge {:Nobody 0.1}
-
-                                           (map #(hash-map % (* (valid-votes-by-username %)
-                                                                (+ 1
-                                                                   (* 0.0000001 (reduce + (map count (((@ROOMS rid) :sentences) %)))) ;; break ties by sentence length
-                                                                   (* 0.00000001 (rand))))) ;; ensure no exact ties (barring ridiculousness), so it's not based on something users control
-                                                (keys valid-votes-by-username)))
-        winner (first (apply max-key second (seq tiebroken-votes-by-username)))
-        points-by-username (apply merge-with + valid-votes-by-username
-                                  (if (votes winner) {winner 2})
-                                  (map #(if (= winner (votes %)) {% 1})
-                                       (keys votes)))
-        raw-votes-by-username-with-nobody-maybe (merge raw-votes-by-username (if (= winner :Nobody) {winner (max 0 (- (count (set/union (set (:users (@ROOMS rid)))
-                                                                                                                                        (keys votes)))
-                                                                                                                      (count votes)))}))]
-    (doseq [username (keys points-by-username)]
-      (swap! ROOMS update-in [rid :scores username] #(+ (or % 0) (or (points-by-username username) 0))))
+        raw-votes (frequencies (vals votes))
+        valid-votes (select-keys raw-votes (keys votes))
+        tiebroken-votes (map (fn [username]
+                               [username [(valid-votes username)
+                                          (reduce + (map count (((@ROOMS rid) :sentences) username)))
+                                          (rand)]])
+                             (keys valid-votes))
+        winner (if (seq tiebroken-votes)
+                 (first (first (sort-by second tiebroken-votes)))
+                 :Nobody)
+        points (apply merge-with + valid-votes
+                      (if (votes winner) {winner 2})
+                      (map #(if (= winner (votes %)) {% 1})
+                           (keys votes)))
+        _ (log/debug "points by username" points "votes" votes "valid" valid-votes)]
+    (doseq [username (keys points)]
+      (swap! ROOMS update-in [rid :scores username] #(+ (or % 0) (or (points username) 0))))
     (apply sorted-map-by
            #(or (= winner %1)
                 (and (not= winner %2)
-                     (> (get tiebroken-votes-by-username %1 0)
-                        (get tiebroken-votes-by-username %2 0))))
+                     (> (get tiebroken-votes %1 0)
+                        (get tiebroken-votes %2 0))))
            (apply concat (map (fn [username]
-                                [username {:votes (or (raw-votes-by-username-with-nobody-maybe username) 0)
-                                           :points (or (points-by-username username) 0)
+                                [username {:votes (or (raw-votes username) 0)
+                                           :points (or (points username) 0)
                                            :iswinner (= winner username)
                                            :sentence (or (((@ROOMS rid) :sentences) username)
                                                          [])}])
                               (concat ((@ROOMS rid) :users)
                                       [winner]
-                                      (keys points-by-username)
-                                      (keys valid-votes-by-username)
+                                      (keys points)
+                                      (keys valid-votes)
                                       (keys votes)))))))
 
 (defn ping-user [username rid]

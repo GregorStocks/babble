@@ -1,4 +1,5 @@
 (ns babble.core
+  (use [babble.model :only (debug?)])
   (require [clojure.tools.logging :as log]
            [babble.model :as model]
            [clj-logging-config.log4j :as logconf]
@@ -14,30 +15,29 @@
              true)
         (.setMaxBackupIndex 10)))
 
-(def debug false)
-
-(def goal-score (if debug 5 30))
+(def goal-score (if debug? 5 30))
 
 ;; seconds
-(def sentence-making-time (if debug 10 70))
+(def sentence-making-time (if debug? 10 70))
 (def sentence-collecting-time 2)
-(def voting-time (if debug 5 25))
+(def voting-time (if debug? 5 25))
 (def vote-collecting-time 2)
-(def winner-gloating-time (if debug 5 10))
-(def game-over-time (if debug 5 20))
+(def winner-gloating-time (if debug? 5 10))
+(def game-over-time (if debug? 5 20))
 (def ping-timeout (time/seconds 15))
 
 (defn housekeeping [rid]
   (model/trim-room rid)
-  (doseq [username (:users (@model/ROOMS rid))]
-    (when-not (time/before? (time/minus (time/now) ping-timeout)
-                            (or ((:last-ping (@model/ROOMS rid)) username)
-                                (time/date-time 2010)))
-      (log/info "Removing inactive user" username rid)
-      (let [event (model/new-lengthless-event {:type "part"
-                                               :name username})]
-        (model/add-event rid event)
-        (model/remove-user rid username)))))
+  (when-not debug?
+    (doseq [username (:users (@model/ROOMS rid))]
+      (when-not (time/before? (time/minus (time/now) ping-timeout)
+                              (or ((:last-ping (@model/ROOMS rid)) username)
+                                  (time/date-time 2010)))
+        (log/info "Removing inactive user" username rid)
+        (let [event (model/new-lengthless-event {:type "part"
+                                                 :name username})]
+          (model/add-event rid event)
+          (model/remove-user rid username))))))
 
 (defn wait [secs rid]
   (dotimes [i secs]
