@@ -11,3 +11,4 @@ resources/public/js/babble-autogen.js
 *~
 ~*
 resources/s3.edn
+babble.log
