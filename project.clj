@@ -11,6 +11,7 @@
                  [org.clojure/tools.logging "0.2.3"]
                  [clj-logging-config "1.9.12"]
                  [hiccup "1.0.4"]
+                 [log4j "1.2.16"]
                  [clj-aws-s3 "0.3.10"]]
   :plugins [[lein-cljsbuild "1.0.1"]
             [lein-ring "0.8.12"]

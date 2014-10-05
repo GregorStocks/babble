@@ -5,8 +5,13 @@
            [babble.permalink :as permalink]
            [clj-time.core :as time]))
 
-(logconf/set-logger!)
-
+(logconf/set-logger!
+ :out (doto (org.apache.log4j.RollingFileAppender.
+             (org.apache.log4j.EnhancedPatternLayout.
+              "%d{yyyy-MM-dd HH:mm:ssZ}{America/Los_Angeles} %-5p %c: %m%n")
+             "babble.log"
+             true)
+        (.setMaxBackupIndex 10)))
 
 (def debug false)
 
