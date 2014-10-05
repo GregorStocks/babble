@@ -24,6 +24,7 @@
 (def NINETEEN 19)
 
 (defn get-word-list []
+  (log/debug "WORD LIST GETTING")
   (concat (rand-words :nouns NINETEEN)
           (rand-words :verbs NINETEEN)
           (rand-words :modifiers NINETEEN)
@@ -36,6 +37,7 @@
    :type "game over"})
 
 (defn ai-sentences []
+  (log/debug "AI SENTENCES")
   ;; todo, this is harder than i expected
   (if debug?
     {"ghost" ["ass" "butt"]}
@@ -46,11 +48,11 @@
    :users (if debug? #{"ghost"} #{})
    :sentences (ai-sentences)
    :last-ping {}
-   :votes {}
+   :votes (if debug? {"ghost" "ghost"} {})
    :events [(initial-event rid)]
    :event (initial-event rid)
    :eventid 1
-   :scores (if debug? {"ghost" 0} {})
+   :scores {}
    :autojoin true})
 
 (defonce USERS (atom []))
