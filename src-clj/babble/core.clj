@@ -6,6 +6,7 @@
            [clj-time.core :as time]))
 
 (logconf/set-logger!
+ :level :debug
  :out (doto (org.apache.log4j.RollingFileAppender.
              (org.apache.log4j.EnhancedPatternLayout.
               "%d{yyyy-MM-dd HH:mm:ssZ}{America/Los_Angeles} %-5p %c: %m%n")
