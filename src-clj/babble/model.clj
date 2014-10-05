@@ -15,7 +15,7 @@
             [hiccup.util :as hiccup]
             [clojure.set :as set]))
 
-(def debug? true)
+(def debug? false)
 (def WORDS (edn/read-string (slurp (io/resource "dictionary.edn"))))
 (defn rand-words [t x]
   (take x (shuffle (t WORDS))))
@@ -108,11 +108,11 @@
   (let [votes (:votes (@ROOMS rid))
         raw-votes (frequencies (vals votes))
         valid-votes (select-keys raw-votes (keys votes))
-        tiebroken-votes (map (fn [username]
-                               [username [(valid-votes username)
-                                          (reduce + (map count (((@ROOMS rid) :sentences) username)))
-                                          (rand)]])
-                             (keys valid-votes))
+        tiebroken-votes (into {} (map (fn [username]
+                                        [username [(valid-votes username)
+                                                   (reduce + (map count (((@ROOMS rid) :sentences) username)))
+                                                   (rand)]])
+                                      (keys valid-votes)))
         winner (if (seq tiebroken-votes)
                  (first (first (sort-by second tiebroken-votes)))
                  :Nobody)
