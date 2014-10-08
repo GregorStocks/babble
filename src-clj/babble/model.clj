@@ -130,8 +130,8 @@
     (apply sorted-map-by
            #(or (= winner %1)
                 (and (not= winner %2)
-                     (pos? (compare (get tiebroken-votes %1 0)
-                                    (get tiebroken-votes %2 0)))))
+                     (pos? (compare (get tiebroken-votes %1 [0 0 0])
+                                    (get tiebroken-votes %2 [0 0 0])))))
            (apply concat (map (fn [username]
                                 [username {:votes (or (raw-votes username) 0)
                                            :points (or (points username) 0)
