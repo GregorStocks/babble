@@ -121,7 +121,7 @@
                  (vote-count username)         ;; votes received
                  (count (sentences username))  ;; sentence length
                  (rand)])
-        winner (last (sort-by score (keys votes)))
+        winner (last (sort-by score (keys sentences)))
         points #(+ (if (= winner %) 2 0)
                    (if (votes %) (vote-count %) 0)
                    (if (and winner (= winner (votes %))) 1 0))]
