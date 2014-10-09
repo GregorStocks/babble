@@ -738,7 +738,7 @@ function get_chat_text() {
 function roundSummary(url) {
   $("#chatmsgs").append(
     $("<p />").append(
-      $("<span />").addClass("chat_text").html("<p><a href='" + url + "'>Round Summary</a></p>")
+      $("<span />").addClass("chat_text").html("<p><a target='_blank' href='" + url + "'>Round Summary</a></p>")
     )
   );
   scrollChat();
