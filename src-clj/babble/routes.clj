@@ -67,6 +67,7 @@
                                   postprocess-event)})))
 
 (defn getroomlist [request]
+  (log/info "GETTIN ROOMLIST" @ROOMS)
   (response {"status" "OK"
              "rooms" (fmap #(select-keys % [:name :users :autojoin]) @ROOMS)}))
 
