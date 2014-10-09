@@ -114,7 +114,7 @@
   (let [room (@ROOMS rid)
         sentences (:sentences room)
         votes (:votes room)
-        vote-count #(count ((frequencies votes) %1))
+        vote-count #(or ((frequencies (vals votes)) %) 0)
         score (fn [username]
                 [(if (sentences username) 1 0) ;; whether they submitted a sentence
                  (if (votes username) 1 0)     ;; whether they voted
@@ -125,9 +125,8 @@
         points #(+ (if (= winner %) 2 0)
                    (if (votes %) (vote-count %) 0)
                    (if (and winner (= winner (votes %))) 1 0))]
-    (log/info "users are" (:users room))
     (doseq [username (:users room)]
-      (log/info username "POINTS" (points username) "VOTE" (votes username) "vote count" (vote-count username))
+      (log/info username "POINTS" (points username) "VOTE" (votes username) "vote count" (vote-count username) "Hm" votes (frequencies (vals votes)))
       (swap! ROOMS update-in [rid :scores username] #(+ (or % 0) (points username))))
     (apply sorted-map-by
            #(compare (score %1) (score %2))
