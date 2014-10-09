@@ -6,15 +6,6 @@
            [babble.permalink :as permalink]
            [clj-time.core :as time]))
 
-(logconf/set-logger!
- :level :debug
- :out (doto (org.apache.log4j.RollingFileAppender.
-             (org.apache.log4j.EnhancedPatternLayout.
-              "%d{yyyy-MM-dd HH:mm:ssZ}{America/Los_Angeles} %-5p %c: %m%n")
-             "babble.log"
-             true)
-        (.setMaxBackupIndex 10)))
-
 (def goal-score (if debug? 5 30))
 
 ;; seconds
@@ -110,5 +101,14 @@
         ))))
 
 (defn init-background-workers []
+  (logconf/set-loggers! :root
+                        {:level :debug
+                         :out (doto (org.apache.log4j.RollingFileAppender.
+                                     (org.apache.log4j.EnhancedPatternLayout.
+                                      "%d{yyyy-MM-dd HH:mm:ssZ}{America/Los_Angeles} %-5p %c: %m%n")
+                                     "babble.log"
+                                     true)
+                                (.setMaxBackupIndex 10))})
+  (reset! model/ROOMS {69 (model/empty-room "Poop room" 69)})
   (doseq [rid (keys @model/ROOMS)]
-     (.start (Thread. (partial work-loop rid)))))
+    (.start (Thread. (partial work-loop rid)))))

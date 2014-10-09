@@ -56,7 +56,7 @@
    :autojoin true})
 
 (defonce USERS (atom []))
-(defonce ROOMS (atom {69 (empty-room "Poop room" 69)}))
+(defonce ROOMS (atom nil))
 
 (defn ->long [x]
   (Long. (str x)))
@@ -105,44 +105,38 @@
 (defn next-game [rid]
   (swap! ROOMS #(update-in % [rid] assoc :scores {})))
 
+(defn map-filter [f m]
+  (into {} (filter f m)))
+
+;; this isn't exactly thread-safe but it's okay because we've only got one thread per room
 (defn round-points! [rid]
-  ;; this isn't thread-safe but it's okay because we've only got one thread per room
-  (let [votes (:votes (@ROOMS rid))
-        _ (log/info "UH" votes)
-        raw-votes (frequencies (vals votes))
-        valid-votes (select-keys raw-votes (keys votes))
-        tiebroken-votes (into {} (map (fn [username]
-                                        [username [(valid-votes username)
-                                                   (reduce + (map count (((@ROOMS rid) :sentences) username)))
-                                                   (rand)]])
-                                      (keys valid-votes)))
-        winner (cond
-                (seq tiebroken-votes) (first (first (sort-by second tiebroken-votes)))
-                (seq (:sentences (@ROOMS rid))) (rand-nth (keys (:sentences (@ROOMS rid))))
-                :else :Nobody)
-        points (apply merge-with + valid-votes
-                      (if (votes winner) {winner 2})
-                      (map #(if (= winner (votes %)) {% 1})
-                           (keys votes)))
-        _ (log/debug "points by username" points "votes" votes "valid" valid-votes)]
-    (doseq [username (keys points)]
-      (swap! ROOMS update-in [rid :scores username] #(+ (or % 0) (or (points username) 0))))
+  ;; ignore votes from folks who didn't make a sentence
+  (let [room (@ROOMS rid)
+        sentences (:sentences room)
+        votes (:votes room)
+        vote-count #(count ((frequencies votes) %1))
+        score (fn [username]
+                [(if (sentences username) 1 0) ;; whether they submitted a sentence
+                 (if (votes username) 1 0)     ;; whether they voted
+                 (vote-count username)         ;; votes received
+                 (count (sentences username))  ;; sentence length
+                 (rand)])
+        winner (last (sort-by score (keys votes)))
+        points #(+ (if (= winner %) 2 0)
+                   (if (votes %) (vote-count %) 0)
+                   (if (and winner (= winner (votes %))) 1 0))]
+    (log/info "users are" (:users room))
+    (doseq [username (:users room)]
+      (log/info username "POINTS" (points username) "VOTE" (votes username) "vote count" (vote-count username))
+      (swap! ROOMS update-in [rid :scores username] #(+ (or % 0) (points username))))
     (apply sorted-map-by
-           #(or (= winner %1)
-                (and (not= winner %2)
-                     (pos? (compare (get tiebroken-votes %1 [0 0 0])
-                                    (get tiebroken-votes %2 [0 0 0])))))
-           (apply concat (map (fn [username]
-                                [username {:votes (or (raw-votes username) 0)
-                                           :points (or (points username) 0)
-                                           :iswinner (= winner username)
-                                           :sentence (or (((@ROOMS rid) :sentences) username)
-                                                         [])}])
-                              (concat ((@ROOMS rid) :users)
-                                      [winner]
-                                      (keys points)
-                                      (keys valid-votes)
-                                      (keys votes)))))))
+           #(compare (score %1) (score %2))
+           (mapcat (fn [[username sentence]]
+                     [username {:votes (vote-count username)
+                                :points (points username)
+                                :iswinner (= winner username)
+                                :sentence sentence}])
+                   sentences))))
 
 (defn ping-user [username rid]
   (swap! ROOMS update-in [rid :last-ping username] (fn [&args] (time/now))))

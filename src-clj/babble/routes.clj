@@ -18,15 +18,6 @@
             [compojure.response :as response]
             [babble.dictionary :as dictionary]))
 
-(logconf/set-logger!
- :level :debug
- :out (doto (org.apache.log4j.RollingFileAppender.
-             (org.apache.log4j.EnhancedPatternLayout.
-              "%d{yyyy-MM-dd HH:mm:ssZ}{America/Los_Angeles} %-5p %c: %m%n")
-             "babble.log"
-             true)
-        (.setMaxBackupIndex 10)))
-
 (defn response [m]
       {:body (generate-string m)})
 
