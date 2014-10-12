@@ -20,6 +20,8 @@
 (defn rand-words [t x]
   (take x (shuffle (t WORDS))))
 
+(defonce ROOMS (atom nil))
+
 (def mandatory (:mandatory WORDS))
 (def NINETEEN 19)
 
@@ -30,6 +32,10 @@
           (rand-words :modifiers NINETEEN)
           mandatory
           (rand-words :leftovers NINETEEN)))
+
+(defn verify-rid [rid]
+  (when-not (@ROOMS rid)
+    (throw (Exception. (str "invalid rid" rid)))))
 
 (defn initial-event [rid]
   {:eventid 1
@@ -55,9 +61,6 @@
    :scores {}
    :autojoin true})
 
-(defonce USERS (atom []))
-(defonce ROOMS (atom nil))
-
 (defn ->long [x]
   (Long. (str x)))
 
@@ -74,6 +77,7 @@
 
 (defn add-event ([rid event] (add-event rid event false))
   ([rid event important?]
+   (verify-rid rid)
    (let [ev (new-lengthless-event event)]
      (swap! ROOMS #(-> (if important?
                          (update-in % [rid :event] (constantly ev))
@@ -82,27 +86,33 @@
                        (update-in [rid :eventid] (constantly (:eventid ev))))))))
 
 (defn add-user [rid username]
+  (verify-rid rid)
   (swap! ROOMS #(-> %
                     (update-in [rid :users] conj username)
                     (update-in [rid :scores username] (fn [score] (or score 0))))))
 
 (defn remove-user [rid username]
+  (verify-rid rid)
   (swap! ROOMS update-in [rid :users] disj username))
 
 (defn set-sentence [rid username words]
+  (verify-rid rid)
   (swap! ROOMS update-in [rid :sentences] (if (seq words)
                                             #(assoc % username words)
                                             #(dissoc % username))))
 
 (defn set-vote [rid username votee]
+  (verify-rid rid)
   (swap! ROOMS update-in [rid :votes username] (constantly votee)))
 
 (defn next-round [rid]
+  (verify-rid rid)
   (swap! ROOMS #(update-in % [rid] assoc
                            :sentences (ai-sentences)
                            :votes (if debug? {"ghost" "ghost"} {}))))
 
 (defn next-game [rid]
+  (verify-rid rid)
   (swap! ROOMS #(update-in % [rid] assoc :scores {})))
 
 (defn map-filter [f m]
@@ -110,6 +120,7 @@
 
 ;; this isn't exactly thread-safe but it's okay because we've only got one thread per room
 (defn round-points! [rid]
+  (verify-rid rid)
   ;; ignore votes from folks who didn't make a sentence
   (let [room (@ROOMS rid)
         sentences (:sentences room)
@@ -138,6 +149,7 @@
                    sentences))))
 
 (defn ping-user [username rid]
+  (verify-rid rid)
   (swap! ROOMS update-in [rid :last-ping username] (fn [&args] (time/now))))
 
 (defn postprocess-event [event]
@@ -151,5 +163,6 @@
       ev)))
 
 (defn trim-room [rid]
+  (verify-rid rid)
   ;; drop all but the 50 most recent events
   (swap! ROOMS update-in [rid :events] (partial take 50)))
