@@ -11,6 +11,7 @@
             [compojure.handler :as handler]
             [clj-time.core :as time]
             [clj-logging-config.log4j :as logconf]
+            [babble.twilio :as twilio]
             [babble.permalink :as permalink]
             [clojure.string :as string]
             [clojure.java.io :as io]
@@ -130,6 +131,7 @@
                                                     :body (dictionary/dict-js)}))
   (GET "/round-:round" [round] round-summary)
   (route/resources "/")
+  (POST "/fart.php" [] twilio/fart)
   (route/not-found "Page not found"))
 
 (def app
