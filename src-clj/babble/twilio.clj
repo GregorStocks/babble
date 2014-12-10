@@ -10,12 +10,12 @@
         client (TwilioRestClient. (:twilio-sid cred) (:twilio-token cred))
         call-factory (-> client .getAccount .getCallFactory)
         phone-number (-> request :params :number)
-        _ (log/warn "NUMBER" phone-number)
+        _ (println "NUMBER" phone-number)
         params [(BasicNameValuePair. "Url" "http://babble.cx/fart.xml")
                 (BasicNameValuePair. "To" phone-number)
                 (BasicNameValuePair. "From" "6072755129")
                 (BasicNameValuePair. "Method" "GET")]
         call (.create call-factory params)]
-    (log/warn "CALLED" (.getSid call))
+    (println "CALLED" (.getSid call))
     {:status 200
      :body "neat"}))
