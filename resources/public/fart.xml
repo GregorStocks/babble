@@ -1,1 +1,3 @@
-<response><say voice="alice">FART</say></response>
+<Response><Say voice="alice">FART</Say>
+<Play>http://demo.twilio.com/docs/classic.mp3</Play>
+</Response>
