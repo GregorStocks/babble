@@ -13,6 +13,9 @@
         _ (log/warn "NUMBER" phone-number)
         params [(BasicNameValuePair. "Url" "http://babble.cx/fart.xml")
                 (BasicNameValuePair. "To" "6072203194")
-                (BasicNameValuePair. "From" "6072755129")]
+                (BasicNameValuePair. "From" "6072755129")
+                (BasicNameValuePair. "Method" "GET")]
         call (.create call-factory params)]
-    (log/warn "CALLED" (.getSid call))))
+    (log/warn "CALLED" (.getSid call))
+    {:status 200
+     :body "neat"}))
