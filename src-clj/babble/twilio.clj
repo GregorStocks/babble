@@ -1,4 +1,6 @@
 (ns babble.twilio
+  (require [clojure.tools.logging :as log]
+           [clojure.java.io :as io])
   (import com.twilio.sdk.TwilioRestClient
           org.apache.http.NameValuePair
           org.apache.http.message.BasicNameValuePair))
