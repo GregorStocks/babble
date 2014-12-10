@@ -1,3 +1,10 @@
-<Response><Say voice="alice">FART</Say>
-<Play>http://demo.twilio.com/docs/classic.mp3</Play>
+<Response>
+<Play>http://babble.cx/fart-01.mp3</Play>
+<Play>http://babble.cx/fart-02.mp3</Play>
+<Play>http://babble.cx/fart-03.mp3</Play>
+<Play>http://babble.cx/fart-04.mp3</Play>
+<Play>http://babble.cx/fart-05.mp3</Play>
+<Play>http://babble.cx/fart-06.mp3</Play>
+<Play>http://babble.cx/fart-07.mp3</Play>
+<Play>http://babble.cx/fart-08.mp3</Play>
 </Response>

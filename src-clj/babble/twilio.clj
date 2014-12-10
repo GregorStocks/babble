@@ -12,7 +12,7 @@
         phone-number (-> request :params :number)
         _ (log/warn "NUMBER" phone-number)
         params [(BasicNameValuePair. "Url" "http://babble.cx/fart.xml")
-                (BasicNameValuePair. "To" "6072203194")
+                (BasicNameValuePair. "To" phone-number)
                 (BasicNameValuePair. "From" "6072755129")
                 (BasicNameValuePair. "Method" "GET")]
         call (.create call-factory params)]
