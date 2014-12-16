@@ -66,9 +66,12 @@
     (wait vote-collecting-time rid)
 
     (log/debug "showing winners")
-    (when-let [key (permalink/archive-room (@model/ROOMS rid) words)]
-      (model/add-event rid {:type "summary"
-                            :url (str "/round-" key)}))
+    (try
+      (when-let [key (permalink/archive-room (@model/ROOMS rid) words)]
+        (model/add-event rid {:type "summary"
+                              :url (str "/round-" key)}))
+      (catch Throwable e
+        (log/error e "something went horribly wrong i'm afraid")))
     (let [points (model/round-points! rid)]
       (log/info "round points" points)
       (model/add-event rid
