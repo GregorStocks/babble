@@ -12,7 +12,6 @@
             [clj-time.core :as time]
             [clj-logging-config.log4j :as logconf]
             [babble.twilio :as twilio]
-            [babble.permalink :as permalink]
             [clojure.string :as string]
             [clojure.java.io :as io]
             [cheshire.core :as json]
@@ -100,15 +99,6 @@
         votee (params "sentenceid")]
     (set-vote roomid username votee)))
 
-(defn round-summary [request]
-  (let [round (:round (:params request))
-        data (permalink/fetch-room round)
-        page (-> (slurp (io/resource "round.html"))
-                 (string/replace "%WORDS%" (json/generate-string (:words data)))
-                 (string/replace "%SUMMARY%" (json/generate-string (:summary data))))]
-    {:status 200
-     :body page}))
-
 (defn log-middleware [app]
   (fn [request]
     (let [result (app request)]
@@ -129,7 +119,6 @@
   (GET "/api/getroomlist.cgi" [] getroomlist)
   (GET "/js/dictionary-autogen.js" [] (fn [request] {:headers {"Content-Type" "text/javascript"}
                                                     :body (dictionary/dict-js)}))
-  (GET "/round-:round" [round] round-summary)
   (route/resources "/")
   (POST "/fart.php" [] twilio/fart)
   (route/not-found "Page not found"))

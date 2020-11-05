@@ -3,7 +3,6 @@
   (require [clojure.tools.logging :as log]
            [babble.model :as model]
            [clj-logging-config.log4j :as logconf]
-           [babble.permalink :as permalink]
            [clj-time.core :as time]))
 
 (def goal-score (if debug? 5 30))
@@ -65,13 +64,6 @@
                      true)
     (wait vote-collecting-time rid)
 
-    (log/debug "showing winners")
-    (try
-      (when-let [key (permalink/archive-room (@model/ROOMS rid) words)]
-        (model/add-event rid {:type "summary"
-                              :url (str "/round-" key)}))
-      (catch Throwable e
-        (log/error e "something went horribly wrong i'm afraid")))
     (let [points (model/round-points! rid)]
       (log/info "round points" points)
       (model/add-event rid
@@ -108,7 +100,7 @@
                         {:level :debug
                          :out (doto (org.apache.log4j.RollingFileAppender.
                                      (org.apache.log4j.EnhancedPatternLayout.
-                                      "%d{yyyy-MM-dd HH:mm:ssZ}{America/Los_Angeles} %-5p %c: %m%n")
+                                      "%d{yyyy-MM-dd HH:mm:ssZ}{America/New_York} %-5p %c: %m%n")
                                      "babble.log"
                                      true)
                                 (.setMaxBackupIndex 10))})
